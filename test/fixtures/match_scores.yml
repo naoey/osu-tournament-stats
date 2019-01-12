@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  match_id: 1
+  player: 1
+  beatmap_id: 1
+  raw_json: MyText
+
+two:
+  match_id: 1
+  player: 1
+  beatmap_id: 1
+  raw_json: MyText

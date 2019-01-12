@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  online_id: 1
+  star_difficulty: 1.5
+  difficulty_name: MyString
+
+two:
+  name: MyString
+  online_id: 1
+  star_difficulty: 1.5
+  difficulty_name: MyString
