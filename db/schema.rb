@@ -26,7 +26,16 @@ ActiveRecord::Schema.define(version: 2019_01_12_095527) do
     t.integer "player_id"
     t.integer "beatmap_id"
     t.integer "online_game_id"
-    t.text "raw_json"
+    t.integer "score"
+    t.integer "max_combo"
+    t.integer "count_50"
+    t.integer "count_100"
+    t.integer "count_300"
+    t.integer "count_miss"
+    t.integer "count_katu"
+    t.integer "count_geki"
+    t.boolean "perfect"
+    t.boolean "pass"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["player_id"], name: "index_match_scores_on_player"
@@ -36,7 +45,8 @@ ActiveRecord::Schema.define(version: 2019_01_12_095527) do
     t.integer "online_id"
     t.integer "player_red"
     t.integer "player_blue"
-    t.string "match_name"
+    t.integer "winner"
+    t.string "round_name"
     t.text "api_json"
     t.datetime "match_timestamp"
     t.datetime "created_at", null: false

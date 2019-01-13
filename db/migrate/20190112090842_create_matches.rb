@@ -4,7 +4,8 @@ class CreateMatches < ActiveRecord::Migration[5.2]
       t.integer :online_id
       t.integer :player_red
       t.integer :player_blue
-      t.string :match_name
+      t.integer :winner
+      t.string :round_name
       t.text :api_json
       t.datetime :match_timestamp
 

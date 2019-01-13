@@ -5,7 +5,16 @@ class CreateMatchScores < ActiveRecord::Migration[5.2]
       t.integer :player_id
       t.integer :beatmap_id
       t.integer :online_game_id
-      t.text :raw_json
+      t.integer :score
+      t.integer :max_combo
+      t.integer :count_50
+      t.integer :count_100
+      t.integer :count_300
+      t.integer :count_miss
+      t.integer :count_katu
+      t.integer :count_geki
+      t.boolean :perfect
+      t.boolean :pass
 
       t.timestamps
     end
