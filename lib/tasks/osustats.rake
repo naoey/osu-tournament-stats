@@ -4,15 +4,33 @@ require 'json'
 require 'date'
 require 'pp'
 
+@typo_list = YAML.load_file(Rails.root.join('config', 'player_name_typo_list.yml'))
+
+puts "Loaded typo list"
+pp @typo_list
+
 def load_api_player(username)
   http = Net::HTTP.new("osu.ppy.sh", 443)
   http.use_ssl = true
 
   puts "Fetching details for user #{username} from API"
 
-  resp = http.get("/api/get_user?k=#{ENV["OSU_API_KEY"]}&u=#{username}")
+  if @typo_list.key?(username)
+    puts "Using name from typo fix list #{username} => #{@typo_list[username]}"
+    @correct_username = @typo_list[username]
+  else
+    @correct_username = username
+  end
 
-  api_player = JSON.parse(resp.body)[0]
+  resp = http.get("/api/get_user?k=#{ENV["OSU_API_KEY"]}&u=#{@correct_username}")
+
+  json = JSON.parse(resp.body)
+
+  if json.length == 0
+    raise Exceptions::PlayerNotFoundError
+  end
+
+  api_player = json[0]
 
   player = Player.create({
       :name => api_player["username"],
@@ -100,9 +118,7 @@ def parse_match_games(games, match)
 end
 
 def parse_match(match, raw, match_name)
-  # TODO: remove this when committing for real use
-  players = "OIWT: (nitr0f) vs (SpaceMaster77)".split(":")[1].split(" vs ")
-  # players = match["match"]["name"].split(":")[1].split(" vs ")
+  players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(" vs ")
 
   player_red_name = players[0].tr(" ()", "")
   player_blue_name = players[1].tr(" ()", "")
