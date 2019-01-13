@@ -70,7 +70,8 @@ def load_beatmap(beatmap_id)
     :name => "#{api_beatmap["artist"]} - #{api_beatmap["title"]}",
     :online_id => api_beatmap["beatmap_id"].to_i,
     :difficulty_name => api_beatmap["version"],
-    :star_difficulty => api_beatmap["difficultyrating"].to_f
+    :star_difficulty => api_beatmap["difficultyrating"].to_f,
+    :max_combo => api_beatmap["max_combo"].to_i
   })
 
   if beatmap.save

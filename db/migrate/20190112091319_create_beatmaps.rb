@@ -5,6 +5,7 @@ class CreateBeatmaps < ActiveRecord::Migration[5.2]
       t.integer :online_id
       t.float :star_difficulty
       t.string :difficulty_name
+      t.integer :max_combo
 
       t.timestamps
     end

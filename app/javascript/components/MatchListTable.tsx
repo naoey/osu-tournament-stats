@@ -24,28 +24,30 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
   render() {
     const { data } = this.props;
 
-    const columns = [{
-      dataIndex: 'round_name',
-      title: "Round",
-    }, {
-      dataIndex: 'blue_player',
-      title: 'Blue Player',
-      render: (text, record) => (
-        <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
+    const columns = [
+      {
+        dataIndex: 'round_name',
+        title: "Round",
+      }, {
+        dataIndex: 'blue_player',
+        title: 'Blue Player',
+        render: (text, record) => (
+          <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
           {text.name}
         </span>)
-    }, {
-      dataIndex: 'red_player',
-      title: 'Red Player',
-      render: (text, record) => (
-        <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
+      }, {
+        dataIndex: 'red_player',
+        title: 'Red Player',
+        render: (text, record) => (
+          <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
           {text.name}
         </span>)
-    }, {
-      dataIndex: 'timestamp',
-      title: "Date",
-      render: text => moment(text).format('LLL'),
-    }];
+      }, {
+        dataIndex: 'timestamp',
+        title: "Date",
+        render: text => moment(text).format('LLL'),
+      }
+    ];
 
     return (
       <Table

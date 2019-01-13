@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 2019_01_12_095527) do
     t.integer "online_id"
     t.float "star_difficulty"
     t.string "difficulty_name"
+    t.integer "max_combo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
