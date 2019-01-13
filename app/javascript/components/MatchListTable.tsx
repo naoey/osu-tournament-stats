@@ -2,10 +2,18 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { Table } from 'antd';
 
-export interface MatchListItem {
+export interface MatchListPlayer {
+  id: number;
   name: string;
-  id: number,
-  timestamp: string,
+}
+
+export interface MatchListItem {
+  round_name: string;
+  online_id: number,
+  blue_player: MatchListPlayer;
+  red_player: MatchListPlayer;
+  winner: number;
+  timestamp: string;
 }
 
 export interface MatchListTableProps {
@@ -17,13 +25,22 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
     const { data } = this.props;
 
     const columns = [{
-      dataIndex: 'name',
-      title: "Match",
+      dataIndex: 'round_name',
+      title: "Round",
+    }, {
+      dataIndex: 'blue_player',
+      title: 'Blue Player',
       render: (text, record) => (
-        <a href={`/statistics/match/${record.id}`}>
-          {text}
-        </a>
-      ),
+        <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
+          {text.name}
+        </span>)
+    }, {
+      dataIndex: 'red_player',
+      title: 'Red Player',
+      render: (text, record) => (
+        <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
+          {text.name}
+        </span>)
     }, {
       dataIndex: 'timestamp',
       title: "Date",
