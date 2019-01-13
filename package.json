@@ -7,6 +7,7 @@
     "@types/react-dom": "^16.0.11",
     "antd": "^3.12.1",
     "babel-preset-react": "^6.24.1",
+    "moment": "^2.23.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",

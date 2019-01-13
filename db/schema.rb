@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2019_01_12_095527) do
     t.integer "online_id"
     t.integer "player_red"
     t.integer "player_blue"
+    t.string "match_name"
     t.text "api_json"
     t.datetime "match_timestamp"
     t.datetime "created_at", null: false

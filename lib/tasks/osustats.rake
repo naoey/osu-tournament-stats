@@ -99,7 +99,7 @@ def parse_match_games(games, match)
   raise Exceptions::MatchParseFailedError unless MatchScore.where(:match_id => match.id).length == match_games.length * 2
 end
 
-def parse_match(match, raw)
+def parse_match(match, raw, match_name)
   # TODO: remove this when committing for real use
   players = "OIWT: (nitr0f) vs (SpaceMaster77)".split(":")[1].split(" vs ")
   # players = match["match"]["name"].split(":")[1].split(" vs ")
@@ -120,6 +120,7 @@ def parse_match(match, raw)
 
   db_match = Match.create({
     :online_id => match["match"]["match_id"],
+    :match_name => match_name,
     :match_timestamp => DateTime.parse(match["match"]["start_time"]),
     :api_json => raw,
     :player_blue => @player_blue,
@@ -133,7 +134,7 @@ end
 
 namespace :osustats do
   desc "Add a new match to the stats tracking by the osu! multiplayer match ID"
-  task :add_match, [:match_id] => [:environment] do |task, args|
+  task :add_match, [:match_id, :match_name] => [:environment] do |task, args|
     puts "Fetch details for match id #{args[:match_id]} from osu! API"
 
     http = Net::HTTP.new("osu.ppy.sh", 443)
@@ -143,7 +144,7 @@ namespace :osustats do
 
     ActiveRecord::Base.transaction do
       begin
-        parse_match(JSON.parse(resp.body), resp.body)
+        parse_match(JSON.parse(resp.body), resp.body, args[:match_name])
       rescue StandardError => e
         puts "Failed to parse match", e
         puts e.backtrace.join("\n")
