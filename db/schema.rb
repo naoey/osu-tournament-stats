@@ -25,9 +25,11 @@ ActiveRecord::Schema.define(version: 2019_01_12_095527) do
     t.integer "match_id"
     t.integer "player_id"
     t.integer "beatmap_id"
+    t.integer "online_game_id"
     t.text "raw_json"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_match_scores_on_player"
   end
 
   create_table "matches", force: :cascade do |t|

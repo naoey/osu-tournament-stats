@@ -14,10 +14,16 @@ def load_api_player(username)
 
   api_player = JSON.parse(resp.body)[0]
 
-  Player.create({
+  player = Player.create({
       :name => api_player["username"],
       :id => api_player["user_id"].to_i
-  }).save
+  })
+
+  if player.save
+    player
+  else
+    raise Exceptions::PlayerNotFoundError
+  end
 end
 
 def load_api_beatmap(beatmap_id)
@@ -30,12 +36,18 @@ def load_api_beatmap(beatmap_id)
 
   api_beatmap = JSON.parse(resp.body)[0]
 
-  Beatmap.create({
+  beatmap = Beatmap.create({
     :name => "#{api_beatmap["artist"]} - #{api_beatmap["title"]}",
     :online_id => api_beatmap["beatmap_id"].to_i,
     :difficulty_name => api_beatmap["version"],
     :star_difficulty => api_beatmap["difficultyrating"].to_f
-  }).save
+  })
+
+  if beatmap.save
+    beatmap
+  else
+    raise Exceptions::BeatmapNotFoundError
+  end
 end
 
 def parse_match_games(games, match)
@@ -46,6 +58,9 @@ def parse_match_games(games, match)
   puts "Parsing #{match_games.length} match games"
 
   match_games.each do |game|
+    puts "Parsing game..."
+    pp game
+
     red_player_score = game["scores"].find { |score| score["slot"] == "0" }
     blue_player_score = game["scores"].find { |score| score["slot"] == "1" }
 
@@ -53,20 +68,35 @@ def parse_match_games(games, match)
       load_api_beatmap game["beatmap_id"]
     end
 
-    MatchScore.create({
-      :match_id => match,
-      :player_id => Player.find(red_player_score["user_id"].to_i),
-      :beatmap_id => Beatmap.find_by_online_id(game["beatmap_id"]),
-      :raw_json => red_player_score.to_json
-    }).save
+    red_score = MatchScore.create({
+      :match_id => match.id,
+      :player_id => red_player_score["user_id"].to_i,
+      :beatmap_id => game["beatmap_id"].to_i,
+      :raw_json => red_player_score.to_json,
+      :online_game_id => game["game_id"].to_i
+    })
 
-    MatchScore.create({
-      :match_id => match,
-      :player_id => Player.find(blue_player_score["user_id"].to_i),
-      :beatmap_id => Beatmap.find_by_online_id(game["beatmap_id"]),
-      :raw_json => blue_player_score.to_json
-    }).save
+    puts "Saving red player score..."
+    pp red_score
+
+    red_score.save
+
+    blue_score = MatchScore.create({
+      :match_id => match.id,
+      :player_id => blue_player_score["user_id"].to_i,
+      :beatmap_id => game["beatmap_id"].to_i,
+      :raw_json => blue_player_score.to_json,
+      :online_game_id => game["game_id"].to_i
+    })
+
+    puts "Saving blue player score..."
+    pp blue_score
+
+    blue_score.save
   end
+
+  # Every valid tournament map in a match must have recorded two scores otherwise the match didn't parse properly
+  raise Exceptions::MatchParseFailedError unless MatchScore.where(:match_id => match.id).length == match_games.length * 2
 end
 
 def parse_match(match, raw)
@@ -94,7 +124,9 @@ def parse_match(match, raw)
     :api_json => raw,
     :player_blue => @player_blue,
     :player_red => @player_red
-  }).save
+  })
+
+  db_match.save
 
   parse_match_games match["games"], db_match
 end
@@ -109,6 +141,14 @@ namespace :osustats do
 
     resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{args[:match_id]}")
 
-    parse_match(JSON.parse(resp.body), resp.body)
+    ActiveRecord::Base.transaction do
+      begin
+        parse_match(JSON.parse(resp.body), resp.body)
+      rescue StandardError => e
+        puts "Failed to parse match", e
+        puts e.backtrace.join("\n")
+        raise ActiveRecord::Rollback
+      end
+    end
   end
 end
