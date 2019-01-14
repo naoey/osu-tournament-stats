@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9e49332d-b487-4db9-903c-9eedb05af98a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/javascript/components/MatchListTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/components/MatchListTable.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/components/PlayerListTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/components/PlayerListTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/statistics_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/statistics_controller.rb" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.bundle/" />
     <ignored path="$PROJECT_DIR$/components/" />
@@ -23,20 +22,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/statistics_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+            <state relative-caret-position="473">
+              <caret line="35" column="54" selection-start-line="35" selection-start-column="54" selection-end-line="35" selection-end-column="54" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/javascript/components/PlayerListTable.tsx">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="589">
-              <caret line="141" column="3" lean-forward="true" selection-start-line="141" selection-start-column="3" selection-end-line="141" selection-end-column="3" />
+              <caret line="141" column="3" selection-start-line="141" selection-start-column="3" selection-end-line="141" selection-end-column="3" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -100,7 +99,6 @@
         <option value="$PROJECT_DIR$/db/migrate/20190112091319_create_beatmaps.rb" />
         <option value="$PROJECT_DIR$/lib/tasks/osustats.rake" />
         <option value="$PROJECT_DIR$/app/models/match_score.rb" />
-        <option value="$PROJECT_DIR$/app/controllers/statistics_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/layouts/application.html.erb" />
         <option value="$PROJECT_DIR$/app/views/statistics/show_all_players.html.erb" />
         <option value="$PROJECT_DIR$/app/views/statistics/show_matches.html.erb" />
@@ -108,6 +106,7 @@
         <option value="$PROJECT_DIR$/app/assets/stylesheets/statistics.scss" />
         <option value="$PROJECT_DIR$/app/javascript/components/MatchListTable.tsx" />
         <option value="$PROJECT_DIR$/app/javascript/components/PlayerListTable.tsx" />
+        <option value="$PROJECT_DIR$/app/controllers/statistics_controller.rb" />
       </list>
     </option>
   </component>
@@ -368,12 +367,12 @@
       <workItem from="1547307617475" duration="140000" />
       <workItem from="1547369323023" duration="328000" />
       <workItem from="1547369712830" duration="10436000" />
-      <workItem from="1547398579509" duration="21210000" />
+      <workItem from="1547398579509" duration="21414000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36134000" />
+    <option name="totallyTimeSpent" value="36338000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="2560" height="1440" extended-state="0" />
@@ -597,13 +596,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/statistics_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/javascript/components/MatchListTable.tsx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="486">
@@ -617,10 +609,17 @@
     <entry file="file://$PROJECT_DIR$/app/javascript/components/PlayerListTable.tsx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="589">
-          <caret line="141" column="3" lean-forward="true" selection-start-line="141" selection-start-column="3" selection-end-line="141" selection-end-column="3" />
+          <caret line="141" column="3" selection-start-line="141" selection-start-column="3" selection-end-line="141" selection-end-column="3" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/statistics_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="473">
+          <caret line="35" column="54" selection-start-line="35" selection-start-column="54" selection-end-line="35" selection-end-column="54" />
         </state>
       </provider>
     </entry>

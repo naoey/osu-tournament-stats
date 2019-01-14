@@ -33,7 +33,7 @@ class StatisticsController < ApplicationController
       :matches_played => Match.count_by_sql("SELECT COUNT(*) FROM \"matches\" WHERE \"matches\".\"player_red\" = #{player.id} OR \"matches\".\"player_blue\" = #{player.id}"),
       :matches_won => Match.where(:winner => player.id).count,
       :maps_played => player_scores.count,
-      :maps_won => maps_won?(player),
+      :maps_won => Match.count_by_sql("select COUNT(*) from (select beatmap_id, max(score), player_id from match_scores group by beatmap_id, match_id) where player_id=#{player.id}"),
       :best_accuracy => (player_accuracies.max * 100.0).round(2),
       :average_accuracy => (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
       :perfect_count => player_scores.where(:perfect => true).count,
