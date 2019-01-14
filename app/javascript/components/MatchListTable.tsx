@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
-import _ from 'lodash';
 
 export interface MatchListPlayer {
   id: number;
@@ -68,18 +67,10 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
     return false;
   }
 
-  static sortTimestamp(a:MatchListItem, b:MatchListItem, sortOrder:'ascend'|'descend') {
-    if (sortOrder === 'ascend') {
-      if (moment(a.timestamp) > moment(b.timestamp)) return 1;
-      if (moment(a.timestamp) < moment(b.timestamp)) return -1;
-      return 0;
-    }
-
-    if (sortOrder === 'descend') {
-      if (moment(a.timestamp) > moment(b.timestamp)) return -1;
-      if (moment(a.timestamp) < moment(b.timestamp)) return -1;
-      return 0;
-    }
+  static sortTimestamp(a:MatchListItem, b:MatchListItem) {
+    if (moment(a.timestamp) > moment(b.timestamp)) return 1;
+    if (moment(a.timestamp) < moment(b.timestamp)) return -1;
+    return 0;
   }
 
   render() {
@@ -97,7 +88,6 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
         ),
         filters: MatchListTable.createRoundNameFilters(),
         onFilter: MatchListTable.onFilterRoundName,
-        sortDirections: ['ascend', 'descend'],
       }, {
         key: '2',
         dataIndex: 'blue_player',
@@ -109,7 +99,6 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
         ),
         filters: MatchListTable.createPlayerNameFilter(data.map(d => d.blue_player)),
         onFilter: (value, record) => MatchListTable.onFilterPlayerName(Team.Blue, value, record),
-        sortDirections: ['ascend', 'descend'],
       }, {
         key: '3',
         dataIndex: 'red_player',
@@ -121,7 +110,6 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
         ),
         filters: MatchListTable.createPlayerNameFilter(data.map(d => d.red_player)),
         onFilter: (value, record) => MatchListTable.onFilterPlayerName(Team.Red, value, record),
-        sortDirections: ['ascend', 'descend'],
       }, {
         key: '4',
         dataIndex: 'timestamp',
@@ -139,6 +127,7 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
           dataSource={data}
           columns={columns}
           rowKey={record => record.online_id.toString()}
+          pagination={false}
         />
       </div>
     );
