@@ -4,6 +4,7 @@ class StatisticsController < ApplicationController
       {
         :round_name => match.round_name,
         :winner => match.winner,
+        :online_id => match.online_id,
         :red_player => {
           :id => match.player_red.id,
           :name => match.player_red.name,

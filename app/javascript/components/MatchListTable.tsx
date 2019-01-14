@@ -28,20 +28,27 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
       {
         dataIndex: 'round_name',
         title: "Round",
+        render: (text, record) => (
+          <a href={`https://osu.ppy.sh/mp/${record.online_id}`} target="_blank">
+            {text} <i className="fas fa-external-link-alt" />
+          </a>
+        )
       }, {
         dataIndex: 'blue_player',
         title: 'Blue Player',
         render: (text, record) => (
           <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
-          {text.name}
-        </span>)
+            {text.name}
+          </span>
+        )
       }, {
         dataIndex: 'red_player',
         title: 'Red Player',
         render: (text, record) => (
           <span style={text.id === record.winner ? { fontWeight: 'bold', color: 'green' } : {}}>
-          {text.name}
-        </span>)
+            {text.name}
+          </span>
+        )
       }, {
         dataIndex: 'timestamp',
         title: "Date",
