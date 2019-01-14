@@ -13,6 +13,7 @@ export interface PlayerListItem {
   accuracy: number;
   perfect_count: number,
   average_misses: number;
+  total_misses: number,
 }
 
 export interface PlayerListTableProps {
@@ -27,7 +28,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       {
         dataIndex: 'name',
         title: 'Name',
-        render: (text, record) => <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>{text}</a>,
+        render: (text, record) => <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>{text} <i className="fas fa-external-link-alt" /></a>,
       }, {
         dataIndex: 'matches_played',
         title: 'Matches played',
@@ -47,10 +48,21 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         dataIndex: 'maps_won',
         title: 'Maps win %',
-        render: (text, record) => <span>{record.maps_won / record.maps_played * 100}%</span>,
+        render: (text, record) => <span>{Math.round(record.maps_won / record.maps_played * 100 * 100) / 100}%</span>,
+      }, {
+        dataIndex: 'best_accuracy',
+        title: 'Best accuracy',
+        render: (text, record) => <span>{record.best_accuracy}%</span>,
+      }, {
+        dataIndex: 'average_accuracy',
+        title: 'Average accuracy',
+        render: (text, record) => <span>{record.average_accuracy}%</span>,
       }, {
         dataIndex: 'perfect_count',
         title: 'Perfect maps',
+      }, {
+        dataIndex: 'total_misses',
+        title: 'Total misses',
       }, {
         dataIndex: 'average_misses',
         title: 'Average misses',
@@ -60,7 +72,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         dataIndex: 'average_score',
         title: 'Average score',
-      }
+      },
     ];
 
     return (
