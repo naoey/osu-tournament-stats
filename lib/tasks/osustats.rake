@@ -146,8 +146,8 @@ end
 def parse_match(match, raw, round_name)
   players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(" vs ")
 
-  @player_red = load_player players[0].tr(" ()", "")
-  @player_blue = load_player players[1].tr(" ()", "")
+  @player_blue = load_player players[0].tr(" ()", "")
+  @player_red = load_player players[1].tr(" ()", "")
 
   db_match = Match.create({
     :online_id => match["match"]["match_id"],
