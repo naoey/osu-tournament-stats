@@ -113,9 +113,7 @@ def parse_match_games(games, match)
       :pass => red_player_score["pass"] == "1",
     })
 
-    puts "Saving red player score..."
-
-    red_score.save
+    puts "Red player score save: #{red_score.save}"
 
     blue_score = MatchScore.create({
       :match_id => match.id,
@@ -134,17 +132,19 @@ def parse_match_games(games, match)
       :pass => blue_player_score["pass"] == "1",
     })
 
-    puts "Saving blue player score..."
-
-    blue_score.save
+    puts "Blue player score save: #{blue_score.save}"
   end
 
-  # Every valid tournament map in a match must have recorded two scores otherwise the match didn't parse properly
-  raise Exceptions::MatchParseFailedError unless MatchScore.where(:match_id => match.id).length == match_games.length * 2
+  # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
+  matches_in_db = MatchScore.where(:match_id => match.id).length
+  if matches_in_db != match_games.length * 2
+    puts "Match parse failed. Found #{matches_in_db} scores parsed, expected #{match_games.length * 2}"
+    raise Exceptions::MatchParseFailedError
+  end
 end
 
 def parse_match(match, raw, round_name)
-  players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(" vs ")
+  players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(/\svs.?\s/)
 
   @player_blue = load_player players[0].tr(" ()", "")
   @player_red = load_player players[1].tr(" ()", "")
@@ -175,6 +175,8 @@ namespace :osustats do
     http.use_ssl = true
 
     resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{args[:match_id]}")
+
+    abort "Match #{args[:match_id]} already exists in database" unless Match.find_by_online_id(args[:match_id]) == nil
 
     ActiveRecord::Base.transaction do
       begin
