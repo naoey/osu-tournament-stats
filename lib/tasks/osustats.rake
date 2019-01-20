@@ -43,7 +43,7 @@ def load_player(username)
     :id => api_player["user_id"].to_i
   })
 
-  if player.save
+  if player.save!
     player
   else
     raise Exceptions::PlayerNotFoundError
@@ -88,11 +88,7 @@ def parse_match_games(games, match)
 
   # we need to filter out maps that were replayed for whatever reason
   # when a map has been played multiple times, always pick the game that was started last for that map ID
-  match_games.each do |g|
-    g["start_time"] = DateTime.parse(g["start_time"])
-  end
-
-  match_games = match_games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| g["start_time"]}}
+  match_games = match_games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
 
   puts "Parsing #{match_games.length} match games"
 
@@ -151,6 +147,33 @@ def parse_match_games(games, match)
   end
 end
 
+def match_winner?(match_games, player_blue_id, player_red_id)
+  blue_wins = 0
+  red_wins = 0
+
+  match_games.each do |g|
+    map_winner = g["scores"].select {|s| s["pass"] == "1"}.max_by {|s| s["score"].to_i}["user_id"].to_i
+
+    if map_winner == player_blue_id
+      blue_wins += 1
+    elsif map_winner == player_red_id
+      red_wins += 1
+    else
+      puts "Impossible situation where winner of map is not red or blue player"
+      raise Exceptions::MatchParseFailedError
+    end
+  end
+
+  if blue_wins > red_wins
+    return player_blue_id
+  elsif red_wins > blue_wins
+    return player_red_id
+  end
+
+  puts "Impossible situation where red and blue have equal wins in a match"
+  raise Exceptions::MatchParseFailedError
+end
+
 def parse_match(match, raw, round_name)
   players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(/\svs.?\s/)
 
@@ -170,7 +193,7 @@ def parse_match(match, raw, round_name)
 
   parse_match_games match["games"], db_match
 
-  db_match.winner = db_match.match_scores.max_by(&:score).player.id
+  db_match.winner = match_winner?(match["games"], db_match.player_red.id, db_match.player_blue.id)
   db_match.save
 end
 

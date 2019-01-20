@@ -131,7 +131,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         dataIndex: 'maps_failed',
         title: 'Maps failed',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_score),
+        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.maps_failed),
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
       }
