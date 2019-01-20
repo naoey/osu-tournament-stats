@@ -40,7 +40,8 @@ class StatisticsController < ApplicationController
       :average_misses => player_scores.average(:count_miss).round(2),
       :total_misses => player_scores.sum(:count_miss),
       :average_score => player_scores.average(:score).round(2),
-      :total_score => player_scores.sum(:score)
+      :total_score => player_scores.sum(:score),
+      :maps_failed => player_scores.where(:player_id => player.id, :pass => false).count
     }
   end
 

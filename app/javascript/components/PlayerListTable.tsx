@@ -17,6 +17,7 @@ export interface PlayerListItem {
   total_misses: number;
   best_accuracy: number;
   average_accuracy:number;
+  maps_failed: number,
 }
 
 export interface PlayerListTableProps {
@@ -127,7 +128,13 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
         sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_score),
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend'],
-      },
+      }, {
+        dataIndex: 'maps_failed',
+        title: 'Maps failed',
+        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_score),
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend'],
+      }
     ];
 
     return (

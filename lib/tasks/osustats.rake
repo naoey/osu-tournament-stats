@@ -86,6 +86,14 @@ def parse_match_games(games, match)
     game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
   end
 
+  # we need to filter out maps that were replayed for whatever reason
+  # when a map has been played multiple times, always pick the game that was started last for that map ID
+  match_games.each do |g|
+    g["start_time"] = DateTime.parse(g["start_time"])
+  end
+
+  match_games = match_games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| g["start_time"]}}
+
   puts "Parsing #{match_games.length} match games"
 
   match_games.each do |game|
@@ -113,7 +121,7 @@ def parse_match_games(games, match)
       :pass => red_player_score["pass"] == "1",
     })
 
-    puts "Red player score save: #{red_score.save}"
+    puts "Red player score save: #{red_score.save!}"
 
     blue_score = MatchScore.create({
       :match_id => match.id,
@@ -132,7 +140,7 @@ def parse_match_games(games, match)
       :pass => blue_player_score["pass"] == "1",
     })
 
-    puts "Blue player score save: #{blue_score.save}"
+    puts "Blue player score save: #{blue_score.save!}"
   end
 
   # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
