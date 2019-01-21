@@ -175,7 +175,7 @@ def match_winner?(match_games, player_blue_id, player_red_id)
 end
 
 def parse_match(match, raw, round_name)
-  players = match["match"]["name"].split(/OIWT[\s(:\s)]/)[1].split(/\svs.?\s/)
+  players = match["match"]["name"].split(/OIWT[\s:\s]{0,3}/)[1].split(/\svs.?\s/)
 
   @player_blue = load_player players[0].tr(" ()", "")
   @player_red = load_player players[1].tr(" ()", "")
