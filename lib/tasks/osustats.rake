@@ -6,9 +6,6 @@ require 'pp'
 
 @typo_list = YAML.load_file(Rails.root.join('config', 'player_name_typo_list.yml'))
 
-puts "Loaded typo list"
-pp @typo_list
-
 def load_player(username)
   puts "Fetching details for user #{username} from API"
 
@@ -19,10 +16,10 @@ def load_player(username)
     @correct_username = username
   end
 
-  player = Player.find_by_name(@correct_username)
+  player = Player.where('LOWER(name) = ?', @correct_username.downcase)
 
-  if player != nil
-    return player
+  if player.length != 0
+    return player[0]
   end
 
   http = Net::HTTP.new("osu.ppy.sh", 443)
