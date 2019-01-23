@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
+import _ from 'lodash';
 
 export interface MatchListPlayer {
   id: number;
@@ -33,7 +34,7 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
       value: 'qualifiers',
     }, {
       text: 'Groups',
-      value: 'groups',
+      value: 'group',
     }, {
       text: 'Main Event',
       value: 'main',
@@ -53,7 +54,7 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
   }
 
   static createPlayerNameFilter(players: Array<MatchListPlayer>) {
-    return players.map(p => ({ text: p.name, value: p.name.toLowerCase() }));
+    return _.uniqBy(players.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text);
   }
 
   static onFilterRoundName(value: string, record: MatchListItem): boolean {

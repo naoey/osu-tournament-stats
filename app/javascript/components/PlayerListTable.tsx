@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
+import * as v from 'voca';
+import uuid from 'uuid';
 
 export interface PlayerListItem {
   name: string;
@@ -26,9 +28,39 @@ export interface PlayerListTableProps {
 
 export default class PlayerListTable extends React.Component<PlayerListTableProps> {
   static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
-    if (valueExtractor(a) > valueExtractor(b)) return 1;
-    if (valueExtractor(a) < valueExtractor(b)) return -1;
+    let aValue = valueExtractor(a);
+    let bValue = valueExtractor(b);
+
+    if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+    if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+
+    if (aValue > bValue) return 1;
+    if (aValue < bValue) return -1;
     return 0;
+  }
+
+  static createSortedColumn({
+    key,
+    title = null,
+    render = null}: {
+    key: string,
+    title: string,
+    render: (text: string, item: PlayerListItem) => any,
+  }, index: number): ColumnProps<PlayerListItem> {
+    const column: ColumnProps<PlayerListItem> = {
+      key: uuid.v1(),
+      dataIndex: key,
+      title: title || v.titleCase(key.split('_').join(' ')),
+      sorter: (a, b) => PlayerListTable.sorter(a, b, item => item[key]),
+      defaultSortOrder: 'ascend',
+      sortDirections: ['ascend', 'descend'],
+    };
+
+    if (render !== null) column.render = render;
+
+    if (index === 0) column.fixed = 'left';
+
+    return column;
   }
 
   render() {
@@ -36,114 +68,55 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     const columns: ColumnProps<PlayerListItem>[]  = [
       {
-        dataIndex: 'name',
-        title: 'Name',
+        key: 'name',
         render: (text, record) => <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>{text} <i className="fas fa-external-link-alt" /></a>,
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.name),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'matches_played',
-        title: 'Matches played',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.matches_played),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'matches_played',
       }, {
         key: 'matches_won',
-        dataIndex: 'matches_won',
-        title: 'Matches won',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.matches_won),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        key: 'matches_won_percent',
-        dataIndex: 'matches_won',
+        key: 'matches_won',
         title: 'Match win %',
         render: (text, record) => <span>{Math.round(record.matches_won / record.matches_played * 100 * 100) / 100}%</span>,
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.matches_won / item.matches_played),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'maps_played',
+        key: 'maps_played',
         title: 'Maps played',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.maps_played),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
         key: 'maps_won',
-        dataIndex: 'maps_won',
-        title: 'Maps won',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.maps_won),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
         key: 'maps_won_percent',
-        dataIndex: 'maps_won',
         title: 'Maps win %',
         render: (text, record) => <span>{Math.round(record.maps_won / record.maps_played * 100 * 100) / 100}%</span>,
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.maps_won / item.maps_played),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'best_accuracy',
-        title: 'Best accuracy',
+        key: 'best_accuracy',
         render: (text, record) => <span>{record.best_accuracy}%</span>,
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.best_accuracy),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'average_accuracy',
-        title: 'Average accuracy',
+        key: 'average_accuracy',
         render: (text, record) => <span>{record.average_accuracy}%</span>,
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_accuracy),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'perfect_count',
+        key: 'perfect_count',
         title: 'Perfect maps',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.perfect_count),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
       }, {
-        dataIndex: 'total_misses',
-        title: 'Total misses',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.total_misses),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'total_misses',
       }, {
-        dataIndex: 'average_misses',
-        title: 'Average misses',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_misses),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'average_misses',
       }, {
-        dataIndex: 'total_score',
-        title: 'Total score',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.total_score),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'total_score',
       }, {
-        dataIndex: 'average_score',
-        title: 'Average score',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.average_score),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'average_score',
       }, {
-        dataIndex: 'maps_failed',
-        title: 'Maps failed',
-        sorter: (a, b, sortOrder) => PlayerListTable.sorter(a, b, item => item.maps_failed),
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend'],
+        key: 'maps_failed',
       }
     ];
 
     return (
       <Table
         dataSource={data}
-        columns={columns}
+        columns={columns.map(PlayerListTable.createSortedColumn)}
         rowKey={record => record.online_id.toString()}
         sortDirections={['ascend', 'descend']}
         pagination={false}
+        scroll={{ x: 1500 }}
       />
     );
   }
