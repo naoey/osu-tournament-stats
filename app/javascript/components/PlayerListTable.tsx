@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import * as v from 'voca';
 import uuid from 'uuid';
+import _ from 'lodash';
 
 export interface PlayerListItem {
   name: string;
@@ -39,14 +40,16 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     return 0;
   }
 
-  static createSortedColumn({
+  createSortedColumn = ({
     key,
     title = null,
     render = null}: {
     key: string,
     title: string,
     render: (text: string, item: PlayerListItem) => any,
-  }, index: number): ColumnProps<PlayerListItem> {
+  }, index: number): ColumnProps<PlayerListItem> => {
+    const { data } = this.props;
+
     const column: ColumnProps<PlayerListItem> = {
       key: uuid.v1(),
       dataIndex: key,
@@ -58,7 +61,11 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     if (render !== null) column.render = render;
 
-    if (index === 0) column.fixed = 'left';
+    if (index === 0) {
+      column.fixed = 'left';
+      column.filters = _.uniqBy(data.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text);
+      column.onFilter = (value, record) => record.name.toLowerCase().indexOf(value) > -1;
+    }
 
     return column;
   }
@@ -112,7 +119,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     return (
       <Table
         dataSource={data}
-        columns={columns.map(PlayerListTable.createSortedColumn)}
+        columns={columns.map(this.createSortedColumn)}
         rowKey={record => record.online_id.toString()}
         sortDirections={['ascend', 'descend']}
         pagination={false}
