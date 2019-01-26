@@ -63,7 +63,10 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     if (index === 0) {
       column.fixed = 'left';
-      column.filters = _.uniqBy(data.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text);
+      column.filters = _.sortBy(
+        _.uniqBy(data.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text),
+        p => p.value,
+      );
       column.onFilter = (value, record) => record.name.toLowerCase().indexOf(value) > -1;
     }
 

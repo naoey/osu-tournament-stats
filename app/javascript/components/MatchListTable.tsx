@@ -54,7 +54,10 @@ export default class MatchListTable extends React.Component<MatchListTableProps,
   }
 
   static createPlayerNameFilter(players: Array<MatchListPlayer>) {
-    return _.uniqBy(players.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text);
+    return _.sortBy(
+      _.uniqBy(players.map(p => ({ text: p.name, value: p.name.toLowerCase() })), i => i.text),
+      p => p.value,
+    );
   }
 
   static onFilterRoundName(value: string, record: MatchListItem): boolean {

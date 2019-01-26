@@ -79,17 +79,13 @@ def load_beatmap(beatmap_id)
 end
 
 def parse_match_games(games, match)
-  match_games = games.select do |game|
-    game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
-  end
-
   # we need to filter out maps that were replayed for whatever reason
   # when a map has been played multiple times, always pick the game that was started last for that map ID
-  match_games = match_games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
+  match_games = games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
 
-  puts "Parsing #{match_games.length} match games"
+  puts "Parsing #{games.length} match games"
 
-  match_games.each do |game|
+  games.each do |game|
     puts "Parsing game..."
 
     blue_player_score = game["scores"].find { |score| score["slot"] == "0" }
@@ -172,7 +168,7 @@ def match_winner?(match_games, player_blue_id, player_red_id)
 end
 
 def parse_match(match, raw, round_name)
-  players = match["match"]["name"].split(/OIWT[\s:\s]{0,3}/)[1].split(/\svs.?\s/)
+  players = match["match"]["name"].split(/OIWT[\s:]{0,3}/)[1].split(/\svs.?\s/)
 
   @player_blue = load_player players[0].tr(" ()", "")
   @player_red = load_player players[1].tr(" ()", "")
@@ -187,6 +183,10 @@ def parse_match(match, raw, round_name)
   })
 
   db_match.save
+
+  match["games"] = match["games"].select do |game|
+    game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
+  end
 
   parse_match_games match["games"], db_match
 
