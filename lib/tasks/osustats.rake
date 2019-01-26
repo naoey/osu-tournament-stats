@@ -79,10 +79,6 @@ def load_beatmap(beatmap_id)
 end
 
 def parse_match_games(games, match)
-  # we need to filter out maps that were replayed for whatever reason
-  # when a map has been played multiple times, always pick the game that was started last for that map ID
-  match_games = games.group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
-
   puts "Parsing #{games.length} match games"
 
   games.each do |game|
@@ -134,8 +130,8 @@ def parse_match_games(games, match)
 
   # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
   matches_in_db = MatchScore.where(:match_id => match.id).length
-  if matches_in_db != match_games.length * 2
-    puts "Match parse failed. Found #{matches_in_db} scores parsed, expected #{match_games.length * 2}"
+  if matches_in_db != games.length * 2
+    puts "Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2}"
     raise Exceptions::MatchParseFailedError
   end
 end
@@ -187,6 +183,10 @@ def parse_match(match, raw, round_name)
   match["games"] = match["games"].select do |game|
     game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
   end
+
+  # we need to filter out maps that were replayed for whatever reason
+  # when a map has been played multiple times, always pick the game that was started last for that map ID
+  match["games"] = match["games"].group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
 
   parse_match_games match["games"], db_match
 
