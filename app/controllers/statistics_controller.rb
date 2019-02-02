@@ -41,7 +41,8 @@ class StatisticsController < ApplicationController
       :total_misses => player_scores.sum(:count_miss),
       :average_score => player_scores.average(:score).round(2),
       :total_score => player_scores.sum(:score),
-      :maps_failed => player_scores.where(:player_id => player.id, :pass => false).count
+      :maps_failed => player_scores.where(:player_id => player.id, :pass => false).count,
+      :full_combos => player_scores.count_by_sql("select count (*) from (select match_scores.player_id, match_scores.count_miss, match_scores.max_combo as score_combo, beatmaps.max_combo as max_combo from match_scores left join beatmaps where match_scores.beatmap_id = beatmaps.online_id and match_scores.player_id = #{player.id}) where count_miss = 0 and (max_combo - score_combo) <= (0.01 * max_combo)")
     }
   end
 

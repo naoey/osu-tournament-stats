@@ -13,14 +13,15 @@ export interface PlayerListItem {
   maps_played: number;
   maps_won: number;
   total_score: number;
-  average_score: number,
+  average_score: number;
   accuracy: number;
   perfect_count: number;
   average_misses: number;
   total_misses: number;
   best_accuracy: number;
   average_accuracy:number;
-  maps_failed: number,
+  maps_failed: number;
+  full_combos: number,
 }
 
 export interface PlayerListTableProps {
@@ -85,7 +86,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         key: 'matches_won',
       }, {
-        key: 'matches_won',
+        key: 'matches_won_percent',
         title: 'Match win %',
         render: (text, record) => <span>{Math.round(record.matches_won / record.matches_played * 100 * 100) / 100}%</span>,
       }, {
@@ -116,6 +117,8 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
         key: 'average_score',
       }, {
         key: 'maps_failed',
+      }, {
+        key: 'full_combos',
       }
     ];
 
