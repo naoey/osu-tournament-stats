@@ -69,18 +69,29 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
         p => p.value,
       );
       column.onFilter = (value, record) => record.name.toLowerCase().indexOf(value) > -1;
+      column.width = 175;
     }
 
     return column;
-  }
+  };
 
   render() {
     const { data } = this.props;
 
+    const augmentedData = data.map(d => ({
+      ...d,
+      maps_won_percent: Math.round(d.maps_won / d.maps_played * 100 * 100) / 100,
+      matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
+    }));
+
     const columns: ColumnProps<PlayerListItem>[]  = [
       {
         key: 'name',
-        render: (text, record) => <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>{text} <i className="fas fa-external-link-alt" /></a>,
+        render: (text, record) => (
+          <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>
+            {text} <i className="fas fa-external-link-alt" />
+          </a>
+        ),
       }, {
         key: 'matches_played',
       }, {
@@ -88,7 +99,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         key: 'matches_won_percent',
         title: 'Match win %',
-        render: (text, record) => <span>{Math.round(record.matches_won / record.matches_played * 100 * 100) / 100}%</span>,
+        render: text => <span>{text}%</span>,
       }, {
         key: 'maps_played',
         title: 'Maps played',
@@ -97,7 +108,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       }, {
         key: 'maps_won_percent',
         title: 'Maps win %',
-        render: (text, record) => <span>{Math.round(record.maps_won / record.maps_played * 100 * 100) / 100}%</span>,
+        render: text => <span>{text}%</span>,
       }, {
         key: 'best_accuracy',
         render: (text, record) => <span>{record.best_accuracy}%</span>,
@@ -124,12 +135,12 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     return (
       <Table
-        dataSource={data}
+        dataSource={augmentedData}
         columns={columns.map(this.createSortedColumn)}
         rowKey={record => record.online_id.toString()}
         sortDirections={['ascend', 'descend']}
         pagination={false}
-        scroll={{ x: 1500 }}
+        scroll={{ x: '150%' }}
       />
     );
   }
