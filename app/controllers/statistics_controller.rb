@@ -26,7 +26,7 @@ class StatisticsController < ApplicationController
   private
   def transform_player(player)
     player_scores = MatchScore.where(:player => player)
-    player_accuracies = player_scores.map(&method(:accuracy?))
+    player_accuracies = player_scores.map(&method(:score_accuracy))
     {
       :name => player.name,
       :online_id => player.id,
@@ -58,19 +58,7 @@ class StatisticsController < ApplicationController
     }
   end
 
-  def maps_won?(player)
-    match_ids = MatchScore.where(:player => player).map(&:match_id)
-
-    MatchScore
-      .where(:match_id => match_ids)
-      .all
-      .to_a
-      .group_by(&:beatmap_id)
-      .values
-      .reduce(0) {|sum,m| pp m; m.max_by(&:score).player_id == player.id ? sum + 1 : 0}
-  end
-
-  def accuracy?(score)
+  def score_accuracy(score)
     # https://osu.ppy.sh/help/wiki/Accuracy
     ((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300)) / (300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300))
       .to_f
