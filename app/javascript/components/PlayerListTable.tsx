@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import * as v from 'voca';
-import uuid from 'uuid';
 import _ from 'lodash';
 
 export interface PlayerListItem {
@@ -44,7 +43,8 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
   createSortedColumn = ({
     key,
     title = null,
-    render = null}: {
+    render = null
+  }: {
     key: string,
     title: string,
     render: (text: string, item: PlayerListItem) => any,
@@ -52,7 +52,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     const { data } = this.props;
 
     const column: ColumnProps<PlayerListItem> = {
-      key: uuid.v1(),
+      key,
       dataIndex: key,
       title: title || v.titleCase(key.split('_').join(' ')),
       sorter: (a, b) => PlayerListTable.sorter(a, b, item => item[key]),
