@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import * as v from 'voca';
 import _ from 'lodash';
+import { ReactNode } from "react";
 
 export interface PlayerListItem {
   name: string;
@@ -27,6 +28,13 @@ export interface PlayerListTableProps {
   data: Array<PlayerListItem>;
 }
 
+export interface PlayerListTableColumnDefinition {
+  key: string;
+  title?: string;
+  render?: (text: string, record: PlayerListItem) => ReactNode;
+  titleTooltip?: string,
+}
+
 export default class PlayerListTable extends React.Component<PlayerListTableProps> {
   static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
     let aValue = valueExtractor(a);
@@ -43,18 +51,22 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
   createSortedColumn = ({
     key,
     title = null,
-    render = null
+    render = null,
+    titleTooltip = null,
   }: {
     key: string,
     title: string,
     render: (text: string, item: PlayerListItem) => any,
+    titleTooltip: string,
   }, index: number): ColumnProps<PlayerListItem> => {
     const { data } = this.props;
 
     const column: ColumnProps<PlayerListItem> = {
       key,
       dataIndex: key,
-      title: title || v.titleCase(key.split('_').join(' ')),
+      title: titleTooltip ?
+        () => <Tooltip title={titleTooltip}>{title || v.titleCase(key.split('_').join(' '))}</Tooltip>
+        : title || v.titleCase(key.split('_').join(' ')),
       sorter: (a, b) => PlayerListTable.sorter(a, b, item => item[key]),
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend'],
@@ -84,7 +96,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
     }));
 
-    const columns: ColumnProps<PlayerListItem>[]  = [
+    const columns: PlayerListTableColumnDefinition[]  = [
       {
         key: 'name',
         render: (text, record) => (
@@ -102,7 +114,6 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
         render: text => <span>{text}%</span>,
       }, {
         key: 'maps_played',
-        title: 'Maps played',
       }, {
         key: 'maps_won',
       }, {
@@ -130,6 +141,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
         key: 'maps_failed',
       }, {
         key: 'full_combos',
+        titleTooltip: 'Approximated FC. Doesn\'t count maps that have been deleted from osu servers.',
       }
     ];
 
