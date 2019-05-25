@@ -4,16 +4,29 @@ require 'json'
 require 'date'
 
 module MatchServices
+
+  ##
+  # Service class to load data from the osu! API.
   class OsuApiParser
-    def add_match(match_id, round_name)
-      Rails.logger.info "Fetch details for match id #{match_id} from osu! API"
+    ##
+    # Loads a new match and adds it to the database, associating it with a given tournament + round or a single match
+    #
+    # Parameters:
+    # +osu_match_id+:: The ID of the multiplayer match on osu! servers
+    # +associated_match_id+:: The ID of the associated match in tournament manager's database to which this match's details are to be added
+    # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
+    def load_match(osu_match_id:, round_name: nil)
+      Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API"
+      Rails.logger.debug "Using osu! API key #{ENV["OSU_API_KEY"]}"
+
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Match #{match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
 
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
 
-      raise Exceptions::MatchParseFailedError.new("Match #{match_id} already exists in database") unless Match.find_by_online_id(match_id) == nil
+      resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{osu_match_id}")
 
-      resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{match_id}")
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Failed to load match #{match_id} from osu! API") if !resp.body
 
       ActiveRecord::Base.transaction do
         begin
@@ -26,7 +39,6 @@ module MatchServices
       end
     end
 
-    private
     def load_player(username)
       Rails.logger.debug("Fetching player information for player #{username}")
 
@@ -44,7 +56,7 @@ module MatchServices
       json = JSON.parse(resp.body)
 
       if json.length == 0
-        raise Exceptions::PlayerNotFoundError
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Player #{username} not found on osu! servers")
       end
 
       api_player = json[0]
@@ -141,8 +153,7 @@ module MatchServices
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
       matches_in_db = MatchScore.where(:match_id => match.id).length
       if matches_in_db != games.length * 2
-        Rails.logger.debug "Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2}"
-        raise Exceptions::MatchParseFailedError
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2}")
       end
     end
 
@@ -158,8 +169,7 @@ module MatchServices
         elsif map_winner == player_red_id
           red_wins += 1
         else
-          puts "Impossible situation where winner of map is not red or blue player"
-          raise Exceptions::MatchParseFailedError
+          raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where winner of map is not red or blue player")
         end
       end
 
@@ -169,8 +179,7 @@ module MatchServices
         return player_red_id
       end
 
-      Rails.logger.error "Impossible situation where red and blue have equal wins in a match"
-      raise Exceptions::MatchParseFailedError
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where red and blue have equal wins in a match")
     end
 
     def parse_match(match, raw, round_name)
