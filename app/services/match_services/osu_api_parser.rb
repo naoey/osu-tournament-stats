@@ -16,10 +16,9 @@ module MatchServices
     # +associated_match_id+:: The ID of the associated match in tournament manager's database to which this match's details are to be added
     # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
     def load_match(osu_match_id:, round_name: nil)
-      Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API"
-      Rails.logger.debug "Using osu! API key #{ENV["OSU_API_KEY"]}"
+      Rails.logger.tagged("OsuApiParser") { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
-      raise OsuApiParserExceptions::MatchParseFailedError.new("Match #{match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
+      raise OsuApiParserExceptions::MatchExistsError.new("Match #{osu_match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
 
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
@@ -40,9 +39,11 @@ module MatchServices
     end
 
     def load_player(username)
-      Rails.logger.debug("Fetching player information for player #{username}")
+      Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Fetching player information for player #{username}") }
 
-      player = Player.where('LOWER(name) = ?', @correct_username.downcase)
+      player = Player
+        .where('LOWER(name) = ?', username.downcase)
+        .or(Player.where(:id => username))
 
       if player.length != 0
         return player[0]
@@ -51,7 +52,7 @@ module MatchServices
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
 
-      resp = http.get("/api/get_user?k=#{ENV["OSU_API_KEY"]}&u=#{@correct_username}")
+      resp = http.get("/api/get_user?k=#{ENV["OSU_API_KEY"]}&u=#{username}")
 
       json = JSON.parse(resp.body)
 
@@ -81,7 +82,7 @@ module MatchServices
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
 
-      Rails.logger.debug "Fetching details for beatmap #{beatmap_id} from API"
+      Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Fetching details for beatmap #{beatmap_id} from API" }
 
       resp = http.get("/api/get_beatmaps?k=#{ENV["OSU_API_KEY"]}&b=#{beatmap_id}")
 
@@ -104,7 +105,7 @@ module MatchServices
       puts "Parsing #{games.length} match games"
 
       games.each do |game|
-        Rails.logger.debug "Parsing game..."
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Parsing game..." }
 
         blue_player_score = game["scores"].find { |score| score["slot"] == "0" }
         red_player_score = game["scores"].find { |score| score["slot"] == "1" }
@@ -128,7 +129,7 @@ module MatchServices
           :pass => red_player_score["pass"] == "1",
         })
 
-        Rails.logger.debug "Red player score save: #{red_score.save!}"
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score save: #{red_score.save!}" }
 
         blue_score = MatchScore.create({
           :match_id => match.id,
@@ -147,7 +148,7 @@ module MatchServices
           :pass => blue_player_score["pass"] == "1",
         })
 
-        Rails.logger.debug "Blue player score save: #{blue_score.save!}"
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score save: #{blue_score.save!}" }
       end
 
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
