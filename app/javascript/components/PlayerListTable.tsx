@@ -36,14 +36,13 @@ export interface PlayerListTableColumnDefinition {
   key: string;
   title?: string;
   render?: (text: string, record: PlayerListItem) => React.ReactNode;
-  titleTooltip?: string,
+  titleTooltip?: string;
 }
 
 export default class PlayerListTable extends React.Component<PlayerListTableProps, PlayerListTableState> {
   private _roundNameSearchDebounce: NodeJS.Timeout = null;
-  private _roundNameInput: any = null;
 
-  static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
+  private static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
     let aValue = valueExtractor(a);
     let bValue = valueExtractor(b);
 
@@ -65,7 +64,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     }
   }
 
-  createSortedColumn = ({
+  private createSortedColumn = ({
     key,
     title = null,
     render = null,
@@ -104,7 +103,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     return column;
   }
 
-  onRoundNameFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private onRoundNameFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (this._roundNameSearchDebounce) {
       clearTimeout(this._roundNameSearchDebounce);
       this._roundNameSearchDebounce = null;
@@ -183,7 +182,6 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
       <div>
         <div>
           <Input.Search
-            ref={i => this._roundNameInput = i}
             onChange={this.onRoundNameFilterChange}
             value={roundNameQuery}
             placeholder="Filter stats by round name..."
