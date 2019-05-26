@@ -6,15 +6,18 @@ require 'date'
 module MatchServices
 
   ##
-  # Service class to load data from the osu! API.
+  # Service class to load game data with fallback to the osu! API.
   class OsuApiParser
     ##
-    # Loads a new match and adds it to the database, associating it with a given tournament + round or a single match
+    # Loads a new match and adds it to the database, associating it with a given tournament + round or a single match. If any dependent
+    # data such as players/beatmaps are missing, they are loaded from the API as well.
     #
     # Parameters:
     # +osu_match_id+:: The ID of the multiplayer match on osu! servers
     # +associated_match_id+:: The ID of the associated match in tournament manager's database to which this match's details are to be added
     # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
+    #
+    # @return [Match]
     def load_match(osu_match_id:, round_name: nil)
       Rails.logger.tagged("OsuApiParser") { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
@@ -29,7 +32,38 @@ module MatchServices
 
       ActiveRecord::Base.transaction do
         begin
-          parse_match(JSON.parse(resp.body), resp.body, round_name)
+          # TODO: eventually this will have to identify team names and not player names
+          players = match["match"]["name"].split(/OIWT[\s:]{0,3}/)[1].split(/\svs.?\s/)
+
+          @player_blue = get_or_load_player players[0].tr(" ()", "")
+          @player_red = get_or_load_player players[1].tr(" ()", "")
+
+          db_match = Match.create({
+            :online_id => match["match"]["match_id"],
+            :round_name => round_name,
+            :match_timestamp => DateTime.parse(match["match"]["start_time"]),
+            :api_json => raw,
+            :player_blue => @player_blue,
+            :player_red => @player_red
+          })
+
+          db_match.save
+
+          # TODO: handle all game mode combinations
+          match["games"] = match["games"].select do |game|
+            game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
+          end
+
+          # we need to filter out maps that were replayed for whatever reason
+          # when a map has been played multiple times, always pick the game that was started last for that map ID
+          match["games"] = match["games"].group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
+
+          parse_match_games match["games"], db_match
+
+          db_match.winner = match_winner?(match["games"], db_match.player_red.id, db_match.player_blue.id)
+          db_match.save
+
+          return db_match
         rescue StandardError => e
           puts "Failed to parse match", e
           puts e.backtrace.join("\n")
@@ -38,7 +72,14 @@ module MatchServices
       end
     end
 
-    def load_player(username)
+    ##
+    # Retrieves a +Player+ from the database if it exists, otherwise loads the player from the osu! API.
+    #
+    # Parameters:
+    # +user_name_or_id+:: The user's name or osu! user ID
+    #
+    # @return [Player]
+    def get_or_load_player(username)
       Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Fetching player information for player #{username}") }
 
       player = Player
@@ -57,7 +98,7 @@ module MatchServices
       json = JSON.parse(resp.body)
 
       if json.length == 0
-        raise OsuApiParserExceptions::MatchParseFailedError.new("Player #{username} not found on osu! servers")
+        raise OsuApiParserExceptions::PlayerLoadFailedError.new("Player #{username} not found on osu! server")
       end
 
       api_player = json[0]
@@ -72,7 +113,14 @@ module MatchServices
       return player
     end
 
-    def load_beatmap(beatmap_id)
+    ##
+    # Retrieves a +Beatmap+ from the database if it exists, otherwise loads teh beatmap from the osu! API.
+    #
+    # Parameters:
+    # +beatmap_id+:: The ID of the beatmap to load
+    #
+    # @return [Beatmap]
+    def get_or_load_beatmap(beatmap_id)
       beatmap = Beatmap.find_by_online_id(beatmap_id)
 
       if beatmap != nil
@@ -86,7 +134,11 @@ module MatchServices
 
       resp = http.get("/api/get_beatmaps?k=#{ENV["OSU_API_KEY"]}&b=#{beatmap_id}")
 
-      api_beatmap = JSON.parse(resp.body)[0]
+      json = JSON.parse(resp.body)
+
+      if json.length == 0
+        raise OsuApiParserExceptions::BeatmapLoadFailedError.new("Beatmap with id #{beatmap_id} not found on osu! server")
+      end
 
       beatmap = Beatmap.create({
         :name => "#{api_beatmap["artist"]} - #{api_beatmap["title"]}",
@@ -96,11 +148,12 @@ module MatchServices
         :max_combo => api_beatmap["max_combo"].to_i
       })
 
-      beatmap.save
+      beatmap.save!
 
       return beatmap
     end
 
+    private
     def parse_match_games(games, match)
       puts "Parsing #{games.length} match games"
 
@@ -110,7 +163,7 @@ module MatchServices
         blue_player_score = game["scores"].find { |score| score["slot"] == "0" }
         red_player_score = game["scores"].find { |score| score["slot"] == "1" }
 
-        load_beatmap game["beatmap_id"].to_i
+        get_or_load_beatmap game["beatmap_id"].to_i
 
         red_score = MatchScore.create({
           :match_id => match.id,
@@ -181,37 +234,6 @@ module MatchServices
       end
 
       raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where red and blue have equal wins in a match")
-    end
-
-    def parse_match(match, raw, round_name)
-      players = match["match"]["name"].split(/OIWT[\s:]{0,3}/)[1].split(/\svs.?\s/)
-
-      @player_blue = load_player players[0].tr(" ()", "")
-      @player_red = load_player players[1].tr(" ()", "")
-
-      db_match = Match.create({
-        :online_id => match["match"]["match_id"],
-        :round_name => round_name,
-        :match_timestamp => DateTime.parse(match["match"]["start_time"]),
-        :api_json => raw,
-        :player_blue => @player_blue,
-        :player_red => @player_red
-      })
-
-      db_match.save
-
-      match["games"] = match["games"].select do |game|
-        game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
-      end
-
-      # we need to filter out maps that were replayed for whatever reason
-      # when a map has been played multiple times, always pick the game that was started last for that map ID
-      match["games"] = match["games"].group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
-
-      parse_match_games match["games"], db_match
-
-      db_match.winner = match_winner?(match["games"], db_match.player_red.id, db_match.player_blue.id)
-      db_match.save
     end
   end
 end

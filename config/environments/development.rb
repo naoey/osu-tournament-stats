@@ -32,9 +32,13 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
 
-  config.logger = Logger.new(STDOUT)
-  config.log_level = :debug
-  config.logger = ActiveSupport::TaggedLogging.new(config.logger)
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+  # config.logger = Logger.new(STDOUT)
+  # config.log_level = :debug
+  # config.logger = ActiveSupport::TaggedLogging.new(config.logger)
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
