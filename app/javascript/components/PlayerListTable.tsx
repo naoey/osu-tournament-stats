@@ -40,7 +40,7 @@ export interface PlayerListTableColumnDefinition {
 }
 
 export default class PlayerListTable extends React.Component<PlayerListTableProps, PlayerListTableState> {
-  private _roundNameSearchDebounce: NodeJS.Timeout = null;
+  private _roundNameSearchDebounce: number = null;
 
   private static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
     let aValue = valueExtractor(a);
@@ -113,7 +113,7 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     this.setState({ roundNameQuery: query });
 
-    this._roundNameSearchDebounce = setTimeout(() => {
+    this._roundNameSearchDebounce = window.setTimeout(() => {
       // there is probably a much better way to do this but meh this will become ajax soon(TM)
       let search = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
 
