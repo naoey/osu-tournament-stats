@@ -20,23 +20,27 @@ class StatisticsController < ApplicationController
   end
 
   def show_all_players
-    logger.debug "Loading match data with round query filter #{params[:round_name]}"
+    @data = []
 
-    @data = Player.all.map {|player|
+    Player.all.each {|player|
       player_scores = MatchScore
         .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
         .select("match_scores.*, matches.round_name")
         .where(:player => player)
         .where("matches.round_name like ?", "%#{params[:round_name]}%")
 
+      next if player_scores.count(:all) == 0
+
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
-      {
+      @data.push({
         :name => player.name,
         :online_id => player.id,
         :matches_played => Match
-          .where("round_name like ?", "%#{params[:round_name]}%")
-          .where(:player_red => player).or(Match.where(:player_blue => player)).count,
+          .joins("JOIN matches AS player_matches ON matches.id = player_matches.id")
+          .where("matches.round_name like ?", "%#{params[:round_name]}%")
+          .where("player_matches.player_red_id = ? OR player_matches.player_blue_id = ?", player.id, player.id)
+          .count,
         :matches_won => Match
           .where("round_name like ?", "%#{params[:round_name]}%")
           .where(:winner => player.id).count,
@@ -65,8 +69,8 @@ class StatisticsController < ApplicationController
           .select("match_scores.beatmap_id, match_scores.player_id, match_scores.count_miss, match_scores.max_combo, beatmaps.max_combo")
           .where("count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)")
           .count(:all),
-      } if player_scores.count(:all) != 0
-      }.compact
+      })
+    }
   end
 
   private

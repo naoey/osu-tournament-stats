@@ -115,7 +115,11 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
 
     this._roundNameSearchDebounce = setTimeout(() => {
       // there is probably a much better way to do this but meh this will become ajax soon(TM)
-      window.location.href = `${window.location.protocol}//${window.location.host}${window.location.pathname}?round_name=${query}`;
+      let search = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+
+      if (!!query) search += `?round_name=${encodeURIComponent(query)}`;
+
+      window.location.href = search;
     }, 750);
   }
 
