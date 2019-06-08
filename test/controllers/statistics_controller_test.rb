@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class StatisticsControllerTest < ActionDispatch::IntegrationTest
-  test "should get show" do
-    get statistics_show_url
+  test "should get show matches" do
+    get statistics_matches_path
     assert_response :success
   end
 
-  test "should get refresh" do
-    get statistics_refresh_url
+  test "should get show all players" do
+    get statistics_players_path
     assert_response :success
   end
 
