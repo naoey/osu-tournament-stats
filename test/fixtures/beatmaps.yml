@@ -1,13 +1,163 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  name: MyString
-  online_id: 1
-  star_difficulty: 1.5
-  difficulty_name: MyString
-
-two:
-  name: MyString
-  online_id: 1
-  star_difficulty: 1.5
-  difficulty_name: MyString
+---
+beatmap_1:
+  id: 1
+  name: sasakure.UK x DECO*27 - 39
+  online_id: 1428999
+  star_difficulty: 4.212230682373047
+  difficulty_name: Chekito's Insane
+  max_combo: 1000
+  created_at: '2019-01-14 15:06:25.063171'
+  updated_at: '2019-01-14 15:06:25.063171'
+beatmap_2:
+  id: 2
+  name: DJ Ozawa - Tokyo (Innovaderz Remix)
+  online_id: 766602
+  star_difficulty: 4.1246490478515625
+  difficulty_name: Aka's Insane
+  max_combo: 723
+  created_at: '2019-01-14 15:06:25.682127'
+  updated_at: '2019-01-14 15:06:25.682127'
+beatmap_3:
+  id: 3
+  name: Feint - Time Bomb (feat. Veela & Boyinaband)
+  online_id: 263368
+  star_difficulty: 4.328057289123535
+  difficulty_name: Time
+  max_combo: 762
+  created_at: '2019-01-21 03:53:38.285494'
+  updated_at: '2019-01-21 03:53:38.285494'
+beatmap_4:
+  id: 4
+  name: dark cat - BUBBLE TEA (feat. juu & cinders)
+  online_id: 1618799
+  star_difficulty: 4.787925720214844
+  difficulty_name: Battle's Insane
+  max_combo: 716
+  created_at: '2019-01-21 03:53:46.350665'
+  updated_at: '2019-01-21 03:53:46.350665'
+beatmap_5:
+  id: 5
+  name: P4koo - Crystal Illusion
+  online_id: 1674896
+  star_difficulty: 4.722498416900635
+  difficulty_name: Down's Insane
+  max_combo: 756
+  created_at: '2019-01-21 03:53:47.571002'
+  updated_at: '2019-01-21 03:53:47.571002'
+beatmap_6:
+  id: 6
+  name: Royal Blood - Loose Change
+  online_id: 1262906
+  star_difficulty: 4.514893054962158
+  difficulty_name: Rohit's Insane
+  max_combo: 804
+  created_at: '2019-01-21 03:53:48.755552'
+  updated_at: '2019-01-21 03:53:48.755552'
+beatmap_7:
+  id: 7
+  name: Rita - Dream Walker
+  online_id: 703042
+  star_difficulty: 4.756885528564453
+  difficulty_name: Quilt's Insane
+  max_combo: 942
+  created_at: '2019-01-21 03:53:49.943403'
+  updated_at: '2019-01-21 03:53:49.943403'
+beatmap_8:
+  id: 8
+  name: Demetori - Seijouki no Pierrot ~ The MadPiero Laughs
+  online_id: 1501711
+  star_difficulty: 4.898942470550537
+  difficulty_name: Lunatic
+  max_combo: 1878
+  created_at: '2019-01-21 03:53:50.370441'
+  updated_at: '2019-01-21 03:53:50.370441'
+beatmap_9:
+  id: 9
+  name: 3L - Three Magic
+  online_id: 178643
+  star_difficulty: 3.625290632247925
+  difficulty_name: Collab
+  max_combo: 852
+  created_at: '2019-01-21 03:53:56.066855'
+  updated_at: '2019-01-21 03:53:56.066855'
+beatmap_10:
+  id: 10
+  name: Getty vs. DJ DiA - Grayed Out -Antifront-
+  online_id: 1260122
+  star_difficulty: 4.08039665222168
+  difficulty_name: Jager's Light Insane
+  max_combo: 608
+  created_at: '2019-01-21 03:54:08.355401'
+  updated_at: '2019-01-21 03:54:08.355401'
+beatmap_11:
+  id: 11
+  name: a_hisa - Cheshire,s dance
+  online_id: 383536
+  star_difficulty: 6.149588108062744
+  difficulty_name: Another
+  max_combo: 1674
+  created_at: '2019-05-25 17:41:09.372874'
+  updated_at: '2019-05-25 17:41:09.372874'
+beatmap_12:
+  id: 12
+  name: seleP - Scarlet Rose
+  online_id: 1120184
+  star_difficulty: 5.864654541015625
+  difficulty_name: X
+  max_combo: 1767
+  created_at: '2019-05-25 17:41:09.831882'
+  updated_at: '2019-05-25 17:41:09.831882'
+beatmap_13:
+  id: 13
+  name: senya - Akatsuki no Suiheisen ni
+  online_id: 559446
+  star_difficulty: 5.606509685516357
+  difficulty_name: Catharsis
+  max_combo: 1121
+  created_at: '2019-05-25 17:41:10.219983'
+  updated_at: '2019-05-25 17:41:10.219983'
+beatmap_14:
+  id: 14
+  name: senya - Hitomi ni Kakusareta Omoi
+  online_id: 872657
+  star_difficulty: 4.265451431274414
+  difficulty_name: N a s y a's Lunatic
+  max_combo: 648
+  created_at: '2019-05-25 17:41:10.603958'
+  updated_at: '2019-05-25 17:41:10.603958'
+beatmap_15:
+  id: 15
+  name: Hitsuji to Ojisan - XENO
+  online_id: 660887
+  star_difficulty: 5.487786769866943
+  difficulty_name: Expert
+  max_combo: 818
+  created_at: '2019-05-25 17:41:11.244643'
+  updated_at: '2019-05-25 17:41:11.244643'
+beatmap_16:
+  id: 16
+  name: Zac Efron - Scream
+  online_id: 713932
+  star_difficulty: 4.376025676727295
+  difficulty_name: ahh
+  max_combo: 551
+  created_at: '2019-05-25 17:41:11.647775'
+  updated_at: '2019-05-25 17:41:11.647775'
+beatmap_17:
+  id: 17
+  name: Igorrr - Pavor Nocturnus
+  online_id: 173391
+  star_difficulty: 5.438311576843262
+  difficulty_name: Insane
+  max_combo: 2022
+  created_at: '2019-05-25 17:41:12.037556'
+  updated_at: '2019-05-25 17:41:12.037556'
+beatmap_18:
+  id: 18
+  name: Camellia - kodama
+  online_id: 1040424
+  star_difficulty: 6.087467193603516
+  difficulty_name: Yamabiko
+  max_combo: 1552
+  created_at: '2019-05-25 17:41:12.430641'
+  updated_at: '2019-05-25 17:41:12.430641'

@@ -165,41 +165,11 @@ module MatchServices
 
         get_or_load_beatmap game["beatmap_id"].to_i
 
-        red_score = MatchScore.create({
-          :match_id => match.id,
-          :beatmap_id => game["beatmap_id"].to_i,
-          :online_game_id => game["game_id"].to_i,
-          :player_id => red_player_score["user_id"].to_i,
-          :score => red_player_score["score"].to_i,
-          :max_combo => red_player_score["maxcombo"].to_i,
-          :count_50 => red_player_score["count50"].to_i,
-          :count_100 => red_player_score["count100"].to_i,
-          :count_300 => red_player_score["count300"].to_i,
-          :count_geki => red_player_score["countgeki"].to_i,
-          :count_katu => red_player_score["count_katu"].to_i,
-          :count_miss => red_player_score["countmiss"].to_i,
-          :perfect => red_player_score["perfect"] == "1",
-          :pass => red_player_score["pass"] == "1",
-        })
+        red_score = MatchScore.create(create_match_score(match_id, game, red_player_score))
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score save: #{red_score.save!}" }
 
-        blue_score = MatchScore.create({
-          :match_id => match.id,
-          :beatmap_id => game["beatmap_id"].to_i,
-          :online_game_id => game["game_id"].to_i,
-          :player_id => blue_player_score["user_id"].to_i,
-          :score => blue_player_score["score"].to_i,
-          :max_combo => blue_player_score["maxcombo"].to_i,
-          :count_50 => blue_player_score["count50"].to_i,
-          :count_100 => blue_player_score["count100"].to_i,
-          :count_300 => blue_player_score["count300"].to_i,
-          :count_geki => blue_player_score["countgeki"].to_i,
-          :count_katu => blue_player_score["count_katu"].to_i,
-          :count_miss => blue_player_score["countmiss"].to_i,
-          :perfect => blue_player_score["perfect"] == "1",
-          :pass => blue_player_score["pass"] == "1",
-        })
+        blue_score = MatchScore.create(create_match_score(match_id, game, blue_player_score))
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score save: #{blue_score.save!}" }
       end
@@ -209,6 +179,25 @@ module MatchServices
       if matches_in_db != games.length * 2
         raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2}")
       end
+    end
+
+    def create_match_score(match_id, game, player_score)
+      {
+        :match_id => match_id,
+        :beatmap_id => game["beatmap_id"].to_i,
+        :online_game_id => game["game_id"].to_i,
+        :player_id => player_score["user_id"].to_i,
+        :score => player_score["score"].to_i,
+        :max_combo => player_score["maxcombo"].to_i,
+        :count_50 => player_score["count50"].to_i,
+        :count_100 => player_score["count100"].to_i,
+        :count_300 => player_score["count300"].to_i,
+        :count_geki => player_score["countgeki"].to_i,
+        :count_katu => player_score["count_katu"].to_i,
+        :count_miss => player_score["countmiss"].to_i,
+        :perfect => player_score["perfect"] == "1",
+        :pass => player_score["pass"] == "1",
+      }
     end
 
     def match_winner?(match_games, player_blue_id, player_red_id)
