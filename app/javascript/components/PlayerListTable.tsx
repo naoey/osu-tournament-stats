@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Table, Tooltip } from 'antd';
+import { Table, Tooltip, Input } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import * as v from 'voca';
-import _ from 'lodash';
-import { ReactNode } from "react";
+import * as _ from 'lodash';
+import * as qs from 'query-string';
 
 export interface PlayerListItem {
   name: string;
@@ -21,22 +21,28 @@ export interface PlayerListItem {
   best_accuracy: number;
   average_accuracy:number;
   maps_failed: number;
-  full_combos: number,
+  full_combos: number;
 }
 
 export interface PlayerListTableProps {
   data: Array<PlayerListItem>;
 }
 
+export interface PlayerListTableState {
+  roundNameQuery: string;
+}
+
 export interface PlayerListTableColumnDefinition {
   key: string;
   title?: string;
-  render?: (text: string, record: PlayerListItem) => ReactNode;
-  titleTooltip?: string,
+  render?: (text: string, record: PlayerListItem) => React.ReactNode;
+  titleTooltip?: string;
 }
 
-export default class PlayerListTable extends React.Component<PlayerListTableProps> {
-  static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
+export default class PlayerListTable extends React.Component<PlayerListTableProps, PlayerListTableState> {
+  private _roundNameSearchDebounce: number = null;
+
+  private static sorter(a:PlayerListItem, b:PlayerListItem, valueExtractor: (PlayerListItem) => number|string): number {
     let aValue = valueExtractor(a);
     let bValue = valueExtractor(b);
 
@@ -48,7 +54,17 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     return 0;
   }
 
-  createSortedColumn = ({
+  constructor(props) {
+    super(props);
+
+    const q: { round_name?: string } = qs.parse(window.location.search);
+
+    this.state = {
+      roundNameQuery: q.round_name || '',
+    }
+  }
+
+  private createSortedColumn = ({
     key,
     title = null,
     render = null,
@@ -85,10 +101,31 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     }
 
     return column;
-  };
+  }
+
+  private onRoundNameFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this._roundNameSearchDebounce) {
+      clearTimeout(this._roundNameSearchDebounce);
+      this._roundNameSearchDebounce = null;
+    }
+
+    const query = e.target.value;
+
+    this.setState({ roundNameQuery: query });
+
+    this._roundNameSearchDebounce = window.setTimeout(() => {
+      // there is probably a much better way to do this but meh this will become ajax soon(TM)
+      let search = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+
+      if (!!query) search += `?round_name=${encodeURIComponent(query)}`;
+
+      window.location.href = search;
+    }, 750);
+  }
 
   render() {
     const { data } = this.props;
+    const { roundNameQuery } = this.state;
 
     const augmentedData = data.map(d => ({
       ...d,
@@ -146,14 +183,24 @@ export default class PlayerListTable extends React.Component<PlayerListTableProp
     ];
 
     return (
-      <Table
-        dataSource={augmentedData}
-        columns={columns.map(this.createSortedColumn)}
-        rowKey={record => record.online_id.toString()}
-        sortDirections={['ascend', 'descend']}
-        pagination={false}
-        scroll={{ x: '150%' }}
-      />
+      <div>
+        <div>
+          <Input.Search
+            onChange={this.onRoundNameFilterChange}
+            value={roundNameQuery}
+            placeholder="Filter stats by round name..."
+          />
+        </div>
+
+        <Table
+          dataSource={augmentedData}
+          columns={columns.map(this.createSortedColumn)}
+          rowKey={record => record.online_id.toString()}
+          sortDirections={['ascend', 'descend']}
+          pagination={false}
+          scroll={{ x: '150%' }}
+        />
+      </div>
     );
   }
 }

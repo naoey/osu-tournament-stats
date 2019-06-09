@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 export interface MatchListPlayer {
   id: number;
