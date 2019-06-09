@@ -1,4 +1,7 @@
-# osu-tournament-stats
+## **osu-tournament-stats**
+[![Build Status](https://travis-ci.org/naoey/osu-tournament-stats.svg?branch=master)](https://travis-ci.org/naoey/osu-tournament-stats)
+
+----
 
 ### Running
 
