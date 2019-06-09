@@ -83,7 +83,7 @@ module MatchServices
       Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Fetching player information for player #{username}") }
 
       player = Player
-        .where('LOWER(name) = ?', username.downcase)
+        .where('LOWER(name) = ?', username.to_s.downcase)
         .or(Player.where(:id => username))
 
       if player.length != 0
@@ -127,6 +127,8 @@ module MatchServices
         return beatmap
       end
 
+      raise "Missing osu! API key" unless ENV["OSU_API_KEY"] != nil
+
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
 
@@ -139,6 +141,8 @@ module MatchServices
       if json.length == 0
         raise OsuApiParserExceptions::BeatmapLoadFailedError.new("Beatmap with id #{beatmap_id} not found on osu! server")
       end
+
+      api_beatmap = json[0]
 
       beatmap = Beatmap.create({
         :name => "#{api_beatmap["artist"]} - #{api_beatmap["title"]}",

@@ -15,7 +15,7 @@ install:
 before_script:
   - bundle exec rails db:test:load
 script:
-  - bundle exec rails test
+  - TESTOPTS="-v" bundle exec rails test
 # TODO: add precompile and deploy after ssh is setup
 # after_success:
   # - bundle exec rails assets:precompile
