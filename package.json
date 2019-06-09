@@ -1,6 +1,9 @@
 {
   "name": "osu-tournament-stats",
   "private": true,
+  "scripts": {
+    "test": "echo \"JS tests not yet implemented\" && exit 0"
+  },
   "dependencies": {
     "@babel/preset-react": "^7.0.0",
     "@rails/webpacker": "^4.0.2",

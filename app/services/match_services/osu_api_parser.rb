@@ -28,47 +28,51 @@ module MatchServices
 
       resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{osu_match_id}")
 
-      raise OsuApiParserExceptions::MatchParseFailedError.new("Failed to load match #{match_id} from osu! API") if !resp.body
+      begin
+        json = JSON.parse(resp.body)
+      rescue JSON::ParserError => e
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Failed to load match from osu! API")
+      end
+
+      # TODO: eventually this will have to identify team names and not player names
+      players = json["match"]["name"].split(/OIWT[\s:]{0,3}/)
+
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length >= 2
+
+      players = players[1].split(/\svs.?\s/)
+
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length == 2
+
+      @player_blue = get_or_load_player players[0].tr(" ()", "")
+      @player_red = get_or_load_player players[1].tr(" ()", "")
 
       ActiveRecord::Base.transaction do
-        begin
-          # TODO: eventually this will have to identify team names and not player names
-          players = match["match"]["name"].split(/OIWT[\s:]{0,3}/)[1].split(/\svs.?\s/)
+        db_match = Match.create({
+          :online_id => json["match"]["match_id"],
+          :round_name => round_name,
+          :match_timestamp => DateTime.parse(json["match"]["start_time"]),
+          :api_json => resp.body,
+          :player_blue => @player_blue,
+          :player_red => @player_red
+        })
 
-          @player_blue = get_or_load_player players[0].tr(" ()", "")
-          @player_red = get_or_load_player players[1].tr(" ()", "")
+        db_match.save
 
-          db_match = Match.create({
-            :online_id => match["match"]["match_id"],
-            :round_name => round_name,
-            :match_timestamp => DateTime.parse(match["match"]["start_time"]),
-            :api_json => raw,
-            :player_blue => @player_blue,
-            :player_red => @player_red
-          })
-
-          db_match.save
-
-          # TODO: handle all game mode combinations
-          match["games"] = match["games"].select do |game|
-            game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
-          end
-
-          # we need to filter out maps that were replayed for whatever reason
-          # when a map has been played multiple times, always pick the game that was started last for that map ID
-          match["games"] = match["games"].group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
-
-          parse_match_games match["games"], db_match
-
-          db_match.winner = match_winner?(match["games"], db_match.player_red.id, db_match.player_blue.id)
-          db_match.save
-
-          return db_match
-        rescue StandardError => e
-          puts "Failed to parse match", e
-          puts e.backtrace.join("\n")
-          raise ActiveRecord::Rollback
+        # TODO: handle all game mode combinations
+        json["games"] = json["games"].select do |game|
+          game["team_type"] == "2" && game["scoring_type"] == "3" && game["scores"].length == 3
         end
+
+        # we need to filter out maps that were replayed for whatever reason
+        # when a map has been played multiple times, always pick the game that was started last for that map ID
+        json["games"] = json["games"].group_by{|g| g["beatmap_id"]}.map {|_,v| v.max_by {|g| DateTime.parse(g["start_time"])}}
+
+        parse_match_games json["games"], db_match
+
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Finished parsing games, determining winner") }
+
+        db_match.winner = match_winner?(json["games"], db_match.player_red.id, db_match.player_blue.id)
+        db_match.save
       end
     end
 
@@ -169,11 +173,11 @@ module MatchServices
 
         get_or_load_beatmap game["beatmap_id"].to_i
 
-        red_score = MatchScore.create(create_match_score(match_id, game, red_player_score))
+        red_score = MatchScore.create(create_match_score(match.id, game, red_player_score))
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score save: #{red_score.save!}" }
 
-        blue_score = MatchScore.create(create_match_score(match_id, game, blue_player_score))
+        blue_score = MatchScore.create(create_match_score(match.id, game, blue_player_score))
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score save: #{blue_score.save!}" }
       end
@@ -209,7 +213,11 @@ module MatchServices
       red_wins = 0
 
       match_games.each do |g|
-        map_winner = g["scores"].select {|s| s["pass"] == "1"}.max_by {|s| s["score"].to_i}["user_id"].to_i
+        map_winner = g["scores"].select {|s| s["pass"] == "1"}.max_by {|s| s["score"].to_i}
+
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where map has no passes at all") if map_winner == nil
+
+        map_winner = map_winner["user_id"].to_i
 
         if map_winner == player_blue_id
           blue_wins += 1

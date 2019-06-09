@@ -13,9 +13,13 @@ install:
   - npm i -g yarn
   - yarn install
 before_script:
-  - bundle exec rails db:test:load
+  - bundle exec rails db:drop RAILS_ENV=test
+  - bundle exec rails db:create RAILS_ENV=test
+  - bundle exec rails db:schema:load RAILS_ENV=test
+  - bundle exec rails db:fixtures:load RAILS_ENV=test
 script:
   - TESTOPTS="-v" bundle exec rails test
+  - yarn test
 # TODO: add precompile and deploy after ssh is setup
 # after_success:
   # - bundle exec rails assets:precompile
