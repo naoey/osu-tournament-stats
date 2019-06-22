@@ -1,7 +1,7 @@
 class TournamentsController < ApplicationController
   def show
     @data = Tournament
-      .where('name LIKE ?', "%#{params[:round_name]}%")
+      .where('name LIKE ?', "%#{params[:name]}%")
       .all
       .map { |t|
         {
