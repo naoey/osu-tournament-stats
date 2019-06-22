@@ -1,0 +1,12 @@
+Metrics/LineLength:
+  Max: 135
+
+Metrics/MethodLength:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+  IndentationWidth: 2

@@ -6,9 +6,12 @@ export default class NavigationBar extends React.Component {
     return (
       <Menu
         mode="horizontal"
-        selectedKeys={[window.location.pathname.split('/')[2]]}
+        selectedKeys={[window.location.pathname.split('/').pop()]}
         theme="dark"
       >
+        <Menu.Item key="tournaments">
+          <a href="/tournaments">Tournaments</a>
+        </Menu.Item>
         <Menu.Item key="matches">
           <a href="/statistics/matches">Matches</a>
         </Menu.Item>

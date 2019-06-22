@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_06_040210) do
+ActiveRecord::Schema.define(version: 2019_06_22_070409) do
 
   create_table "beatmaps", force: :cascade do |t|
     t.string "name"
@@ -52,12 +52,22 @@ ActiveRecord::Schema.define(version: 2019_02_06_040210) do
     t.datetime "match_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tournament_id"
     t.index ["player_blue_id"], name: "index_matches_on_player_blue_id"
     t.index ["player_red_id"], name: "index_matches_on_player_red_id"
   end
 
   create_table "players", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "host_player_id", null: false
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
