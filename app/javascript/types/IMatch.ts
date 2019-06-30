@@ -1,3 +1,4 @@
+import { IBeatmapPool } from "./IBeatmapPool";
 import IPlayer from "./IPlayer";
 
 export enum MatchType {
@@ -18,4 +19,6 @@ export interface IMatch {
   winning_team: IPlayer | IPlayer[];
   tournament_id?: number;
   type: MatchType;
+  online_id: number;
+  pool?: IBeatmapPool;
 }
