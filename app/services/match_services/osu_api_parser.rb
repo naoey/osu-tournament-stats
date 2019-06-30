@@ -18,7 +18,7 @@ module MatchServices
     # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
     #
     # @return [Match]
-    def load_match(osu_match_id:, round_name: nil)
+    def load_match(osu_match_id:, round_name: nil, tournament_id: nil)
       Rails.logger.tagged("OsuApiParser") { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       raise OsuApiParserExceptions::MatchExistsError.new("Match #{osu_match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
@@ -47,14 +47,15 @@ module MatchServices
       @player_red = get_or_load_player players[1].tr(" ()", "")
 
       ActiveRecord::Base.transaction do
-        db_match = Match.create({
-          :online_id => json["match"]["match_id"],
-          :round_name => round_name,
-          :match_timestamp => DateTime.parse(json["match"]["start_time"]),
-          :api_json => resp.body,
-          :player_blue => @player_blue,
-          :player_red => @player_red
-        })
+        db_match = Match.create(
+          online_id: json['match']['match_id'],
+          round_name: round_name,
+          match_timestamp: DateTime.parse(json['match']['start_time']),
+          api_json: resp.body,
+          player_blue: @player_blue,
+          player_red: @player_red,
+          tournament_id: tournament_id,
+        )
 
         db_match.save
 

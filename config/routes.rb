@@ -2,8 +2,9 @@ Rails.application.routes.draw do
   root to: redirect('/statistics/matches')
 
   get 'tournaments', to: 'tournaments#show'
-  delete 'tournaments', to: 'tournaments#delete'
-  put 'tournaments', to: 'tournaments#edit'
+  post 'tournaments', to: 'tournaments#add', format: :json
+  delete 'tournaments/:id', to: 'tournaments#delete', format: :json
+  put 'tournaments/:id', to: 'tournaments#edit', format: :json
 
   get 'statistics/matches', to: 'statistics#show_matches'
   get 'statistics/players', to: 'statistics#show_all_players'
