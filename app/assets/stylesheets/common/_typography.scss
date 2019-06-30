@@ -1,0 +1,15 @@
+@import "../constants/colours";
+
+html, body, h1, h2, h3, h4, h5, h6, p, span {
+  font-family: "Roboto", "Segoe UI", "SF Pro Text", "Ubuntu", sans-serif !important;
+}
+
+h5 {
+  font-style: italic;
+  color: $grey-1;
+}
+
+h6 {
+  font-style: italic;
+  color: $grey-2;
+}

@@ -1,0 +1,11 @@
+@import "../mixins/flex";
+
+.flex_center {
+  &--row {
+    @include display-flex();
+  }
+
+  &--column {
+    @include display-flex($flex-direction: column);
+  }
+}
