@@ -2,6 +2,7 @@ import { Button, Col, Row, Table } from "antd";
 import * as React from "react";
 import { IRecentActivity } from "../../types/IRecentActivity";
 import ITournament from "../../types/ITournament";
+import AddButton from "./AddButton";
 import TournamentListTable from "./TournamentListTable";
 
 export interface ITournamentHomeProps {
@@ -16,10 +17,7 @@ export default class Home extends React.Component<ITournamentHomeProps> {
     return (
       <Row className="h-100">
         <Col sm={24} md={14} className="p-3">
-          <Button type="primary" className="w-100" onClick={this.onAddTournament}>
-            <i className="material-icons">add</i>
-            <span>Add tournament</span>
-          </Button>
+          <AddButton />
           <TournamentListTable data={list} className="mt-2" />
         </Col>
 
