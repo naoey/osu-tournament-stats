@@ -46,7 +46,7 @@ class TournamentsController < ApplicationController
   def add
     tournament = Tournament.new(add_params)
 
-    tournament.host_player = MatchServices::OsuApiParser.new.get_or_load_player(add_params[:host_player_id])
+    tournament.host_player = MatchServices::OsuApiParser.new.get_or_load_player(current_player.id)
 
     if tournament.save
       return render json: create_tournament_json(tournament), status: :ok
@@ -58,7 +58,7 @@ class TournamentsController < ApplicationController
   private
 
   def add_params
-    params.require(:tournament).permit(:name, :host_player_id, :start_date, :end_date)
+    params.require(:tournament).permit(:name, :start_date, :end_date)
   end
 
   # TODO: these should probably be moved into MatchServices
@@ -68,6 +68,8 @@ class TournamentsController < ApplicationController
       name: tournament.name,
       host_player: create_player_json(tournament.host_player),
       match_count: Match.where(tournament_id: tournament.id).count(:all),
+      start_date: tournament.start_date,
+      end_date: tournament.end_date,
     }
   end
 

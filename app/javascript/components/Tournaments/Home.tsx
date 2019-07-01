@@ -1,18 +1,45 @@
 import { Button, Col, Row, Table } from "antd";
 import * as React from "react";
+import Api from "../../api/Api";
+import Tournaments from "../../api/requests/Tournaments";
+import { TournamentEvents } from "../../events/TournamentEvents";
 import { IRecentActivity } from "../../types/IRecentActivity";
 import ITournament from "../../types/ITournament";
 import AddButton from "./AddButton";
 import TournamentListTable from "./TournamentListTable";
 
-export interface ITournamentHomeProps {
+interface ITournamentHomeProps {
   list: ITournament[];
   recent_activity: IRecentActivity[];
 }
 
-export default class Home extends React.Component<ITournamentHomeProps> {
+interface ITournamentHomeState {
+  list: ITournament[];
+  recentActivity: IRecentActivity[];
+}
+
+export default class Home extends React.Component<ITournamentHomeProps, ITournamentHomeState> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      list: props.list || [],
+      recentActivity: props.recent_activity || [],
+    };
+  }
+
+  public componentDidMount() {
+    $(document).on(TournamentEvents.Created, this.reloadTournaments);
+    $(document).on(TournamentEvents.Updated, this.reloadTournaments);
+    $(document).on(TournamentEvents.Deleted, this.reloadTournaments);
+  }
+
+  public componentWillUnmount() {
+    $(document).off();
+  }
+
   public render() {
-    const { list } = this.props;
+    const { list } = this.state;
 
     return (
       <Row className="h-100">
@@ -30,7 +57,15 @@ export default class Home extends React.Component<ITournamentHomeProps> {
     );
   }
 
-  private onAddTournament() {
-    console.log("Adding new tournament");
+  private reloadTournaments = async () => {
+    try {
+      const request = Tournaments.getTournaments();
+
+      const response = await Api.performRequest<ITournament[]>(request);
+
+      this.setState({ list: response });
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

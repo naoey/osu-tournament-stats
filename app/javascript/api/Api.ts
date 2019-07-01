@@ -5,7 +5,7 @@ import RequestError from "./RequestError";
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: IRequest): Promise<P> {
     const headers = {
-      ...options.headers || {},
+      ...(options && options.headers) || {},
       "Accept": ContentType.Json,
       "Content-Type": ContentType.Json,
     };
