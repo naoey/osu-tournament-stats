@@ -1,13 +1,13 @@
-import { Button, DatePicker, Form, Input, Modal } from "antd";
+import { Button, DatePicker, Form, Input, Modal, message } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import moment from "moment";
 import * as React from "react";
+import Api from "../../api/Api";
+import TournamentRequests from "../../api/requests/TournamentRequests";
+import { TournamentEvents } from "../../events/TournamentEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 import IPlayer from "../../types/IPlayer";
-import Api from "../../api/Api";
-import ITournament from "../../types/ITournament";
-import Tournaments from "../../api/requests/Tournaments";
-import { TournamentEvents } from "../../events/TournamentEvents";
+import IAPITournament from "../../types/ITournament";
 
 interface IAddButtonState {
   isModalOpen: boolean;
@@ -27,9 +27,8 @@ class AddButton extends React.Component<FormComponentProps, IAddButtonState> {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Button type="primary" className="w-100" onClick={this.onAdd}>
+      <Button type="primary" className="w-100" title="Create tournament" onClick={this.onAdd}>
         <i className="material-icons">add</i>
-        <span>Add tournament</span>
 
         <Modal
           visible={isModalOpen}
@@ -78,23 +77,28 @@ class AddButton extends React.Component<FormComponentProps, IAddButtonState> {
       return;
     }
 
+    this.setState({ isWorking: true });
+
     const [startDate, endDate] = values.duration;
 
     try {
-      const request = Tournaments.createTournament({
+      const request = TournamentRequests.createTournament({
         endDate: endDate.toISOString(),
         name: values.name,
         startDate: startDate.toISOString(),
       });
 
-      const response = await Api.performRequest<ITournament>(request);
+      const response = await Api.performRequest<IAPITournament>(request);
 
       form.resetFields();
       this.setModalVisibility(false);
 
       $(document).trigger(TournamentEvents.Created);
+      message.success(`Tournament "${response.name}" created!`);
     } catch (e) {
-      console.error(e);
+      message.error(e.message);
+    } finally {
+      this.setState({ isWorking: false });
     }
   }
 }

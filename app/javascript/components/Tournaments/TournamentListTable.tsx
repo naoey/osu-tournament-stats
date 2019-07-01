@@ -7,13 +7,18 @@ export interface ITournamentListTableProps {
   data: ITournament[];
   className?: string;
   style?: any;
+  isLoading?: boolean;
 }
 
 const DATE_RANGE_FORMAT = "DD MMM YYYY";
 
 export default class TournamentListTable extends React.Component<ITournamentListTableProps> {
+  public static defaultProps: Partial<ITournamentListTableProps> = {
+    isLoading: false,
+  };
+
   public render() {
-    const { data, className, style } = this.props;
+    const { data, className, style, isLoading } = this.props;
 
     const columns = [{
       dataIndex: "name",
@@ -36,6 +41,7 @@ export default class TournamentListTable extends React.Component<ITournamentList
 
     return (
       <Table
+        loading={isLoading}
         dataSource={data}
         rowKey={this.keyExtractor}
         columns={columns}

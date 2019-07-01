@@ -1,7 +1,8 @@
-import { Button, Col, Row, Table } from "antd";
+import { Button, Col, Input, message, Row, Table } from "antd";
+import * as qs from "query-string";
 import * as React from "react";
 import Api from "../../api/Api";
-import Tournaments from "../../api/requests/Tournaments";
+import TournamentRequests from "../../api/requests/TournamentRequests";
 import { TournamentEvents } from "../../events/TournamentEvents";
 import { IRecentActivity } from "../../types/IRecentActivity";
 import ITournament from "../../types/ITournament";
@@ -16,22 +17,30 @@ interface ITournamentHomeProps {
 interface ITournamentHomeState {
   list: ITournament[];
   recentActivity: IRecentActivity[];
+  isLoading: boolean;
+  searchQuery?: string;
 }
 
 export default class Home extends React.Component<ITournamentHomeProps, ITournamentHomeState> {
-  constructor(props) {
+  private searchDebounce: number = null;
+
+  constructor(props: ITournamentHomeProps) {
     super(props);
 
+    const q: any = qs.parse(window.location.search);
+
     this.state = {
+      isLoading: false,
       list: props.list || [],
       recentActivity: props.recent_activity || [],
+      searchQuery: q.name || null,
     };
   }
 
   public componentDidMount() {
-    $(document).on(TournamentEvents.Created, this.reloadTournaments);
-    $(document).on(TournamentEvents.Updated, this.reloadTournaments);
-    $(document).on(TournamentEvents.Deleted, this.reloadTournaments);
+    $(document).on(TournamentEvents.Created, () => this.reloadTournaments());
+    $(document).on(TournamentEvents.Updated, () => this.reloadTournaments());
+    $(document).on(TournamentEvents.Deleted, () => this.reloadTournaments());
   }
 
   public componentWillUnmount() {
@@ -39,13 +48,25 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
   }
 
   public render() {
-    const { list } = this.state;
+    const { list, isLoading, searchQuery } = this.state;
 
     return (
       <Row className="h-100">
         <Col sm={24} md={14} className="p-3">
-          <AddButton />
-          <TournamentListTable data={list} className="mt-2" />
+          <Row>
+            <Col xs={2}>
+              <AddButton />
+            </Col>
+            <Col xs={22}>
+              <Input.Search
+                className="h-100 w-100"
+                placeholder="Search tournaments..."
+                value={searchQuery}
+                onChange={this.onSearchQueryChange}
+              />
+            </Col>
+          </Row>
+          <TournamentListTable isLoading={isLoading} data={list} className="mt-2" />
         </Col>
 
         <Col sm={24} md={10} className="p-3">
@@ -57,15 +78,31 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
     );
   }
 
-  private reloadTournaments = async () => {
+  private onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+    }
+
+    const query = e.target.value;
+
+    this.setState({ searchQuery: query });
+
+    this.searchDebounce = window.setTimeout(() => this.reloadTournaments(query), 800);
+  }
+
+  private reloadTournaments = async (query: string = null) => {
+    this.setState({ isLoading: true });
+
     try {
-      const request = Tournaments.getTournaments();
+      const request = TournamentRequests.getTournaments({ name: query });
 
       const response = await Api.performRequest<ITournament[]>(request);
 
       this.setState({ list: response });
     } catch (e) {
-      console.error(e);
+      message.error(e.message);
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 }

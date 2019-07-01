@@ -13,8 +13,8 @@ const createTournament = ({ name, startDate, endDate }): IRequest => ({
   url: "/tournaments",
 });
 
-const getTournaments = (): IRequest => ({
-  url: "/tournaments",
+const getTournaments = ({ name = null } = {}): IRequest => ({
+  url: `/tournaments${name ? `?name=${name}` : ""}`,
 });
 
 export default {
