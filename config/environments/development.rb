@@ -14,6 +14,25 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default charset: 'utf-8'
+  config.action_mailer.default_url_options = {
+    host: 'localhost',
+    port: 3000,
+  }
+  config.action_mailer.smtp_settings = {
+    address: ENV['OTS_MAIL_ADDRESS'],
+    port: ENV['OTS_MAIL_HOST'],
+    domain: ENV['OTS_MAIL_DOMAIN'],
+    user_name: ENV['OTS_MAIL_USERNAME'],
+    password: ENV['OTS_MAIL_PASSWORD'],
+    authentication: :plain,
+    enable_starttls_auto: true,
+    openssl_verify_mode: 'none',
+  }
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
