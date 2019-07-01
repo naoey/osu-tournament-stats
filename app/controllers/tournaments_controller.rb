@@ -1,6 +1,8 @@
 ##
 # Manages all tournament related actions in the application.
 class TournamentsController < ApplicationController
+  before_action :authenticate_player!, except: %i[show show_tournament]
+
   def show
     @data = Tournament
       .where('name LIKE ?', "%#{params[:name]}%")
