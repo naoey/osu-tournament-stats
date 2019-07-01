@@ -21,7 +21,7 @@ export default class NavigationBar extends React.Component {
           (window as any)._currentUser
             ? (
               <Menu.Item key="logout">
-                <a href="#" onClick={this.onLogout}>Logout</a>
+                <a rel="nofollow" data-method="delete" href="/logout">Logout</a>
               </Menu.Item>
             )
             : (
@@ -32,18 +32,5 @@ export default class NavigationBar extends React.Component {
         }
       </Menu>
     );
-  }
-
-  private async onLogout() {
-    try {
-      await fetch("/logout", {
-        credentials: "same-origin",
-        method: "DELETE",
-      })
-
-      window.location.reload();
-    } catch (e) {
-      console.error(e);
-    }
   }
 }
