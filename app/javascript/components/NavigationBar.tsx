@@ -16,7 +16,7 @@ export default class NavigationBar extends React.Component {
         <Menu.Item key="authentication" style={{ float: "right" }}>
           {
             // TODO: replace with proper global types
-            (window as any)._currentUser
+            (window as any).currentUser
               ? <a rel="nofollow" data-method="delete" href="/logout">Logout</a>
               : <a rel="nofollow" href="/login">Login</a>
           }

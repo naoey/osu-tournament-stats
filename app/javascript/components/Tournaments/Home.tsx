@@ -3,9 +3,9 @@ import * as qs from "query-string";
 import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
+import { IRecentActivity } from "../../entities/IRecentActivity";
+import ITournament from "../../entities/ITournament";
 import { TournamentEvents } from "../../events/TournamentEvents";
-import { IRecentActivity } from "../../types/IRecentActivity";
-import ITournament from "../../types/ITournament";
 import AddButton from "./AddButton";
 import TournamentListTable from "./TournamentListTable";
 
@@ -50,14 +50,16 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
   public render() {
     const { list, isLoading, searchQuery } = this.state;
 
+    const isAuthenticated: boolean = (window as any).isAuthenticated;
+
     return (
       <Row className="h-100">
         <Col sm={24} md={14} className="p-3">
           <Row>
-            <Col xs={2}>
+            <Col xs={isAuthenticated ? 1 : 0}>
               <AddButton />
             </Col>
-            <Col xs={22}>
+            <Col xs={isAuthenticated ? 23 : 24} className="px-2">
               <Input.Search
                 className="h-100 w-100"
                 placeholder="Search tournaments..."

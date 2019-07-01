@@ -3,7 +3,7 @@ import * as React from "react";
 
 export function authenticated<P extends object>(Component: React.ComponentType<P>) {
   return (props: P) => {
-    if ((window as any)._currentUser) {
+    if ((window as any).currentUser) {
       return <Component {...props} />;
     }
 

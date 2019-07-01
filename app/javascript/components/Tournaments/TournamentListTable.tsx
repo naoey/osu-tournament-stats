@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import moment from "moment";
 import * as React from "react";
-import ITournament from "../../types/ITournament";
+import ITournament from "../../entities/ITournament";
 
 export interface ITournamentListTableProps {
   data: ITournament[];

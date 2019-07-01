@@ -6,8 +6,8 @@ import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import { TournamentEvents } from "../../events/TournamentEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
-import IPlayer from "../../types/IPlayer";
-import IAPITournament from "../../types/ITournament";
+import IPlayer from "../../entities/IPlayer";
+import IAPITournament from "../../entities/ITournament";
 
 interface IAddButtonState {
   isModalOpen: boolean;
@@ -27,10 +27,13 @@ class AddButton extends React.Component<FormComponentProps, IAddButtonState> {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <Button type="primary" className="w-100" title="Create tournament" onClick={this.onAdd}>
+      <Button type="primary" className="w-100 p-0" title="Create tournament" onClick={this.onAdd}>
         <i className="material-icons">add</i>
 
         <Modal
+          destroyOnClose={true}
+          closable={true}
+          maskClosable={false}
           visible={isModalOpen}
           onCancel={this.onCancel}
           onOk={this.onCreate}

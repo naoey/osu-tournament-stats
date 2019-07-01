@@ -1,6 +1,8 @@
-import { ContentType } from "./Constants";
+import { ContentType, HttpStatus } from "./Constants";
 import { IRequest } from "./IRequest";
 import RequestError from "./RequestError";
+import { UserEvents } from "../events/UserEvents";
+import { message } from "antd";
 
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: IRequest): Promise<P> {
@@ -35,9 +37,14 @@ export default class Api {
     try {
       const response = await fetch(url, opts);
 
-      if (response.status >= 400) {
-        const json = this.tryGetJson(await response.text());
+      const json = this.tryGetJson(await response.text());
 
+      if (response.status === HttpStatus.Unauthorised) {
+        $(document).trigger(UserEvents.SessionExpired);
+        throw new RequestError(json.error, response.status);
+      }
+
+      if (response.status >= 400) {
         throw new RequestError((json && json.error) || "An error occurred!", response.status, (json && json.code) || null);
       }
 
@@ -47,7 +54,7 @@ export default class Api {
 
       console.debug(`Request to ${url} succcessfully completed!`);
 
-      return this.tryGetJson(await response.text());
+      return json;
     } catch (e) {
       console.error(`Request to ${url} failed!`);
 
@@ -66,6 +73,8 @@ export default class Api {
   private static tryGetJson(text: string): any {
     try {
       return JSON.parse(text);
-    } catch {}
+    } catch {
+      return null;
+    }
   }
 }

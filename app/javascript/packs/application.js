@@ -12,11 +12,19 @@ var componentRequireContext = require.context("components", true)
 var ReactRailsUJS = require("react_ujs")
 ReactRailsUJS.useContext(componentRequireContext)
 
+$(document).on('user.session_expired', function() {
+  window.location.href = "/login";
+})
+
 document.addEventListener("DOMContentLoaded", function() {
   var userDataContainer = document.getElementById('current-user');
 
   if (userDataContainer && userDataContainer.dataset.currentUser) {
-    window._currentUser = JSON.parse(userDataContainer.dataset.currentUser);
+    window.currentUser = JSON.parse(userDataContainer.dataset.currentUser);
+    window.isAuthenticated = !!window.currentUser;
+  } else {
+    window.currentUser = null;
+    window.isAuthenticated = false;
   }
 })
 

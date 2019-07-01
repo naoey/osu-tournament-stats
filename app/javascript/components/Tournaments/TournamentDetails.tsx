@@ -2,9 +2,9 @@ import { Radio, Tabs } from "antd";
 import { RadioChangeEvent } from "antd/lib/radio";
 import moment from "moment";
 import * as React from "react";
-import { IMatch } from "../../types/IMatch";
-import { IPlayerStatistic } from "../../types/IPlayerStatistic";
-import ITournament from "../../types/ITournament";
+import { IMatch } from "../../entities/IMatch";
+import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
+import ITournament from "../../entities/ITournament";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;
