@@ -18,6 +18,21 @@ export default class NavigationBar extends React.Component {
         <Menu.Item key="players">
           <a href="/statistics/players">Players</a>
         </Menu.Item>
+
+        {
+          // TODO: replace with proper global types
+          (window as any)._currentUser
+            ? (
+              <Menu.Item key="logout">
+                <a rel="nofollow" data-method="delete" href="/logout">Logout</a>
+              </Menu.Item>
+            )
+            : (
+              <Menu.Item key="login">
+                <a href="/login">Login</a>
+              </Menu.Item>
+            )
+        }
       </Menu>
     );
   }

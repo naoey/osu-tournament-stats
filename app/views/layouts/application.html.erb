@@ -18,6 +18,10 @@
   <body>
     <%= react_component "NavigationBar" %>
 
+    <% if player_signed_in? %>
+      <div id="current-user" data-current-user="<%= current_player.to_json %>"></div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

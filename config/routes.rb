@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
-  root to: redirect('/statistics/matches')
+  devise_for :players, path: '', path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    password: 'secret',
+    confirmation: 'verification',
+    registration: 'register',
+    edit: 'edit/profile'
+  }
+  root :to => redirect('/statistics/matches')
 
   get 'tournaments', to: 'tournaments#show'
   get 'tournaments/:id', to: 'tournaments#show_tournament'
