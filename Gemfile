@@ -17,6 +17,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
 
 gem 'devise'
+gem 'devise_invitable', '~> 2.0.0'
 
 gem 'react-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
