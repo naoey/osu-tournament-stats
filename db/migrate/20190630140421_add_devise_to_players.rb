@@ -4,8 +4,8 @@ class AddDeviseToPlayers < ActiveRecord::Migration[5.2]
   def self.up
     change_table :players do |t|
       ## Database authenticatable
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string :email
+      t.string :encrypted_password
 
       ## Recoverable
       t.string   :reset_password_token
@@ -34,16 +34,6 @@ class AddDeviseToPlayers < ActiveRecord::Migration[5.2]
 
       # Uncomment below if timestamps were not included in your original model.
       # t.timestamps null: false
-    end
-
-    # after the email column has been added, add random data to the email field so that the constraint addition won't fail
-    index = 0
-
-    Player.find_each do |player|
-      player.email = "#{(0...8).map { (65 + rand(26)).chr }.join}#{index}@naoey.pw"
-      player.save!
-      player.confirm
-      index += 1
     end
 
     add_index :players, :email,                unique: true
