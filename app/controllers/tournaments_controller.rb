@@ -35,10 +35,11 @@ class TournamentsController < ApplicationController
           type: m.tournament_id != nil ? 'tournament' : 'monthly',
         }
       end
+    @players = StatisticsServices::PlayerStatisticsService.new.get_player_stats_for_tournament(params[:id])
 
     respond_to do |format|
       format.html
-      format.json { render json: { tournament: @tournament, matches: @matches }, status: :ok }
+      format.json { render json: { tournament: @tournament, matches: @matches, player_statistics: @players }, status: :ok }
     end
   end
 

@@ -81,7 +81,7 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
         key: "2",
         onFilter: (value, record) => MatchListTable.onFilterPlayerName("blue", value, record),
         render: (text, record) => (
-          <span style={text.id === record.winning_team ? { fontWeight: "bold", color: "green" } : {}}>
+          <span style={record.winning_team == "blue" ? { fontWeight: "bold", color: "green" } : {}}>
             {text.name}
           </span>
         ),
@@ -92,7 +92,7 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
         key: "3",
         onFilter: (value, record) => MatchListTable.onFilterPlayerName("red", value, record),
         render: (text, record) => (
-          <span style={text.id === record.winning_team ? { fontWeight: "bold", color: "green" } : {}}>
+          <span style={record.winning_team === "red" ? { fontWeight: "bold", color: "green" } : {}}>
             {text.name}
           </span>
         ),

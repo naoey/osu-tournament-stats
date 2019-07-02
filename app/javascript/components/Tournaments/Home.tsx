@@ -6,7 +6,7 @@ import TournamentRequests from "../../api/requests/TournamentRequests";
 import { IRecentActivity } from "../../entities/IRecentActivity";
 import ITournament from "../../entities/ITournament";
 import { TournamentEvents } from "../../events/TournamentEvents";
-import AddButton from "./AddButton";
+import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
 
 interface ITournamentHomeProps {

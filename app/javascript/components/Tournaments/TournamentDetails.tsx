@@ -6,6 +6,7 @@ import { IMatch } from "../../entities/IMatch";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
 import ITournament from "../../entities/ITournament";
 import MatchListTable from "./MatchListTable";
+import PlayerListTable from "./PlayerListTable";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;
@@ -24,7 +25,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
   public state: ITournamentDetailsState = { activeTab: "matches", roundNameFilter: null };
 
   public render() {
-    const { tournament, matches } = this.props;
+    const { tournament, matches, players } = this.props;
     const { activeTab } = this.state;
 
     return (
@@ -43,7 +44,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
             <MatchListTable data={matches} />
           </Tabs.TabPane>
           <Tabs.TabPane key="players" tab="Player statistics">
-            <p>Player list table</p>
+            <PlayerListTable data={players} />
           </Tabs.TabPane>
         </Tabs>
       </div>

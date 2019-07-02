@@ -1,6 +1,7 @@
 import IPlayer from "./IPlayer";
 
-export interface IPlayerStatistic extends IPlayer {
+export interface IPlayerStatistic {
+  player: IPlayer;
   matches_played: number;
   matches_won: number;
   maps_played: number;

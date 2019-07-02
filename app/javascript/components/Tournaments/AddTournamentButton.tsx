@@ -6,7 +6,6 @@ import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import { TournamentEvents } from "../../events/TournamentEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
-import IPlayer from "../../entities/IPlayer";
 import IAPITournament from "../../entities/ITournament";
 
 interface IAddButtonState {
@@ -14,7 +13,7 @@ interface IAddButtonState {
   isWorking: boolean;
 }
 
-class AddButton extends React.Component<FormComponentProps, IAddButtonState> {
+class AddTournamentButton extends React.Component<FormComponentProps, IAddButtonState> {
   public state: IAddButtonState = {
     isModalOpen: false,
     isWorking: false,
@@ -106,6 +105,6 @@ class AddButton extends React.Component<FormComponentProps, IAddButtonState> {
   }
 }
 
-const WrappedAddButtonForm = Form.create({ name: "add_tournament" })(AddButton);
+const WrappedAddButtonForm = Form.create({ name: "add_tournament" })(AddTournamentButton);
 
 export default authenticated(WrappedAddButtonForm);
