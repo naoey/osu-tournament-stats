@@ -20,9 +20,20 @@ class TournamentsController < ApplicationController
     @matches = Match
       .where(tournament_id: params[:id])
       .all
-      .as_json
       .map do |m|
-        m.except('api_json')
+        {
+          id: m.id,
+          name: m.round_name,
+          online_id: m.online_id,
+          winning_team: m.winner == m.player_red_id ? 'red' : 'blue',
+          created_at: m.created_at,
+          updated_at: m.updated_at,
+          timestamp: m.match_timestamp,
+          red_team: m.player_red.as_json.slice('id', 'name'),
+          blue_team: m.player_blue.as_json.slice('id', 'name'),
+          beatmap_pool: nil,
+          type: m.tournament_id != nil ? 'tournament' : 'monthly',
+        }
       end
 
     respond_to do |format|
