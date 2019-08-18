@@ -13,6 +13,9 @@ Style/TrailingCommaInHashLiteral:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/RedundantBegin:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
   IndentationWidth: 2

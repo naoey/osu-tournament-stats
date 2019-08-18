@@ -32,7 +32,7 @@ class TournamentsController < ApplicationController
           red_team: m.player_red.as_json.slice('id', 'name'),
           blue_team: m.player_blue.as_json.slice('id', 'name'),
           beatmap_pool: nil,
-          type: m.tournament_id != nil ? 'tournament' : 'monthly',
+          type: m.tournament_id.nil? ? 'tournament' : 'monthly',
         }
       end
     @players = StatisticsServices::PlayerStatisticsService.new.get_player_stats_for_tournament(params[:id])

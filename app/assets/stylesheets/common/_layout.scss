@@ -1,11 +1,17 @@
 @import "../mixins/flex";
 
 .flex_center {
-  &--row {
-    @include display-flex();
-  }
+  @include display-flex();
 
   &--column {
     @include display-flex($flex-direction: column);
+  }
+}
+
+.flex_ends {
+  @include display-flex($justify-content: space-between);
+
+  &--column {
+    @include display-flex($justify-content: space-between, $flex-direction: column);
   }
 }

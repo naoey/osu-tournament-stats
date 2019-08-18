@@ -5,6 +5,8 @@ import * as React from "react";
 import { IMatch } from "../../entities/IMatch";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
 import ITournament from "../../entities/ITournament";
+import { IUser } from "../../entities/IUser";
+import AddMatchButton from "./AddMatchButton";
 import MatchListTable from "./MatchListTable";
 import PlayerListTable from "./PlayerListTable";
 
@@ -30,11 +32,19 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
 
     return (
       <div className="p-4">
-        <h2>{tournament.name}</h2>
-        <h5>hosted by {this.getHostLink()}</h5>
-        <h6>
-          {`${moment(tournament.start_date).format(DATE_DISPLAY_FORMAT)} - ${moment(tournament.end_date).format(DATE_DISPLAY_FORMAT)}`}
-        </h6>
+        <div className="flex_ends">
+          <div>
+            <h2>{tournament.name}</h2>
+            <h5>hosted by {this.getHostLink()}</h5>
+            <h6>
+              {`${moment(tournament.start_date).format(DATE_DISPLAY_FORMAT)} - ${moment(tournament.end_date).format(DATE_DISPLAY_FORMAT)}`}
+            </h6>
+          </div>
+
+          <div>
+            <AddMatchButton checkAllowed={this.checkUserIsTournamentHost} />
+          </div>
+        </div>
 
         <Tabs
           activeKey={activeTab}
@@ -60,11 +70,17 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
   private onChangeTab = (e: RadioChangeEvent) => this.setState({ activeTab: e.target.value });
 
   private renderTabBar = () => (
-    <div className="my-4 mx-auto flex_center--row">
+    <div className="my-4 flex_center">
       <Radio.Group value={this.state.activeTab} onChange={this.onChangeTab} buttonStyle="solid">
         <Radio.Button value="matches">Matches</Radio.Button>
         <Radio.Button value="players">Player statistics</Radio.Button>
       </Radio.Group>
     </div>
   )
+
+  private checkUserIsTournamentHost = (user: IUser): boolean => {
+    const { tournament } = this.props;
+
+    return tournament.host_player.id === user.id;
+  }
 }

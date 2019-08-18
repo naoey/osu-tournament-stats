@@ -12,7 +12,7 @@ interface IAddButtonState {
   isWorking: boolean;
 }
 
-class AddTournamentButton extends React.Component<FormComponentProps, IAddButtonState> {
+class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState> {
   public state: IAddButtonState = {
     isModalOpen: false,
     isWorking: false,
@@ -24,7 +24,7 @@ class AddTournamentButton extends React.Component<FormComponentProps, IAddButton
 
     return (
       <Button type="primary" className="w-100 p-0" title="Create tournament" onClick={this.onAdd}>
-        <i className="material-icons">add</i>
+        <span><i className="material-icons">add</i> Add match</span>
 
         <Modal
           destroyOnClose={true}
@@ -48,9 +48,9 @@ class AddTournamentButton extends React.Component<FormComponentProps, IAddButton
             <Form.Item label="RangePicker">
               {
                 getFieldDecorator(
-                  "duration",
+                  "matchId",
                   { rules: [{ type: "array", required: true, message: "Please select dates!" }] },
-                )(<DatePicker.RangePicker name="duration" />)
+                )(<Input type="number" placeholder="osu! multiplayer ID" />)
               }
             </Form.Item>
           </Form>
@@ -68,38 +68,38 @@ class AddTournamentButton extends React.Component<FormComponentProps, IAddButton
   private onCreate = async (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();
 
-    const { form } = this.props;
+    // const { form } = this.props;
 
-    const { error, values } = await new Promise(resolve => form.validateFieldsAndScroll((err, v) => resolve({ error: err, values: v })));
+    // const { error, values } = await new Promise(resolve => form.validateFieldsAndScroll((err, v) => resolve({ error: err, values: v })));
 
-    if (error) return;
+    // if (error) return;
 
-    this.setState({ isWorking: true });
+    // this.setState({ isWorking: true });
 
-    const [startDate, endDate] = values.duration;
+    // const [startDate, endDate] = values.duration;
 
-    try {
-      const request = TournamentRequests.createTournament({
-        endDate: endDate.toISOString(),
-        name: values.name,
-        startDate: startDate.toISOString(),
-      });
+    // try {
+    //   const request = TournamentRequests.createTournament({
+    //     endDate: endDate.toISOString(),
+    //     name: values.name,
+    //     startDate: startDate.toISOString(),
+    //   });
 
-      const response = await Api.performRequest<ITournament>(request);
+    //   const response = await Api.performRequest<ITournament>(request);
 
-      form.resetFields();
-      this.setModalVisibility(false);
+    //   form.resetFields();
+    //   this.setModalVisibility(false);
 
-      $(document).trigger(TournamentEvents.Created);
-      message.success(`Tournament "${response.name}" created!`);
-    } catch (e) {
-      message.error(e.message);
-    } finally {
-      this.setState({ isWorking: false });
-    }
+    //   $(document).trigger(TournamentEvents.Created);
+    //   message.success(`Tournament "${response.name}" created!`);
+    // } catch (e) {
+    //   message.error(e.message);
+    // } finally {
+    //   this.setState({ isWorking: false });
+    // }
   }
 }
 
-const WrappedAddButtonForm = Form.create({ name: "add_tournament" })(AddTournamentButton);
+const WrappedAddButtonForm = Form.create({ name: "add_match" })(AddMatchButton);
 
 export default authenticated(WrappedAddButtonForm);
