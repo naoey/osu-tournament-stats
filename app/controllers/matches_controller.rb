@@ -10,6 +10,14 @@ class MatchesController < ApplicationController
     end
   end
 
+  def show_match
+    @data = Match.find(params[:id])
+      .as_json(include: { match_scores: { include: :beatmap }, player_red: {}, player_blue: {} })
+      .except('player_red_id', 'player_blue_id', 'api_json')
+
+    render json: @data, status: :ok
+  end
+
   def add
     begin
       MatchServices::OsuApiParser.new.load_match(add_match_params)

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'matches/:id', to: 'matches#show_match'
   get 'matches/show', to: 'matches#show'
   post 'matches/add', to: 'matche#add'
   delete 'matches/:id', to: 'matches#delete'

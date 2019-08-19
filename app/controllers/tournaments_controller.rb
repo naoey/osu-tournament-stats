@@ -60,11 +60,9 @@ class TournamentsController < ApplicationController
 
     tournament.host_player = MatchServices::OsuApiParser.new.get_or_load_player(current_player.id)
 
-    if tournament.save
-      return render json: create_tournament_json(tournament), status: :ok
-    else
-      return render json: { errors: tournament.errors, status: :bad_request }
-    end
+    return render json: create_tournament_json(tournament), status: :ok if tournament.save
+
+    render json: { errors: tournament.errors, status: :bad_request }
   end
 
   private
