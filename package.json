@@ -23,7 +23,7 @@
     "react_ujs": "^2.6.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
-    "uuid": "^3.3.2",
+    "uuid": "^3.3.3",
     "voca": "^1.4.0"
   },
   "devDependencies": {
