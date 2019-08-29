@@ -9,6 +9,71 @@ module MatchServices
   # Service class to load game data with fallback to the osu! API.
   class OsuApiParser
     ##
+    # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
+    # which is an array of indices which indicate which game indexes to discard while parsing the match.
+    def load_match_new(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil)
+      Rails.logger.tagged("OsuApiParser") { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
+
+      raise OsuApiParserExceptions::MatchExistsError.new("Match #{osu_match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
+
+      http = Net::HTTP.new("osu.ppy.sh", 443)
+      http.use_ssl = true
+
+      resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{osu_match_id}")
+
+      begin
+        json = JSON.parse(resp.body)
+      rescue JSON::ParserError => e
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Failed to load match from osu! API")
+      end
+
+      # TODO: eventually this will have to identify team names and not player names
+      players = json["match"]["name"].split(/:/)
+
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length >= 2
+
+      players = players[1].split(/\s?vs?.?\s?/)
+
+      raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length == 2
+
+      @player_blue = get_or_load_player players[0].tr(" ()", "")
+      @player_red = get_or_load_player players[1].tr(" ()", "")
+
+      ActiveRecord::Base.transaction do
+        db_match = Match.create(
+          online_id: json['match']['match_id'],
+          round_name: round_name,
+          match_timestamp: DateTime.parse(json['match']['start_time']),
+          api_json: resp.body,
+          player_blue: @player_blue,
+          player_red: @player_red,
+          tournament_id: tournament_id,
+        )
+
+        db_match.save
+
+        # we need to discard games at the given indexes for whatever reason
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Discarding games #{discard_list}"}
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Original games #{json["games"]}"}
+
+        deleted_count = 0
+
+        discard_list.each do |d|
+          json['games'].delete_at(d - deleted_count)
+        end
+
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Pruned games #{json["games"]}"}
+
+        parse_match_games json["games"], db_match
+
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Finished parsing games, determining winner") }
+
+        db_match.winner = match_winner?(json["games"], db_match.player_red.id, db_match.player_blue.id)
+        db_match.save
+      end
+    end
+
+    ##
     # Loads a new match and adds it to the database, associating it with a given tournament + round or a single match. If any dependent
     # data such as players/beatmaps are missing, they are loaded from the API as well.
     #
@@ -228,6 +293,8 @@ module MatchServices
           raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where winner of map is not red or blue player")
         end
       end
+
+      Rails.logger.tagged { Rails.logger.debug("Determined wins: blue: #{blue_wins}, red: #{red_wins}")}
 
       if blue_wins > red_wins
         return player_blue_id
