@@ -2,6 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'json'
 require 'date'
+require 'yaml'
 
 module MatchServices
 
@@ -28,11 +29,15 @@ module MatchServices
       end
 
       # TODO: eventually this will have to identify team names and not player names
-      players = json["match"]["name"].split(/:/)
+      players = correct_match_name(json['match']['name'], tournament_id).split(/:/)
+
+      Rails.logger.tagged { Rails.logger.debug "Determining players from match name part 1 #{players}" }
 
       raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length >= 2
 
-      players = players[1].split(/\s?vs?.?\s?/)
+      players = players[1].split(/\s?vs?.?\s?/i)
+
+      Rails.logger.tagged { Rails.logger.debug "Determining players from match name part 2 #{players}" }
 
       raise OsuApiParserExceptions::MatchParseFailedError.new("Match name doesn't match tournament format!") unless players.length == 2
 
@@ -61,6 +66,9 @@ module MatchServices
         discard_list.each do |d|
           json['games'].delete_at(d - deleted_count)
         end
+
+        # remove aborted maps
+        json['games'] = json['games'].filter { |g| g['scores'].length != 0 }
 
         Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Pruned games #{json["games"]}"}
 
@@ -150,7 +158,14 @@ module MatchServices
     #
     # @return [Player]
     def get_or_load_player(username)
+      name_corrections = YAML.load_file(File.join(Rails.root, "config", "player_name_typo_list.yml"))
+
       Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Fetching player information for player #{username}") }
+
+      if name_corrections.key?(username)
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Using corrected player name #{username} => #{name_corrections[username]}")}
+        username = name_corrections[username]
+      end
 
       player = Player
         .where('LOWER(name) = ?', username.to_s.downcase)
@@ -173,10 +188,17 @@ module MatchServices
 
       api_player = json[0]
 
-      player = Player.create({
-        :name => api_player["username"],
-        :id => api_player["user_id"].to_i
-      })
+      player = Player.find_by_id(api_player['user_id'].to_i)
+
+      if player != nil && player.name != api_player['username']
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.warn("Player with ID #{api_player['username']} already exists but name doesn't match, updating #{player.name} => #{api_player['username']}") }
+        player.name = api_player['username']
+      elsif player.nil?
+        player = Player.create({
+          :name => api_player["username"],
+          :id => api_player["user_id"].to_i
+        })
+      end
 
       player.save!
 
@@ -232,20 +254,29 @@ module MatchServices
       puts "Parsing #{games.length} match games"
 
       games.each do |game|
-        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Parsing game..." }
-
         blue_player_score = game["scores"].find { |score| score["slot"] == "0" }
+
+        if blue_player_score.nil?
+          raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed, couldn't find score in slot 0 in #{game['scores']}")
+        end
+
         red_player_score = game["scores"].find { |score| score["slot"] == "1" }
+
+        if red_player_score.nil?
+          raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed, couldn't find score in slot 1 in #{game['scores']}")
+        end
 
         get_or_load_beatmap game["beatmap_id"].to_i
 
         red_score = MatchScore.create(create_match_score(match.id, game, red_player_score))
+        red_score.save!
 
-        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score save: #{red_score.save!}" }
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score saved" }
 
         blue_score = MatchScore.create(create_match_score(match.id, game, blue_player_score))
+        blue_score.save!
 
-        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score save: #{blue_score.save!}" }
+        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score saved" }
       end
 
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
@@ -257,20 +288,20 @@ module MatchServices
 
     def create_match_score(match_id, game, player_score)
       {
-        :match_id => match_id,
-        :beatmap_id => game["beatmap_id"].to_i,
-        :online_game_id => game["game_id"].to_i,
-        :player_id => player_score["user_id"].to_i,
-        :score => player_score["score"].to_i,
-        :max_combo => player_score["maxcombo"].to_i,
-        :count_50 => player_score["count50"].to_i,
-        :count_100 => player_score["count100"].to_i,
-        :count_300 => player_score["count300"].to_i,
-        :count_geki => player_score["countgeki"].to_i,
-        :count_katu => player_score["count_katu"].to_i,
-        :count_miss => player_score["countmiss"].to_i,
-        :perfect => player_score["perfect"] == "1",
-        :pass => player_score["pass"] == "1",
+        match_id: match_id,
+        beatmap_id: game['beatmap_id'].to_i,
+        online_game_id: game['game_id'].to_i,
+        player_id: player_score['user_id'].to_i,
+        score: player_score['score'].to_i,
+        max_combo: player_score['maxcombo'].to_i,
+        count_50: player_score['count50'].to_i,
+        count_100: player_score['count100'].to_i,
+        count_300: player_score['count300'].to_i,
+        count_geki: player_score['countgeki'].to_i,
+        count_katu: player_score['count_katu'].to_i,
+        count_miss: player_score['countmiss'].to_i,
+        perfect: player_score['perfect'] == '1',
+        pass: player_score['pass'] == '1',
       }
     end
 
@@ -303,6 +334,22 @@ module MatchServices
       end
 
       raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where red and blue have equal wins in a match")
+    end
+
+    def correct_match_name(name, tournament_id)
+      corrections = YAML.load_file(File.join(Rails.root, 'config', 'match_name_prefix_corrections.yml'))
+
+      return name unless corrections.key?(tournament_id)
+
+      corrections[tournament_id].each do |wrong, right|
+        next unless name.start_with?(wrong)
+
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Replacing wrong prefix for tournament #{wrong} => #{right}")}
+
+        return name.sub(wrong, right)
+      end
+
+      name
     end
   end
 end
