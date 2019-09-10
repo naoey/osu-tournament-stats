@@ -29,7 +29,7 @@ module MatchServices
       end
 
       # TODO: eventually this will have to identify team names and not player names
-      players = correct_match_name(json['match']['name'], tournament_id).split(/:/)
+      players = correct_match_name(json['match']['name'], osu_match_id).split(/:/)
 
       Rails.logger.tagged { Rails.logger.debug "Determining players from match name part 1 #{players}" }
 
@@ -59,24 +59,22 @@ module MatchServices
 
         # we need to discard games at the given indexes for whatever reason
         Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Discarding games #{discard_list}"}
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Original games #{json["games"]}"}
 
-        deleted_count = 0
+        games_after_discard = []
 
-        discard_list.each do |d|
-          json['games'].delete_at(d - deleted_count)
-        end
+        # remove maps that are to be discardede
+        json['games'].each.with_index { |g, i| games_after_discard.push(g) unless discard_list.include? i }
+
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug("Parsing games #{games_after_discard}")}
 
         # remove aborted maps
-        json['games'] = json['games'].filter { |g| g['scores'].length != 0 }
+        games_after_discard = games_after_discard.filter { |g| g['scores'].length != 0 }
 
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Pruned games #{json["games"]}"}
-
-        parse_match_games json["games"], db_match
+        parse_match_games games_after_discard, db_match
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Finished parsing games, determining winner") }
 
-        db_match.winner = match_winner?(json["games"], db_match.player_red.id, db_match.player_blue.id)
+        db_match.winner = match_winner?(games_after_discard, db_match.player_red.id, db_match.player_blue.id, osu_match_id)
         db_match.save
       end
     end
@@ -145,7 +143,7 @@ module MatchServices
 
         Rails.logger.tagged("OsuApiParser") { Rails.logger.debug("Finished parsing games, determining winner") }
 
-        db_match.winner = match_winner?(json["games"], db_match.player_red.id, db_match.player_blue.id)
+        db_match.winner = match_winner?(json["games"], db_match.player_red.id, db_match.player_blue.id, osu_match_id)
         db_match.save
       end
     end
@@ -253,36 +251,37 @@ module MatchServices
     def parse_match_games(games, match)
       puts "Parsing #{games.length} match games"
 
+      nil_score_count = 0
+
       games.each do |game|
         blue_player_score = game["scores"].find { |score| score["slot"] == "0" }
-
-        if blue_player_score.nil?
-          raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed, couldn't find score in slot 0 in #{game['scores']}")
-        end
-
         red_player_score = game["scores"].find { |score| score["slot"] == "1" }
-
-        if red_player_score.nil?
-          raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed, couldn't find score in slot 1 in #{game['scores']}")
-        end
 
         get_or_load_beatmap game["beatmap_id"].to_i
 
-        red_score = MatchScore.create(create_match_score(match.id, game, red_player_score))
-        red_score.save!
+        if red_player_score.nil?
+          nil_score_count += 1
+        else
+          red_score = MatchScore.create(create_match_score(match.id, game, red_player_score))
+          red_score.save!
+        end
 
-        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Red player score saved" }
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug 'Red player score saved' }
 
-        blue_score = MatchScore.create(create_match_score(match.id, game, blue_player_score))
-        blue_score.save!
+        if blue_player_score.nil?
+          nil_score_count += 1
+        else
+          blue_score = MatchScore.create(create_match_score(match.id, game, blue_player_score))
+          blue_score.save!
+        end
 
-        Rails.logger.tagged("OsuApiParser") { Rails.logger.debug "Blue player score saved" }
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug 'Blue player score saved' }
       end
 
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
       matches_in_db = MatchScore.where(:match_id => match.id).length
-      if matches_in_db != games.length * 2
-        raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2}")
+      if matches_in_db != (games.length * 2) - nil_score_count
+        raise OsuApiParserExceptions::MatchParseFailedError.new("Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2 - nil_score_count}")
       end
     end
 
@@ -305,7 +304,13 @@ module MatchServices
       }
     end
 
-    def match_winner?(match_games, player_blue_id, player_red_id)
+    def match_winner?(match_games, player_blue_id, player_red_id, match_id)
+      winners = YAML.load_file(File.join(Rails.root, 'config', 'preset_match_winners.yml'))
+
+      return winners[match_id] if winners.key?(match_id)
+
+      Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Determining winner from #{match_games.length} match games") }
+
       blue_wins = 0
       red_wins = 0
 
@@ -336,20 +341,15 @@ module MatchServices
       raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where red and blue have equal wins in a match")
     end
 
-    def correct_match_name(name, tournament_id)
-      corrections = YAML.load_file(File.join(Rails.root, 'config', 'match_name_prefix_corrections.yml'))
+    def correct_match_name(name, match_id)
+      corrections = YAML.load_file(File.join(Rails.root, 'config', 'match_winner_corrections.yml'))
 
-      return name unless corrections.key?(tournament_id)
-
-      corrections[tournament_id].each do |wrong, right|
-        next unless name.start_with?(wrong)
-
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Replacing wrong prefix for tournament #{wrong} => #{right}")}
-
-        return name.sub(wrong, right)
+      if corrections.key?(match_id)
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.warn("Correcting match name #{name} => #{corrections[match_id]}")}
+        corrections[match_id]
+      else
+        name
       end
-
-      name
     end
   end
 end
