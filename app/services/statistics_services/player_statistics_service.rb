@@ -26,11 +26,19 @@ module StatisticsServices
 
     def score_accuracy(score)
       # https://osu.ppy.sh/help/wiki/Accuracy
-      ((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300)) / (300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)) # rubocop:disable Metrics/LineLength
-        .to_f
+      d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
+
+      return 0 if d.zero?
+
+      acc = (((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300)) / d).to_f
+
+      raise ArgumentError.new("Invalid score #{score.as_json} resulting in NaN accuracy") if acc.nan?
+
+      acc
     end
 
     def create_player_statistic(player, player_scores, round_name_search)
+      # FIXME: check why there is a random nil for some scores here
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
@@ -53,7 +61,7 @@ module StatisticsServices
           .where('matches.round_name like ?', "%#{round_name_search}%")
           .all
           .to_a
-          .select {|s| s.player_id == player.id}
+          .select { |s| s.player_id == player.id }
           .length,
         best_accuracy: (player_accuracies.max * 100.0).round(2),
         average_accuracy: (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
