@@ -49,7 +49,7 @@ Rails.application.configure do
   config.action_mailer.default charset: 'utf-8'
   config.action_mailer.default_url_options = {
     host: ENV['OTS_MAIL_URL_HOST'],
-    port: env['OTS_MAIL_URL_PORT'],
+    port: ENV['OTS_MAIL_URL_PORT'],
   }
   config.action_mailer.smtp_settings = {
     address: ENV['OTS_MAIL_ADDRESS'],
