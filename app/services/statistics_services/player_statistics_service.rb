@@ -16,7 +16,7 @@ module StatisticsServices
 
         next if player_scores.count(:all).zero?
 
-        @data.push(create_player_statistic(player, player_scores, round_name_search))
+        @data.push(create_player_statistic(player, player_scores, round_name_search, tournament_id))
       }
 
       @data
@@ -38,7 +38,7 @@ module StatisticsServices
       n / d.to_f
     end
 
-    def create_player_statistic(player, player_scores, round_name_search)
+    def create_player_statistic(player, player_scores, round_name_search, tournament_id)
       # FIXME: check why there is a random nil for some scores here
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
@@ -46,18 +46,21 @@ module StatisticsServices
         player: player.as_json.slice("id", "name"),
         matches_played: Match
           .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
+          .where('matches.tournament_id = ?', tournament_id)
           .where('matches.round_name like ?', "%#{round_name_search}%")
           .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
           .count,
         matches_won: Match
+          .where('tournament_id = ?', tournament_id)
           .where('round_name like ?', "%#{round_name_search}%")
           .where(winner: player.id).count,
         maps_played: player_scores.count(:all),
         # TODO: figure out how to do a count where for maps won in the DB itself o.o
         maps_won: MatchScore
           .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-          .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name')
+          .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name, matches.tournament_id')
           .group(:beatmap_id, :match_id)
+          .where('matches.tournament_id = ?', tournament_id)
           .where(pass: true)
           .where('matches.round_name like ?', "%#{round_name_search}%")
           .all
@@ -74,7 +77,9 @@ module StatisticsServices
         maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
         full_combos: player_scores
           .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
+          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
           .select('match_scores.beatmap_id, match_scores.player_id, match_scores.count_miss, match_scores.max_combo, beatmaps.max_combo')
+          .where('matches.tournament_id = ?', tournament_id)
           .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
           .count(:all),
       }
