@@ -13,14 +13,17 @@ module MatchServices
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
     def load_match_new(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil)
-      Rails.logger.tagged("OsuApiParser") { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
+      Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
-      raise OsuApiParserExceptions::MatchExistsError.new("Match #{osu_match_id} already exists in database") unless Match.find_by_online_id(osu_match_id) == nil
+      unless Match.find_by_online_id(osu_match_id).nil?
+        Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Match #{osu_match_id} already exists in database, skipping API load" }
+        raise OsuApiParserExceptions::MatchExistsError.new("Match #{osu_match_id} already exists in database")
+      end
 
-      http = Net::HTTP.new("osu.ppy.sh", 443)
+      http = Net::HTTP.new('osu.ppy.sh', 443)
       http.use_ssl = true
 
-      resp = http.get("/api/get_match?k=#{ENV["OSU_API_KEY"]}&mp=#{osu_match_id}")
+      resp = http.get("/api/get_match?k=#{ENV['OSU_API_KEY']}&mp=#{osu_match_id}")
 
       begin
         json = JSON.parse(resp.body)
@@ -64,8 +67,6 @@ module MatchServices
 
         # remove maps that are to be discardede
         json['games'].each.with_index { |g, i| games_after_discard.push(g) unless discard_list.include? i }
-
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug("Parsing games #{games_after_discard}")}
 
         # remove aborted maps
         games_after_discard = games_after_discard.filter { |g| g['scores'].length != 0 }
@@ -228,8 +229,16 @@ module MatchServices
 
       json = JSON.parse(resp.body)
 
-      if json.length == 0
-        raise OsuApiParserExceptions::BeatmapLoadFailedError.new("Beatmap with id #{beatmap_id} not found on osu! server")
+      if json.length.zero?
+        Rails.logger.warn "Beatmap with ID #{beatmap_id} doesn't exist on osu server, using dummy beatmap"
+        dummy = Beatmap.find_by_online_id(-1)
+
+        if dummy.nil?
+          dummy = Beatmap.create(online_id: -1, name: "Dummy beatmap")
+          dummy.save!
+        end
+
+        return dummy
       end
 
       api_beatmap = json[0]
@@ -315,7 +324,7 @@ module MatchServices
       red_wins = 0
 
       match_games.each do |g|
-        map_winner = g["scores"].select {|s| s["pass"] == "1"}.max_by {|s| s["score"].to_i}
+        map_winner = g['scores'].select { |s| s['pass'] == '1'}.max_by { |s| s['score'].to_i }
 
         raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where map has no passes at all") if map_winner == nil
 
@@ -326,7 +335,7 @@ module MatchServices
         elsif map_winner == player_red_id
           red_wins += 1
         else
-          raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where winner of map is not red or blue player")
+          raise OsuApiParserExceptions::MatchParseFailedError.new("Impossible situation where winner of map #{map_winner} is not red (#{player_red_id}) or blue (#{player_blue_id}) player")
         end
       end
 
