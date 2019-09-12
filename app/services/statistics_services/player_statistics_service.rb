@@ -5,7 +5,7 @@ module StatisticsServices
     def get_player_stats_for_tournament(tournament_id, round_name_search = '')
       @data = []
 
-      Player.all.each {|player|
+      Player.all.each { |player|
         player_scores = MatchScore
           .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
           .joins('LEFT JOIN tournaments ON matches.tournament_id = tournaments.id')
@@ -28,13 +28,14 @@ module StatisticsServices
       # https://osu.ppy.sh/help/wiki/Accuracy
       d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
-      return 0 if d.zero?
+      if d.zero?
+        Rails.logger.warn "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead."
+        return 0
+      end
 
-      acc = (((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300)) / d).to_f
+      n = ((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300))
 
-      raise ArgumentError.new("Invalid score #{score.as_json} resulting in NaN accuracy") if acc.nan?
-
-      acc
+      n / d.to_f
     end
 
     def create_player_statistic(player, player_scores, round_name_search)
