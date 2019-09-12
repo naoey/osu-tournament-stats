@@ -13,7 +13,7 @@ class CreateTournaments < ActiveRecord::Migration[5.2]
 
     add_foreign_key :matches, :tournaments, {
       column: 'tournament_id',
-      primary_key: 'online_id',
+      # primary_key: 'online_id',
       on_update: :cascade,
       on_delete: :cascade,
     }
