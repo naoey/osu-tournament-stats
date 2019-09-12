@@ -1,0 +1,25 @@
+Metrics/LineLength:
+  Max: 135
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+  IndentationWidth: 2
+
+Layout/IndentFirstHashElement:
+  EnforcedStyle: consistent
+  IndentationWidth: 2

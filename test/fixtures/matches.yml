@@ -14,6 +14,7 @@ match_1:
   match_timestamp: '2019-01-13 14:21:58'
   created_at: '2019-01-14 15:06:24.578804'
   updated_at: '2019-01-14 15:06:25.732419'
+  tournament_id: 1
 match_2:
   id: 2
   online_id: 48834580
@@ -29,6 +30,7 @@ match_2:
   match_timestamp: '2019-01-13 16:22:03'
   created_at: '2019-01-21 03:53:37.800039'
   updated_at: '2019-01-21 03:53:38.315259'
+  tournament_id: 1
 match_3:
   id: 3
   online_id: 48965931
@@ -46,6 +48,7 @@ match_3:
   match_timestamp: '2019-01-19 10:49:41'
   created_at: '2019-01-21 03:53:45.840303'
   updated_at: '2019-01-21 03:53:50.396536'
+  tournament_id: 1
 match_4:
   id: 4
   online_id: 48966671
@@ -62,6 +65,7 @@ match_4:
   match_timestamp: '2019-01-19 11:26:22'
   created_at: '2019-01-21 03:53:54.751891'
   updated_at: '2019-01-21 03:53:56.113830'
+  tournament_id: 1
 match_5:
   id: 5
   online_id: 48968025
@@ -79,6 +83,7 @@ match_5:
   match_timestamp: '2019-01-19 12:27:35'
   created_at: '2019-01-21 03:54:00.457795'
   updated_at: '2019-01-21 03:54:00.609936'
+  tournament_id: 1
 match_6:
   id: 6
   online_id: 48970293
@@ -96,6 +101,7 @@ match_6:
   match_timestamp: '2019-01-19 13:50:23'
   created_at: '2019-01-21 03:54:03.737320'
   updated_at: '2019-01-21 03:54:03.901408'
+  tournament_id: 1
 match_7:
   id: 7
   online_id: 48971263
@@ -111,6 +117,7 @@ match_7:
   match_timestamp: '2019-01-19 14:23:11'
   created_at: '2019-01-21 03:54:07.190733'
   updated_at: '2019-01-21 03:54:08.393400'
+  tournament_id: 1
 match_8:
   id: 8
   online_id: 48971324
@@ -127,6 +134,7 @@ match_8:
   match_timestamp: '2019-01-19 14:24:48'
   created_at: '2019-01-21 03:54:13.679985'
   updated_at: '2019-01-21 03:54:13.814204'
+  tournament_id: 1
 match_9:
   id: 9
   online_id: 48972123
@@ -143,6 +151,7 @@ match_9:
   match_timestamp: '2019-01-19 14:50:30'
   created_at: '2019-01-21 03:54:18.122757'
   updated_at: '2019-01-21 03:54:18.309119'
+  tournament_id: 1
 match_10:
   id: 10
   online_id: 48973081
@@ -159,6 +168,7 @@ match_10:
   match_timestamp: '2019-01-19 15:19:51'
   created_at: '2019-01-21 03:54:21.154595'
   updated_at: '2019-01-21 03:54:21.294180'
+  tournament_id: 1
 match_11:
   id: 11
   online_id: 48973170
@@ -174,6 +184,7 @@ match_11:
   match_timestamp: '2019-01-19 15:23:30'
   created_at: '2019-01-21 03:54:24.545976'
   updated_at: '2019-01-21 03:54:24.696031'
+  tournament_id: 1
 match_12:
   id: 12
   online_id: 48974274
@@ -190,6 +201,7 @@ match_12:
   match_timestamp: '2019-01-19 15:57:33'
   created_at: '2019-01-21 03:54:27.617589'
   updated_at: '2019-01-21 03:54:27.769810'
+  tournament_id: 1
 match_13:
   id: 13
   online_id: 48974854
@@ -205,6 +217,7 @@ match_13:
   match_timestamp: '2019-01-19 16:16:44'
   created_at: '2019-01-21 03:54:30.823790'
   updated_at: '2019-01-21 03:54:30.957357'
+  tournament_id: 1
 match_14:
   id: 14
   online_id: 48975882
@@ -221,6 +234,7 @@ match_14:
   match_timestamp: '2019-01-19 16:51:13'
   created_at: '2019-01-21 03:54:35.649123'
   updated_at: '2019-01-21 03:54:35.795246'
+  tournament_id: 1
 match_15:
   id: 15
   online_id: 49000910
@@ -236,6 +250,7 @@ match_15:
   match_timestamp: '2019-01-20 12:27:40'
   created_at: '2019-01-21 03:54:41.785217'
   updated_at: '2019-01-21 03:54:41.908210'
+  tournament_id: 1
 match_16:
   id: 16
   online_id: 49004606
@@ -251,6 +266,7 @@ match_16:
   match_timestamp: '2019-01-20 14:56:06'
   created_at: '2019-01-21 04:06:30.906356'
   updated_at: '2019-01-21 04:06:31.131586'
+  tournament_id: 1
 match_17:
   id: 17
   online_id: 49006138
@@ -267,6 +283,7 @@ match_17:
   match_timestamp: '2019-01-20 15:56:56'
   created_at: '2019-01-21 04:06:34.710363'
   updated_at: '2019-01-21 04:06:34.809360'
+  tournament_id: 1
 match_18:
   id: 18
   online_id: 49008554
@@ -284,6 +301,7 @@ match_18:
   match_timestamp: '2019-01-20 17:27:55'
   created_at: '2019-01-21 04:15:13.812036'
   updated_at: '2019-01-21 04:15:13.957971'
+  tournament_id: 1
 match_19:
   id: 19
   online_id: 49503235
@@ -308,3 +326,4 @@ match_19:
   match_timestamp: '2019-02-10 16:51:41'
   created_at: '2019-05-25 17:41:08.940648'
   updated_at: '2019-05-25 17:41:12.443049'
+  tournament_id: 1
