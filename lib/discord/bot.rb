@@ -8,7 +8,7 @@ module Discord
     def initialize!
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
 
-      @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: '>'
+      @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: ENV['DISCORD_BOT_PREFIX']
 
       @client.command :setuser, &method(:set_user)
       @client.command %i[match_performance p], &method(:match_performance)
