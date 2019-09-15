@@ -55,12 +55,16 @@ module Discord
 
         return 'No such player found' if player.nil?
 
+        stats = player_statistics_service.get_player_stats(player)
+
+        return "No stats for #{player.name}" if stats.empty?
+
         embed = {
           title: "Stats for #{player.name}",
           color: 0x4287f5,
           type: 'rich',
           url: 'https://oiwt19.naoey.pw/',
-          fields: player_statistics_service.get_player_stats(player)
+          fields: stats
             .except(:player)
             .map { |k, v| { name: "**#{k.to_s.humanize}**", value: "#{v}#{k.to_s.include?('accuracy') ? '%' : ''}", inline: true } },
         }
