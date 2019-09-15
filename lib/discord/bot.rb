@@ -1,24 +1,29 @@
 require 'discordrb'
+require 'singleton'
 
 module Discord
   class OsuDiscordBot
-    def initialize
-      Rails.logger.tagged('Discord') { Rails.logger.info 'Initialising Discord bot...' }
+    include Singleton
+
+    def initialize!
+      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
 
       @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: '>'
 
-      @client.command :hello do |event, _args|
-        "Hi, #{event.user.name}"
-      end
-
       @client.command :setuser, &method(:set_user)
-      @client.command %i[performance p], &method(:match_performance)
+      @client.command %i[match_performance p], &method(:match_performance)
+      @client.command %i[:match_lb, mlb], &method(:match_leaderboard)
 
       @client.run true
+
+      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running'}
     end
 
-    def close
-      @client.stop
+    def close!
+      @client&.stop
+      @client = nil
+
+      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot has stopped' }
     end
 
     private
@@ -27,7 +32,7 @@ module Discord
       begin
         name = args.join(' ')
 
-        player = MatchServices::OsuApiParser.new.get_or_load_player(args.join(' '))
+        player = ApiServices::OsuApi.new.get_or_load_player(args.join(' '))
 
         return "Failed find player #{name}!" if player.nil?
 
@@ -55,7 +60,7 @@ module Discord
           color: 0x4287f5,
           type: 'rich',
           url: 'https://oiwt19.naoey.pw/',
-          fields: StatisticsServices::PlayerStatisticsService.new.get_player_stats(player)
+          fields: player_statistics_service.get_player_stats(player)
             .except(:player)
             .map { |k, v| { name: "**#{k.to_s.humanize}**", value: "#{v}#{k.to_s.include?('accuracy') ? '%' : ''}", inline: true } },
         }
@@ -64,9 +69,19 @@ module Discord
 
         nil
       rescue StandardError => e
-        Rails.logger.error e
+        Rails.logger.tagged(self.class.name) { Rails.logger.error e }
         'Error retrieving stats'
       end
+    end
+
+    def match_leaderboard
+      begin
+
+      end
+    end
+
+    def player_statistics_service
+      StatisticsServices::PlayerStatistics.new
     end
   end
 end
