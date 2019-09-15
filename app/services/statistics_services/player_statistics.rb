@@ -1,7 +1,7 @@
 module StatisticsServices
   ##
   # Service that provides functionality for various player statistics related operations.
-  class PlayerStatisticsService
+  class PlayerStatistics
     def get_all_player_stats_for_tournament(tournament_id, round_name_search = '')
       @data = []
 
@@ -33,6 +33,15 @@ module StatisticsServices
       create_player_match_statistic(player, player_scores)
     end
 
+    def get_player_leaderboard(*player_ids)
+      player_scores = MatchScore
+        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .select('match_scores.*, matches.*')
+        .where(player: player_ids)
+
+      return [] if player_scores.count(:all).zero?
+    end
+
     private
 
     def score_accuracy(score)
@@ -40,7 +49,7 @@ module StatisticsServices
       d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
       if d.zero?
-        Rails.logger.warn "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead."
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead." }
         return 0
       end
 
@@ -49,29 +58,53 @@ module StatisticsServices
       n / d.to_f
     end
 
+    # TODO: all these x? methods should take a queryable and get the result
+    def matches_played?(player)
+      Match
+        .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
+        .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
+        .count
+    end
+
+    def matches_won?(player)
+      Match.where(winner: player.id).count
+    end
+
+    def full_combos?(player)
+      MatchScore
+        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
+        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .select('match_scores.*')
+        .select('match_scores.beatmap_id, match_scores.player_id, match_scores.count_miss, match_scores.max_combo, beatmaps.max_combo')
+        .where(player: player)
+        .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
+        .count(:all)
+    end
+
+    def maps_won?(player)
+      # TODO: figure out how to do a count where for maps won in the DB itself o.o
+      MatchScore
+        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name')
+        .group(:beatmap_id, :match_id)
+        .where(pass: true)
+        .all
+        .to_a
+        .select { |s| s.player_id == player.id }
+        .length
+    end
+
     def create_player_match_statistic(player, player_scores)
       # FIXME: check why there is a random nil for some scores here
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
         player: player.as_json.slice('id', 'name'),
-        matches_played: Match
-          .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
-          .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
-          .count,
-        matches_won: Match
-          .where(winner: player.id).count,
+        matches_played: matches_played?(player),
+        matches_won: matches_won?(player),
         maps_played: player_scores.count(:all),
-        # TODO: figure out how to do a count where for maps won in the DB itself o.o
-        maps_won: MatchScore
-          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-          .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name')
-          .group(:beatmap_id, :match_id)
-          .where(pass: true)
-          .all
-          .to_a
-          .select { |s| s.player_id == player.id }
-          .length,
+        maps_won: maps_won?(player),
         best_accuracy: (player_accuracies.max * 100.0).round(2),
         average_accuracy: (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
         perfect_count: player_scores.where(perfect: true).count(:all),
@@ -80,12 +113,7 @@ module StatisticsServices
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
         maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
-        full_combos: player_scores
-          .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
-          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-          .select('match_scores.beatmap_id, match_scores.player_id, match_scores.count_miss, match_scores.max_combo, beatmaps.max_combo')
-          .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
-          .count(:all),
+        full_combos: full_combos?(player),
       }
     end
 
@@ -131,6 +159,7 @@ module StatisticsServices
           .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
           .select('match_scores.beatmap_id, match_scores.player_id, match_scores.count_miss, match_scores.max_combo, beatmaps.max_combo')
           .where('matches.tournament_id = ?', tournament_id)
+          .where('matches.round_name like ?', "%#{round_name_search}%")
           .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
           .count(:all),
       }

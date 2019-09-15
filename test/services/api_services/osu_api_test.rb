@@ -1,6 +1,6 @@
 require 'test/unit'
 
-class OsuApiParserTest < Test::Unit::TestCase
+class OsuApiTest < Test::Unit::TestCase
   # get_or_load_beatmap tests
   def test_get_or_load_beatmap_non_existent
     stub_request(:get, /osu\.ppy\.sh\/api\/get_beatmaps/)
@@ -8,14 +8,14 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raise(OsuApiParserExceptions::BeatmapLoadFailedError) {
-      MatchServices::OsuApiParser.new.get_or_load_beatmap(12345)
+      ApiServices::OsuApi.new.get_or_load_beatmap(12345)
     }
     assert_equal("Beatmap with id 12345 not found on osu! server", e.message)
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_beatmaps/, times: 1)
   end
 
   def test_get_or_load_beatmaps_already_exists
-    b = MatchServices::OsuApiParser.new.get_or_load_beatmap(1428999)
+    b = ApiServices::OsuApi.new.get_or_load_beatmap(1428999)
 
     assert_not_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_beatmaps/)
     assert_instance_of(Beatmap, b)
@@ -40,7 +40,7 @@ class OsuApiParserTest < Test::Unit::TestCase
 
     count_before = Beatmap.count
 
-    b = MatchServices::OsuApiParser.new.get_or_load_beatmap(666)
+    b = ApiServices::OsuApi.new.get_or_load_beatmap(666)
 
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_beatmaps/, times: 1)
     assert_equal(count_before + 1, Beatmap.count)
@@ -56,21 +56,21 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raise(OsuApiParserExceptions::PlayerLoadFailedError) {
-      MatchServices::OsuApiParser.new.get_or_load_player(12345)
+      ApiServices::OsuApi.new.get_or_load_player(12345)
     }
     assert_equal("Player 12345 not found on osu! server", e.message)
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_user/, times: 1)
   end
 
   def test_get_or_load_player_already_exists_id
-    p = MatchServices::OsuApiParser.new.get_or_load_player(1788022)
+    p = ApiServices::OsuApi.new.get_or_load_player(1788022)
 
     assert_not_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_user/)
     assert_instance_of(Player, p)
   end
 
   def test_get_or_load_player_already_exists_username
-    p = MatchServices::OsuApiParser.new.get_or_load_player("Meet")
+    p = ApiServices::OsuApi.new.get_or_load_player("Meet")
 
     assert_not_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_user/)
     assert_instance_of(Player, p)
@@ -91,7 +91,7 @@ class OsuApiParserTest < Test::Unit::TestCase
 
     count_before = Player.count
 
-    p = MatchServices::OsuApiParser.new.get_or_load_player(22)
+    p = ApiServices::OsuApi.new.get_or_load_player(22)
 
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_user/, times: 1)
     assert_equal(count_before + 1, Player.count)
@@ -115,7 +115,7 @@ class OsuApiParserTest < Test::Unit::TestCase
 
     count_before = Player.count
 
-    p = MatchServices::OsuApiParser.new.get_or_load_player("nitr0f")
+    p = ApiServices::OsuApi.new.get_or_load_player("nitr0f")
 
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_user/, times: 1)
     assert_equal(count_before + 1, Player.count)
@@ -127,7 +127,7 @@ class OsuApiParserTest < Test::Unit::TestCase
   # load_match tests
   def test_load_match_existing
     e = assert_raises(OsuApiParserExceptions::MatchExistsError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 48831639, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 48831639, round_name: "Test Match")
     }
     assert_equal("Match 48831639 already exists in database", e.message)
     assert_not_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_match/)
@@ -142,7 +142,7 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raises(OsuApiParserExceptions::MatchParseFailedError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
     }
     assert_equal("Failed to load match from osu! API", e.message)
     assert_requested(:get, /https:\/\/osu\.ppy\.sh\/api\/get_match/, times: 1)
@@ -161,7 +161,7 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raises(OsuApiParserExceptions::MatchParseFailedError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
     }
     assert_equal("Match name doesn't match tournament format!", e.message)
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
@@ -207,7 +207,7 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raises(OsuApiParserExceptions::MatchParseFailedError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
     }
     assert_equal("Impossible situation where map has no passes at all", e.message)
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
@@ -253,7 +253,7 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raises(OsuApiParserExceptions::MatchParseFailedError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
     }
     assert_equal("Impossible situation where red and blue have equal wins in a match", e.message)
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
@@ -299,7 +299,7 @@ class OsuApiParserTest < Test::Unit::TestCase
       .times(1)
 
     e = assert_raises(OsuApiParserExceptions::MatchParseFailedError) {
-      MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+      ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
     }
     assert_equal("Impossible situation where winner of map is not red or blue player", e.message)
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
@@ -371,7 +371,7 @@ class OsuApiParserTest < Test::Unit::TestCase
     count_before = Match.count
     count_match_score_before = MatchScore.count
 
-    MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+    ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
 
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
     assert_equal(count_before + 1, Match.count)
@@ -441,7 +441,7 @@ class OsuApiParserTest < Test::Unit::TestCase
     count_before = Match.count
     count_match_score_before = MatchScore.count
 
-    MatchServices::OsuApiParser.new.load_match(osu_match_id: 99, round_name: "Test Match")
+    ApiServices::OsuApi.new.load_match(osu_match_id: 99, round_name: "Test Match")
 
     assert_requested(:get, /osu\.ppy\.sh\/api\/get_match/, times: 1)
     assert_equal(count_before + 1, Match.count)
