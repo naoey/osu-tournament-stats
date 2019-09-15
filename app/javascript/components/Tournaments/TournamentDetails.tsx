@@ -1,4 +1,4 @@
-import { Radio, Tabs } from "antd";
+import {Input, message, Radio, Row, Tabs} from "antd";
 import { RadioChangeEvent } from "antd/lib/radio";
 import moment from "moment";
 import * as React from "react";
@@ -9,6 +9,8 @@ import { IUser } from "../../entities/IUser";
 import AddMatchButton from "./AddMatchButton";
 import MatchListTable from "./MatchListTable";
 import PlayerListTable from "./PlayerListTable";
+import TournamentRequests from "../../api/requests/TournamentRequests";
+import Api from "../../api/Api";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;
@@ -19,16 +21,37 @@ export interface ITournamentDetailsProps {
 interface ITournamentDetailsState {
   activeTab: "matches" | "players";
   roundNameFilter: string;
+  players: IPlayerStatistic[];
+  matches: IMatch[];
+  isLoading: boolean,
+}
+
+interface IAPITournament {
+  tournament: ITournament;
+  matches: IMatch[],
+  player_statistics: IPlayerStatistic[];
 }
 
 const DATE_DISPLAY_FORMAT = "DD MMM YYYY";
 
 export default class TournamentDetails extends React.Component<ITournamentDetailsProps, ITournamentDetailsState> {
-  public state: ITournamentDetailsState = { activeTab: "matches", roundNameFilter: null };
+  private searchDebounce: number = null;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      activeTab: "matches",
+      roundNameFilter: null,
+      players: props.players || [],
+      matches: props.matches || [],
+      isLoading: false,
+    }
+  }
 
   public render() {
-    const { tournament, matches, players } = this.props;
-    const { activeTab } = this.state;
+    const { tournament } = this.props;
+    const { activeTab, matches, players, roundNameFilter } = this.state;
 
     return (
       <div className="p-4">
@@ -54,11 +77,49 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
             <MatchListTable data={matches} />
           </Tabs.TabPane>
           <Tabs.TabPane key="players" tab="Player statistics">
+            <Row>
+              <Input.Search
+                className="h-100 w-100"
+                placeholder="Search tournaments..."
+                value={roundNameFilter}
+                onChange={this.onSearchQueryChange}
+            />
+            </Row>
             <PlayerListTable data={players} />
           </Tabs.TabPane>
         </Tabs>
       </div>
     );
+  }
+
+  private onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+    }
+
+    const query = e.target.value;
+
+    this.setState({ roundNameFilter: query });
+
+    this.searchDebounce = window.setTimeout(() => this.reloadTournament(query), 800);
+  }
+
+  private reloadTournament = async (query: string = null) => {
+    const { tournament } = this.props;
+
+    this.setState({ isLoading: true });
+
+    try {
+      const request = TournamentRequests.getTournament({ round_name: query, id:  tournament.id });
+
+      const response = await Api.performRequest<IAPITournament>(request);
+
+      this.setState({ players: response.player_statistics });
+    } catch (e) {
+      message.error(e.message);
+    } finally {
+      this.setState({ isLoading: false });
+    }
   }
 
   private getHostLink(): React.ReactNode {

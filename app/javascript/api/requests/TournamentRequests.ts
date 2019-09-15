@@ -17,7 +17,12 @@ const getTournaments = ({ name = null } = {}): IRequest => ({
   url: `/tournaments${name ? `?name=${name}` : ""}`,
 });
 
+const getTournament = ({ id, round_name = '' }): IRequest => ({
+  url: `/tournaments/${id}?round_name=${round_name}`
+})
+
 export default {
   createTournament,
   getTournaments,
+  getTournament,
 };
