@@ -35,7 +35,7 @@ class TournamentsController < ApplicationController
           type: m.tournament_id.nil? ? 'tournament' : 'monthly',
         }
       end
-    @players = StatisticsServices::PlayerStatisticsService.new.get_player_stats_for_tournament(params[:id])
+    @players = StatisticsServices::PlayerStatistics.new.get_all_player_stats_for_tournament(params[:id], params[:round_name])
 
     respond_to do |format|
       format.html
@@ -58,7 +58,7 @@ class TournamentsController < ApplicationController
   def add
     tournament = Tournament.new(add_params)
 
-    tournament.host_player = MatchServices::OsuApiParser.new.get_or_load_player(current_player.id)
+    tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.id)
 
     return render json: create_tournament_json(tournament), status: :ok if tournament.save
 

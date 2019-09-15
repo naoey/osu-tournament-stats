@@ -1,11 +1,11 @@
-import { Button, Col, Input, message, Row, Table } from "antd";
+import {Col, Input, message, Row} from "antd";
 import * as qs from "query-string";
 import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
-import { IRecentActivity } from "../../entities/IRecentActivity";
+import {IRecentActivity} from "../../entities/IRecentActivity";
 import ITournament from "../../entities/ITournament";
-import { TournamentEvents } from "../../events/TournamentEvents";
+import {TournamentEvents} from "../../events/TournamentEvents";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
 

@@ -4,18 +4,18 @@ require 'json'
 require 'date'
 require 'yaml'
 
-module MatchServices
+module ApiServices
   ##
   # Service class to load game data with fallback to the osu! API.
-  class OsuApiParser
+  class OsuApi
     ##
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
     def load_match_new(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil)
-      Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       unless Match.find_by_online_id(osu_match_id).nil?
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Match #{osu_match_id} already exists in database, skipping API load" }
+        Rails.logger.tagged(self.class.name) { Rails.logger.info "Match #{osu_match_id} already exists in database, skipping API load" }
         raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database"
       end
 
@@ -60,7 +60,7 @@ module MatchServices
         db_match.save
 
         # we need to discard games at the given indexes for whatever reason
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Discarding games #{discard_list}" }
+        Rails.logger.tagged(self.class.name) { Rails.logger.info "Discarding games #{discard_list}" }
 
         games_after_discard = []
 
@@ -72,7 +72,7 @@ module MatchServices
 
         parse_match_games games_after_discard, db_match
 
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug('Finished parsing games, determining winner') }
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
 
         db_match.winner = match_winner?(games_after_discard, db_match.player_red.id, db_match.player_blue.id, osu_match_id)
         db_match.save
@@ -89,8 +89,9 @@ module MatchServices
     # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
     #
     # @return [Match]
+    # @deprecated Use `load_match_new` instead.
     def load_match(osu_match_id:, round_name: nil, tournament_id: nil)
-      Rails.logger.tagged('OsuApiParser') { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database" unless Match.find_by_online_id(osu_match_id).nil?
 
@@ -141,7 +142,7 @@ module MatchServices
 
         parse_match_games json['games'], db_match
 
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug('Finished parsing games, determining winner') }
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
 
         db_match.winner = match_winner?(json['games'], db_match.player_red.id, db_match.player_blue.id, osu_match_id)
         db_match.save
@@ -158,10 +159,10 @@ module MatchServices
     def get_or_load_player(username)
       name_corrections = YAML.load_file(File.join(Rails.root, 'config', 'player_name_typo_list.yml'))
 
-      Rails.logger.tagged('OsuApiParser') { Rails.logger.debug("Fetching player information for player #{username}") }
+      Rails.logger.tagged(self.class.name) { Rails.logger.debug("Fetching player information for player #{username}") }
 
       if name_corrections.key?(username)
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Using corrected player name #{username} => #{name_corrections[username]}") }
+        Rails.logger.tagged(self.class.name) { Rails.logger.info("Using corrected player name #{username} => #{name_corrections[username]}") }
         username = name_corrections[username]
       end
 
@@ -185,7 +186,7 @@ module MatchServices
       player = Player.find_by_id(api_player['user_id'].to_i)
 
       if !player.nil? && player.name != api_player['username']
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.warn("Player with ID #{api_player['username']} already exists but name doesn't match, updating #{player.name} => #{api_player['username']}") }
+        Rails.logger.tagged(self.class.name) { Rails.logger.warn("Player with ID #{api_player['username']} already exists but name doesn't match, updating #{player.name} => #{api_player['username']}") }
         player.name = api_player['username']
       elsif player.nil?
         player = Player.create(
@@ -216,7 +217,7 @@ module MatchServices
       http = Net::HTTP.new('osu.ppy.sh', 443)
       http.use_ssl = true
 
-      Rails.logger.tagged('OsuApiParser') { Rails.logger.debug "Fetching details for beatmap #{beatmap_id} from API" }
+      Rails.logger.tagged(self.class.name) { Rails.logger.debug "Fetching details for beatmap #{beatmap_id} from API" }
 
       resp = http.get("/api/get_beatmaps?k=#{ENV['OSU_API_KEY']}&b=#{beatmap_id}")
 
@@ -269,7 +270,7 @@ module MatchServices
           red_score.save!
         end
 
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug 'Red player score saved' }
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player score saved' }
 
         if blue_player_score.nil?
           nil_score_count += 1
@@ -278,7 +279,7 @@ module MatchServices
           blue_score.save!
         end
 
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.debug 'Blue player score saved' }
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Blue player score saved' }
       end
 
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
@@ -312,7 +313,7 @@ module MatchServices
 
       return winners[match_id] if winners.key?(match_id)
 
-      Rails.logger.tagged('OsuApiParser') { Rails.logger.info("Determining winner from #{match_games.length} match games") }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info("Determining winner from #{match_games.length} match games") }
 
       blue_wins = 0
       red_wins = 0
@@ -345,10 +346,11 @@ module MatchServices
     end
 
     def correct_match_name(name, match_id)
+      # TODO: these correction YAML files should be removed once match correction is implemented in UI
       corrections = YAML.load_file(File.join(Rails.root, 'config', 'match_winner_corrections.yml'))
 
       if corrections.key?(match_id)
-        Rails.logger.tagged('OsuApiParser') { Rails.logger.warn("Correcting match name #{name} => #{corrections[match_id]}") }
+        Rails.logger.tagged(self.class.name) { Rails.logger.warn("Correcting match name #{name} => #{corrections[match_id]}") }
         corrections[match_id]
       else
         name
