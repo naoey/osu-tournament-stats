@@ -28,7 +28,7 @@
     "voca": "^1.4.0"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.12.1",
+    "babel-plugin-import": "^1.12.2",
     "tslint": "^5.20.0",
     "tslint-react": "^4.1.0",
     "webpack-dev-server": "^3.8.1"
