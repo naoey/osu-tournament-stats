@@ -20,6 +20,8 @@ module Discord
     end
 
     def close!
+      return if @client.nil?
+
       @client&.stop
       @client = nil
 
