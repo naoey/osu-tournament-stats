@@ -20,7 +20,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.8.3",
     "react": "^16.10.1",
-    "react-dom": "^16.9.0",
+    "react-dom": "^16.10.1",
     "react_ujs": "^2.6.0",
     "ts-loader": "^6.2.0",
     "typescript": "^3.6.3",
