@@ -24,4 +24,8 @@ class Player < ApplicationRecord
     # new_record? ? false : super
     false
   end
+
+  def as_json(*)
+    super.slice('id', 'name')
+  end
 end
