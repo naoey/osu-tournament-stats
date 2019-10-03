@@ -4,6 +4,8 @@ class MatchesController < ApplicationController
   def show
     @data = Match.all
 
+    @data = @data.where(tournament_id: params[:tournament]) unless params[:tournament].nil?
+
     respond_to do |format|
       format.html
       format.json { render json: @data, status: :ok }
@@ -12,8 +14,6 @@ class MatchesController < ApplicationController
 
   def show_match
     @data = Match.find(params[:id])
-      .as_json(include: { match_scores: { include: :beatmap }, player_red: {}, player_blue: {} })
-      .except('player_red_id', 'player_blue_id', 'api_json')
 
     render json: @data, status: :ok
   end

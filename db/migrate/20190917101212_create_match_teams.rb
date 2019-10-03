@@ -14,21 +14,23 @@ class CreateMatchTeams < ActiveRecord::Migration[6.0]
     add_foreign_key :match_teams, :players, column: :captain_id
 
     add_column :matches, :winner_id, :integer
+    add_column :matches, :red_team_id, :integer
+    add_column :matches, :blue_team_id, :integer
 
     # migrate all the old 1v1 matches by making a team for each player
     Match.all.each do |m|
+      red_player = Player.find_by_osu_id(m.player_red_id)
       red_team = MatchTeam.create(
-        match: m,
-        captain: m.player_red,
-        players: [m.player_red]
+        captain: red_player,
+        players: [red_player]
       )
 
       red_team.save!
 
+      blue_player = Player.find_by_osu_id(m.player_blue_id)
       blue_team = MatchTeam.create(
-        match: m,
-        captain: m.player_blue,
-        players: [m.player_blue]
+        captain: blue_player,
+        players: [blue_player]
       )
 
       blue_team.save!
@@ -36,7 +38,7 @@ class CreateMatchTeams < ActiveRecord::Migration[6.0]
       m.red_team = red_team
       m.blue_team = blue_team
 
-      m.winner = if m.winner_id == m.player_red.id
+      m.winner = if m.winner_id == m.player_red_id
                    red_team
                  else
                    blue_team

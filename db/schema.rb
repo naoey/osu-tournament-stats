@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 2019_09_17_101212) do
     t.datetime "updated_at", null: false
     t.integer "tournament_id"
     t.integer "winner_id"
+    t.integer "red_team_id"
+    t.integer "blue_team_id"
   end
 
   create_table "players", force: :cascade do |t|
