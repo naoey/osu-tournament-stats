@@ -3,7 +3,7 @@ class MatchTeam < ApplicationRecord
   belongs_to :captain, class_name: 'Player'
 
   def as_json(*)
-    super.slice('name').tap do |t|
+    super.slice('name', 'id').tap do |t|
       t['captain'] = captain.as_json
       t['players'] = players.as_json
     end

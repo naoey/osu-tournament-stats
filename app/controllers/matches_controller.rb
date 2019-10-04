@@ -20,11 +20,10 @@ class MatchesController < ApplicationController
 
   def add
     begin
-      ApiServices::OsuApi.new.load_match(add_match_params)
+      ApiServices::OsuApi.new.load_match_new(add_match_params)
 
       match = Match.find_by_online_id(add_match_params[:online_id])
 
-      match.added_by = current_player
       match.save
 
       render json: match, status: :ok
@@ -44,6 +43,6 @@ class MatchesController < ApplicationController
   private
 
   def add_match_params
-    params.require(:match).permit(:online_id, :name, :tournament_id)
+    params.require(:match).permit(:osu_match_id, :round_name, :tournament_id, :discard_list)
   end
 end

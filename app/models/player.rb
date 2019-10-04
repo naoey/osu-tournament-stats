@@ -26,6 +26,6 @@ class Player < ApplicationRecord
   end
 
   def as_json(*)
-    super.slice('id', 'name')
+    super.slice('id', 'name', 'osu_id')
   end
 end

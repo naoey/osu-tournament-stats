@@ -1,7 +1,6 @@
-import { Input, Table, Tooltip } from "antd";
+import { Table, Tooltip } from "antd";
 import { ColumnProps } from 'antd/lib/table';
 import * as _ from "lodash";
-import * as qs from "query-string";
 import * as React from "react";
 import * as v from "voca";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
