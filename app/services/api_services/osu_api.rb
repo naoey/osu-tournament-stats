@@ -43,17 +43,25 @@ module ApiServices
 
       raise OsuApiParserExceptions::MatchParseFailedError, "Match name doesn't match tournament format!" unless players.length == 2
 
-      @player_blue = get_or_load_player players[0].tr(' ()', '')
-      @player_red = get_or_load_player players[1].tr(' ()', '')
-
       ActiveRecord::Base.transaction do
+        red_team = MatchTeam.create(
+          name: players[0].tr(' ()', '')
+        )
+
+        red_team.save!
+
+        blue_team = MatchTeam.create(
+          name: players[1].tr(' ()', '')
+        )
+
+        blue_team.save!
+
         db_match = Match.create(
           online_id: json['match']['match_id'],
           round_name: round_name,
           match_timestamp: DateTime.parse(json['match']['start_time']),
-          api_json: resp.body,
-          player_blue: @player_blue,
-          player_red: @player_red,
+          red_team: red_team,
+          blue_team: blue_team,
           tournament_id: tournament_id
         )
 
@@ -70,11 +78,11 @@ module ApiServices
         # remove aborted maps
         games_after_discard = games_after_discard.filter { |g| !g['scores'].empty? }
 
-        parse_match_games games_after_discard, db_match
+        parse_match_games games_after_discard, db_match, red_team: red_team, blue_team: blue_team
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
 
-        db_match.winner = match_winner?(games_after_discard, db_match.player_red.id, db_match.player_blue.id, osu_match_id)
+        db_match.winner = match_winner?(db_match)
         db_match.save
       end
     end
@@ -93,7 +101,9 @@ module ApiServices
     def load_match(osu_match_id:, round_name: nil, tournament_id: nil)
       Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
-      raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database" unless Match.find_by_online_id(osu_match_id).nil?
+      unless Match.find_by_online_id(osu_match_id).nil?
+        raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database"
+      end
 
       http = Net::HTTP.new('osu.ppy.sh', 443)
       http.use_ssl = true
@@ -252,46 +262,46 @@ module ApiServices
 
     private
 
-    def parse_match_games(games, match)
+    def parse_match_games(games, match, red_team: nil, blue_team: nil)
       puts "Parsing #{games.length} match games"
 
-      nil_score_count = 0
+      total_score_count = 0
 
       games.each do |game|
-        blue_player_score = game['scores'].find { |score| score['slot'] == '0' }
-        red_player_score = game['scores'].find { |score| score['slot'] == '1' }
+        red_team_scores = game['scores'].select { |score| score['team'] == '0' }
+        blue_team_scores = game['scores'].find { |score| score['team'] == '1' }
+        total_score_count += red_team_scores.length
+        total_score_count += blue_team_scores.length
 
         get_or_load_beatmap game['beatmap_id'].to_i
 
-        if red_player_score.nil?
+        MatchScore.create(red_team_scores.map { |_s| create_match_score(match, game, score) })
+        team_members = red_team.players.map(&:osu_id) - (red_team_scores.map { |p| p.user_id.to_i })
+        red_team.players.push(team_members.map { |p| get_or_load_player(p) })
+
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player scores saved' }
+
+        if blue_team_scores.empty?
           nil_score_count += 1
         else
-          red_score = MatchScore.create(create_match_score(match.id, game, red_player_score))
-          red_score.save!
+          MatchScore.create(blue_team_scores.map { |_s| create_match_score(match, game, score) })
+          team_members = red_team.players.map(&:osu_id) - (blue_team_scores.map { |p| p.user_id.to_i })
+          blue_team.players.push(team_members.map { |p| get_or_load_player(p) })
         end
 
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player score saved' }
-
-        if blue_player_score.nil?
-          nil_score_count += 1
-        else
-          blue_score = MatchScore.create(create_match_score(match.id, game, blue_player_score))
-          blue_score.save!
-        end
-
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Blue player score saved' }
+        Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Blue player scores saved' }
       end
 
       # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
-      matches_in_db = MatchScore.where(match_id: match.id).length
-      if matches_in_db != (games.length * 2) - nil_score_count
+      matches_in_db = MatchScore.where(match: match).count(:all)
+      if matches_in_db != total_score_count
         raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2 - nil_score_count}"
       end
     end
 
-    def create_match_score(match_id, game, player_score)
+    def create_match_score(match, game, player_score)
       {
-        match_id: match_id,
+        match: match,
         beatmap_id: game['beatmap_id'].to_i,
         online_game_id: game['game_id'].to_i,
         player_id: player_score['user_id'].to_i,
@@ -308,10 +318,10 @@ module ApiServices
       }
     end
 
-    def match_winner?(match_games, player_blue_id, player_red_id, match_id)
+    def match_winner?(match_games, red_team, blue_team, _match)
       winners = YAML.load_file(File.join(Rails.root, 'config', 'preset_match_winners.yml'))
 
-      return winners[match_id] if winners.key?(match_id)
+      return winners[match_id] == 'red' ? red_team : blue_team if winners.key?(match_id)
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info("Determining winner from #{match_games.length} match games") }
 
@@ -319,30 +329,38 @@ module ApiServices
       red_wins = 0
 
       match_games.each do |g|
-        map_winner = g['scores'].select { |s| s['pass'] == '1' }.max_by { |s| s['score'].to_i }
+        team_totals = g['scores']
+          .select { |s| s['pass'] == '1' }
+          .map { |s| s['total_score'] = s['total_score'].to_i }
+          .group_by { |s| s['team'] }
 
-        raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where map has no passes at all' if map_winner.nil?
-
-        map_winner = map_winner['user_id'].to_i
-
-        if map_winner == player_blue_id
-          blue_wins += 1
-        elsif map_winner == player_red_id
-          red_wins += 1
-        else
-          raise OsuApiParserExceptions::MatchParseFailedError, "Impossible situation where winner of map #{map_winner} is not red (#{player_red_id}) or blue (#{player_blue_id}) player"
+        if team_totals['0'].empty? && team_totals['1'].empty?
+          raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where map has no passes at all'
         end
+
+        red_total = team_totals['0'].reduce(:+)
+        blue_total = team_totals['1'].reduce(:+)
+
+        if red_total == blue_total
+          raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where red and blue teams have identical score'
+        end
+
+        map_winner = if red_total > blue_total
+                       red_wins += 1
+                     else
+                       blue_wins += 1
+                     end
       end
 
       Rails.logger.tagged { Rails.logger.debug("Determined wins: blue: #{blue_wins}, red: #{red_wins}") }
 
-      if blue_wins > red_wins
-        return player_blue_id
-      elsif red_wins > blue_wins
-        return player_red_id
+      if red_wins == blue_wins
+        raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where red and blue have equal wins in a match'
       end
 
-      raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where red and blue have equal wins in a match'
+      return red_team if red_wins > blue_wins
+
+      blue_team
     end
 
     def correct_match_name(name, match_id)
