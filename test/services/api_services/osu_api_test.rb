@@ -4,15 +4,16 @@ class OsuApiTest < Test::Unit::TestCase
   # get_or_load_beatmap tests
   def test_get_or_load_beatmap_non_existent
     stub_request(:get, %r{osu\.ppy\.sh/api/get_beatmaps})
+      .with(query: hash_including(
+        b: '909909'
+      ))
       .to_return(status: 200, body: [].to_s)
       .times(1)
 
-    e = assert_raise(OsuApiParserExceptions::BeatmapLoadFailedError) do
-      ApiServices::OsuApi.new.get_or_load_beatmap(12_345)
-    end
-
-    assert_equal('Beatmap with id 12345 not found on osu! server', e.message)
-    assert_requested(:get, %r{https://osu\.ppy\.sh/api/get_beatmaps}, times: 1)
+    Beatmap.find_by_online_id(-1)&.destroy!
+    assert_true(Beatmap.find_by_online_id(-1).nil?, 'Dummy beatmap does not exist')
+    ApiServices::OsuApi.new.get_or_load_beatmap(909_909)
+    assert_false(Beatmap.find_by_online_id(-1).nil?, 'Dummy beatmap exists')
   end
 
   def test_get_or_load_beatmaps_already_exists
@@ -106,17 +107,17 @@ class OsuApiTest < Test::Unit::TestCase
 
     stub_request(:get, %r{osu\.ppy\.sh/api/get_user})
       .with(query: hash_including(
-        u: 'nitr0f'
+        u: 'chocomint'
       ))
       .to_return(status: 200, body: [{
-        username: 'nitr0f',
-        user_id: '33',
+        username: 'chocomint',
+        user_id: '182128',
       }].to_json.to_s)
       .times(1)
 
     count_before = Player.count
 
-    p = ApiServices::OsuApi.new.get_or_load_player('nitr0f')
+    p = ApiServices::OsuApi.new.get_or_load_player('chocomint')
 
     assert_requested(:get, %r{https://osu\.ppy\.sh/api/get_user}, times: 1)
     assert_equal(count_before + 1, Player.count)
