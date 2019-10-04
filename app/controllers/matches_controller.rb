@@ -20,7 +20,7 @@ class MatchesController < ApplicationController
 
   def add
     begin
-      ApiServices::OsuApi.new.load_match_new(add_match_params)
+      ApiServices::OsuApi.new.load_match(add_match_params)
 
       match = Match.find_by_online_id(add_match_params[:online_id])
 

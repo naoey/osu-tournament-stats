@@ -11,7 +11,7 @@ module ApiServices
     ##
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
-    def load_match_new(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil)
+    def load_match(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil)
       Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       unless Match.find_by_online_id(osu_match_id).nil?
@@ -82,79 +82,7 @@ module ApiServices
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
 
-        db_match.winner = match_winner?(db_match)
-        db_match.save
-      end
-    end
-
-    ##
-    # Loads a new match and adds it to the database, associating it with a given tournament + round or a single match. If any dependent
-    # data such as players/beatmaps are missing, they are loaded from the API as well.
-    #
-    # Parameters:
-    # +osu_match_id+:: The ID of the multiplayer match on osu! servers
-    # +associated_match_id+:: The ID of the associated match in tournament manager's database to which this match's details are to be added
-    # +round_name+:: If this match is part of a tournamnent, optionally specify a round name to display in the tournament details
-    #
-    # @return [Match]
-    # @deprecated Use `load_match_new` instead.
-    def load_match(osu_match_id:, round_name: nil, tournament_id: nil)
-      Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
-
-      unless Match.find_by_online_id(osu_match_id).nil?
-        raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database"
-      end
-
-      http = Net::HTTP.new('osu.ppy.sh', 443)
-      http.use_ssl = true
-
-      resp = http.get("/api/get_match?k=#{ENV['OSU_API_KEY']}&mp=#{osu_match_id}")
-
-      begin
-        json = JSON.parse(resp.body)
-      rescue JSON::ParserError => e
-        raise OsuApiParserExceptions::MatchParseFailedError, 'Failed to load match from osu! API'
-      end
-
-      # TODO: eventually this will have to identify team names and not player names
-      players = json['match']['name'].split(/OIWT[\s:]{0,3}/)
-
-      raise OsuApiParserExceptions::MatchParseFailedError, "Match name doesn't match tournament format!" unless players.length >= 2
-
-      players = players[1].split(/\svs.?\s/)
-
-      raise OsuApiParserExceptions::MatchParseFailedError, "Match name doesn't match tournament format!" unless players.length == 2
-
-      @player_blue = get_or_load_player players[0].tr(' ()', '')
-      @player_red = get_or_load_player players[1].tr(' ()', '')
-
-      ActiveRecord::Base.transaction do
-        db_match = Match.create(
-          online_id: json['match']['match_id'],
-          round_name: round_name,
-          match_timestamp: DateTime.parse(json['match']['start_time']),
-          api_json: resp.body,
-          player_blue: @player_blue,
-          player_red: @player_red,
-          tournament_id: tournament_id
-        )
-
-        db_match.save
-
-        # TODO: handle all game mode combinations
-        json['games'] = json['games'].select do |game|
-          game['team_type'] == '2' && game['scoring_type'] == '3' && game['scores'].length == 3
-        end
-
-        # we need to filter out maps that were replayed for whatever reason
-        # when a map has been played multiple times, always pick the game that was started last for that map ID
-        json['games'] = json['games'].group_by { |g| g['beatmap_id'] }.map { |_, v| v.max_by { |g| DateTime.parse(g['start_time']) } }
-
-        parse_match_games json['games'], db_match
-
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
-
-        db_match.winner = match_winner?(json['games'], db_match.player_red.id, db_match.player_blue.id, osu_match_id)
+        db_match.winner = match_winner?(json['games'], red_team, blue_team)
         db_match.save
       end
     end
@@ -167,14 +95,7 @@ module ApiServices
     #
     # @return [Player]
     def get_or_load_player(username)
-      name_corrections = YAML.load_file(File.join(Rails.root, 'config', 'player_name_typo_list.yml'))
-
       Rails.logger.tagged(self.class.name) { Rails.logger.debug("Fetching player information for player #{username}") }
-
-      if name_corrections.key?(username)
-        Rails.logger.tagged(self.class.name) { Rails.logger.info("Using corrected player name #{username} => #{name_corrections[username]}") }
-        username = name_corrections[username]
-      end
 
       player = Player
         .where('LOWER(name) = ?', username.to_s.downcase)
@@ -265,38 +186,40 @@ module ApiServices
     def parse_match_games(games, match, red_team: nil, blue_team: nil)
       puts "Parsing #{games.length} match games"
 
+      # marker to know whether the games were parsed correctly
       total_score_count = 0
 
       games.each do |game|
         red_team_scores = game['scores'].select { |score| score['team'] == '0' }
         blue_team_scores = game['scores'].find { |score| score['team'] == '1' }
+
         total_score_count += red_team_scores.length
         total_score_count += blue_team_scores.length
 
         get_or_load_beatmap game['beatmap_id'].to_i
 
         MatchScore.create(red_team_scores.map { |_s| create_match_score(match, game, score) })
-        team_members = red_team.players.map(&:osu_id) - (red_team_scores.map { |p| p.user_id.to_i })
-        red_team.players.push(team_members.map { |p| get_or_load_player(p) })
+        new_red_team_members = red_team.players.map(&:osu_id) - (red_team_scores.map { |p| p.user_id.to_i })
+        red_team.players.push(new_red_team_members.map(&method(:get_or_load_player)))
+
+        red_team.save!
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player scores saved' }
 
-        if blue_team_scores.empty?
-          nil_score_count += 1
-        else
-          MatchScore.create(blue_team_scores.map { |_s| create_match_score(match, game, score) })
-          team_members = red_team.players.map(&:osu_id) - (blue_team_scores.map { |p| p.user_id.to_i })
-          blue_team.players.push(team_members.map { |p| get_or_load_player(p) })
-        end
+        MatchScore.create(blue_team_scores.map { |_s| create_match_score(match, game, score) })
+        new_blue_team_members = red_team.players.map(&:osu_id) - (blue_team_scores.map { |p| p.user_id.to_i })
+        blue_team.players.push(new_blue_team_members.map(&method(:get_or_load_player)))
+
+        blue_team.save!
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Blue player scores saved' }
       end
 
-      # Every valid tournament map in a match must have recorded two players' scores otherwise the match didn't parse properly
       matches_in_db = MatchScore.where(match: match).count(:all)
-      if matches_in_db != total_score_count
-        raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2 - nil_score_count}"
-      end
+
+      return unless matches_in_db != total_score_count
+
+      raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{matches_in_db} scores parsed, expected #{games.length * 2 - nil_score_count}"
     end
 
     def create_match_score(match, game, player_score)
@@ -318,10 +241,16 @@ module ApiServices
       }
     end
 
-    def match_winner?(match_games, red_team, blue_team, _match)
+    def match_winner?(match_games, red_team, blue_team)
       winners = YAML.load_file(File.join(Rails.root, 'config', 'preset_match_winners.yml'))
 
-      return winners[match_id] == 'red' ? red_team : blue_team if winners.key?(match_id)
+      if winners.key?(match_id)
+        return red_team if winners[match_id] == 'red'
+
+        return blue_team if winners[match_id] == 'blue'
+
+        raise OsuApiParserExceptions::MatchParseFailedError, "Match #{match_id} has entry in winner overrides but is an unrecognised value"
+      end
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info("Determining winner from #{match_games.length} match games") }
 
@@ -331,7 +260,7 @@ module ApiServices
       match_games.each do |g|
         team_totals = g['scores']
           .select { |s| s['pass'] == '1' }
-          .map { |s| s['total_score'] = s['total_score'].to_i }
+          .map { |s| s['score'] = s['score'].to_i }
           .group_by { |s| s['team'] }
 
         if team_totals['0'].empty? && team_totals['1'].empty?
