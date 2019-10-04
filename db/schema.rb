@@ -121,4 +121,5 @@ ActiveRecord::Schema.define(version: 2019_09_17_101212) do
   end
 
   add_foreign_key "match_teams", "players", column: "captain_id"
+  add_foreign_key "matches", "match_teams", column: "winner_id", on_delete: :restrict
 end
