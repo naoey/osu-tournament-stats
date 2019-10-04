@@ -4,7 +4,10 @@ class MatchesController < ApplicationController
   def show
     @data = Match.all
 
-    @data = @data.where(tournament_id: params[:tournament]) unless params[:tournament].nil?
+    unless params[:tournament_id].nil?
+      @data = @data.where(tournament_id: params[:tournament_id]) unless params[:tournament_id] == '0'
+      @data = @data.where(tournament_id: nil) if params[:tournament_id] == '0'
+    end
 
     respond_to do |format|
       format.html

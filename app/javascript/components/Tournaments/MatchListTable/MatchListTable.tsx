@@ -68,13 +68,21 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
         className: "team-cell",
         dataIndex: "red_team",
         key: "3",
-        render: (text, record) => this.renderTeam(record.red_team, record.winning_team.id === record.red_team.id),
+        render: (text, record) => this.renderTeam(
+          record.red_team,
+          record.winning_team.id === record.red_team.id,
+          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+        ),
         title: "Red Player",
       }, {
         className: "team-cell",
         dataIndex: "blue_team",
         key: "2",
-        render: (text, record) => this.renderTeam(record.blue_team, record.winning_team.id === record.blue_team.id),
+        render: (text, record) => this.renderTeam(
+          record.blue_team,
+          record.winning_team.id === record.blue_team.id,
+          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+        ),
         title: "Blue Team",
       }, {
         dataIndex: "match_timestamp",
@@ -103,8 +111,9 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
     );
   }
 
-  private renderTeam = (team: IMatchTeam, isWinner: boolean) => (
+  private renderTeam = (team: IMatchTeam, isWinner: boolean, showTeamNames: boolean = false) => (
     <List
+      header={showTeamNames ? <b>{team.name || `Team ${team.captain.name}`}</b> : null}
       dataSource={team.players}
       renderItem={this.renderTeamPlayerItem}
       className={isWinner ? "team-list--winner" : "team-list"}
