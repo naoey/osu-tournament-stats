@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_17_101212) do
+ActiveRecord::Schema.define(version: 2019_10_04_114603) do
 
   create_table "beatmaps", force: :cascade do |t|
     t.string "name"
@@ -122,6 +122,4 @@ ActiveRecord::Schema.define(version: 2019_09_17_101212) do
 
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id", on_delete: :restrict
-  add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end
