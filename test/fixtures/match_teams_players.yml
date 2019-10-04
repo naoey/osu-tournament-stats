@@ -1,0 +1,331 @@
+---
+match_teams_player_001:
+  match_team_id: 1
+  player_id: 12433169
+match_teams_player_002:
+  match_team_id: 2
+  player_id: 11326699
+match_teams_player_003:
+  match_team_id: 3
+  player_id: 11866803
+match_teams_player_004:
+  match_team_id: 4
+  player_id: 10122270
+match_teams_player_005:
+  match_team_id: 5
+  player_id: 7840640
+match_teams_player_006:
+  match_team_id: 6
+  player_id: 11326699
+match_teams_player_007:
+  match_team_id: 7
+  player_id: 7753207
+match_teams_player_008:
+  match_team_id: 8
+  player_id: 8141103
+match_teams_player_009:
+  match_team_id: 9
+  player_id: 9980266
+match_teams_player_010:
+  match_team_id: 10
+  player_id: 2003720
+match_teams_player_011:
+  match_team_id: 11
+  player_id: 10250612
+match_teams_player_012:
+  match_team_id: 12
+  player_id: 8141103
+match_teams_player_013:
+  match_team_id: 13
+  player_id: 7840640
+match_teams_player_014:
+  match_team_id: 14
+  player_id: 2003720
+match_teams_player_015:
+  match_team_id: 15
+  player_id: 10674817
+match_teams_player_016:
+  match_team_id: 16
+  player_id: 8720534
+match_teams_player_017:
+  match_team_id: 17
+  player_id: 11082823
+match_teams_player_018:
+  match_team_id: 18
+  player_id: 8141103
+match_teams_player_019:
+  match_team_id: 19
+  player_id: 7840640
+match_teams_player_020:
+  match_team_id: 20
+  player_id: 9980266
+match_teams_player_021:
+  match_team_id: 21
+  player_id: 10674817
+match_teams_player_022:
+  match_team_id: 22
+  player_id: 9098570
+match_teams_player_023:
+  match_team_id: 23
+  player_id: 9098570
+match_teams_player_024:
+  match_team_id: 24
+  player_id: 8720534
+match_teams_player_025:
+  match_team_id: 25
+  player_id: 11326699
+match_teams_player_026:
+  match_team_id: 26
+  player_id: 2003720
+match_teams_player_027:
+  match_team_id: 27
+  player_id: 10674817
+match_teams_player_028:
+  match_team_id: 28
+  player_id: 8850646
+match_teams_player_029:
+  match_team_id: 29
+  player_id: 10476961
+match_teams_player_030:
+  match_team_id: 30
+  player_id: 9822897
+match_teams_player_031:
+  match_team_id: 31
+  player_id: 10122270
+match_teams_player_032:
+  match_team_id: 32
+  player_id: 10476961
+match_teams_player_033:
+  match_team_id: 33
+  player_id: 10122270
+match_teams_player_034:
+  match_team_id: 34
+  player_id: 9822897
+match_teams_player_035:
+  match_team_id: 35
+  player_id: 8850646
+match_teams_player_036:
+  match_team_id: 36
+  player_id: 8720534
+match_teams_player_037:
+  match_team_id: 37
+  player_id: 1788022
+match_teams_player_038:
+  match_team_id: 38
+  player_id: 2003720
+match_teams_player_039:
+  match_team_id: 39
+  player_id: 7840640
+match_teams_player_040:
+  match_team_id: 40
+  player_id: 5139358
+match_teams_player_041:
+  match_team_id: 41
+  player_id: 12433169
+match_teams_player_042:
+  match_team_id: 42
+  player_id: 9926095
+match_teams_player_043:
+  match_team_id: 43
+  player_id: 4124756
+match_teams_player_044:
+  match_team_id: 44
+  player_id: 11269429
+match_teams_player_045:
+  match_team_id: 45
+  player_id: 12171019
+match_teams_player_046:
+  match_team_id: 46
+  player_id: 10250612
+match_teams_player_047:
+  match_team_id: 47
+  player_id: 2060679
+match_teams_player_048:
+  match_team_id: 48
+  player_id: 5139358
+match_teams_player_049:
+  match_team_id: 49
+  player_id: 2060679
+match_teams_player_050:
+  match_team_id: 50
+  player_id: 7840640
+match_teams_player_051:
+  match_team_id: 51
+  player_id: 8850646
+match_teams_player_052:
+  match_team_id: 52
+  player_id: 5139358
+match_teams_player_053:
+  match_team_id: 53
+  player_id: 10519824
+match_teams_player_054:
+  match_team_id: 54
+  player_id: 10122270
+match_teams_player_055:
+  match_team_id: 55
+  player_id: 12171019
+match_teams_player_056:
+  match_team_id: 56
+  player_id: 11269429
+match_teams_player_057:
+  match_team_id: 57
+  player_id: 10122270
+match_teams_player_058:
+  match_team_id: 58
+  player_id: 2003720
+match_teams_player_059:
+  match_team_id: 59
+  player_id: 9926095
+match_teams_player_060:
+  match_team_id: 60
+  player_id: 11807760
+match_teams_player_061:
+  match_team_id: 61
+  player_id: 4124756
+match_teams_player_062:
+  match_team_id: 62
+  player_id: 10250612
+match_teams_player_063:
+  match_team_id: 63
+  player_id: 12171019
+match_teams_player_064:
+  match_team_id: 64
+  player_id: 4124756
+match_teams_player_065:
+  match_team_id: 65
+  player_id: 8850646
+match_teams_player_066:
+  match_team_id: 66
+  player_id: 7840640
+match_teams_player_067:
+  match_team_id: 67
+  player_id: 277063
+match_teams_player_068:
+  match_team_id: 68
+  player_id: 6636960
+match_teams_player_069:
+  match_team_id: 69
+  player_id: 9980266
+match_teams_player_070:
+  match_team_id: 70
+  player_id: 2003720
+match_teams_player_071:
+  match_team_id: 71
+  player_id: 2060679
+match_teams_player_072:
+  match_team_id: 72
+  player_id: 8850646
+match_teams_player_073:
+  match_team_id: 73
+  player_id: 10519824
+match_teams_player_074:
+  match_team_id: 74
+  player_id: 9980266
+match_teams_player_075:
+  match_team_id: 75
+  player_id: 10519824
+match_teams_player_076:
+  match_team_id: 76
+  player_id: 2003720
+match_teams_player_077:
+  match_team_id: 77
+  player_id: 277063
+match_teams_player_078:
+  match_team_id: 78
+  player_id: 11807760
+match_teams_player_079:
+  match_team_id: 79
+  player_id: 11269429
+match_teams_player_080:
+  match_team_id: 80
+  player_id: 10250612
+match_teams_player_081:
+  match_team_id: 81
+  player_id: 9926095
+match_teams_player_082:
+  match_team_id: 82
+  player_id: 6636960
+match_teams_player_083:
+  match_team_id: 83
+  player_id: 11807760
+match_teams_player_084:
+  match_team_id: 84
+  player_id: 6636960
+match_teams_player_085:
+  match_team_id: 85
+  player_id: 11807760
+match_teams_player_086:
+  match_team_id: 86
+  player_id: 11269429
+match_teams_player_087:
+  match_team_id: 87
+  player_id: 5139358
+match_teams_player_088:
+  match_team_id: 88
+  player_id: 10519824
+match_teams_player_089:
+  match_team_id: 89
+  player_id: 6636960
+match_teams_player_090:
+  match_team_id: 90
+  player_id: 10250612
+match_teams_player_091:
+  match_team_id: 91
+  player_id: 2003720
+match_teams_player_092:
+  match_team_id: 92
+  player_id: 2060679
+match_teams_player_093:
+  match_team_id: 93
+  player_id: 11807760
+match_teams_player_094:
+  match_team_id: 94
+  player_id: 2060679
+match_teams_player_095:
+  match_team_id: 95
+  player_id: 6636960
+match_teams_player_096:
+  match_team_id: 96
+  player_id: 10519824
+match_teams_player_097:
+  match_team_id: 97
+  player_id: 11269429
+match_teams_player_098:
+  match_team_id: 98
+  player_id: 2003720
+match_teams_player_099:
+  match_team_id: 99
+  player_id: 10250612
+match_teams_player_100:
+  match_team_id: 100
+  player_id: 5139358
+match_teams_player_101:
+  match_team_id: 101
+  player_id: 10519824
+match_teams_player_102:
+  match_team_id: 102
+  player_id: 2003720
+match_teams_player_103:
+  match_team_id: 103
+  player_id: 11807760
+match_teams_player_104:
+  match_team_id: 104
+  player_id: 6636960
+match_teams_player_105:
+  match_team_id: 105
+  player_id: 10250612
+match_teams_player_106:
+  match_team_id: 106
+  player_id: 2003720
+match_teams_player_107:
+  match_team_id: 107
+  player_id: 11807760
+match_teams_player_108:
+  match_team_id: 108
+  player_id: 2003720
+match_teams_player_109:
+  match_team_id: 109
+  player_id: 6636960
+match_teams_player_110:
+  match_team_id: 110
+  player_id: 2003720

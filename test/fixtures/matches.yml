@@ -2,328 +2,605 @@
 match_1:
   id: 1
   online_id: 48831639
-  player_red_id: 12433169
-  player_blue_id: 11326699
-  winner: 11326699
   round_name: Qualifiers Round 1
-  api_json: '{"match":{"match_id":"48831639","name":"OIWT taha0876 vs DarkNyte","start_time":"2019-01-13
-    14:21:58","end_time":"2019-01-13 14:49:09"},"games":[{"game_id":"254275655","start_time":"2019-01-13
-    14:30:32","end_time":"2019-01-13 14:34:04","beatmap_id":"1428999","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"12433169","score":"310383","maxcombo":"295","rank":"0","count50":"8","count100":"45","count300":"609","countmiss":"3","countgeki":"121","countkatu":"27","perfect":"0","pass":"1"},{"slot":"1","team":"2","user_id":"11326699","score":"923485","maxcombo":"974","rank":"0","count50":"0","count100":"11","count300":"653","countmiss":"1","countgeki":"149","countkatu":"9","perfect":"0","pass":"1"},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"665","countgeki":"0","countkatu":"0","perfect":"0","pass":"0"}]},{"game_id":"254276657","start_time":"2019-01-13
-    14:37:49","end_time":"2019-01-13 14:40:27","beatmap_id":"766602","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"12433169","score":"293801","maxcombo":"273","rank":"0","count50":"4","count100":"51","count300":"412","countmiss":"5","countgeki":"56","countkatu":"27","perfect":"0","pass":"1"},{"slot":"1","team":"2","user_id":"11326699","score":"919010","maxcombo":"722","rank":"0","count50":"0","count100":"20","count300":"452","countmiss":"0","countgeki":"75","countkatu":"14","perfect":"0","pass":"1"},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"472","countgeki":"0","countkatu":"0","perfect":"0","pass":"0"}]},{"game_id":"254277472","start_time":"2019-01-13
-    14:43:54","end_time":"2019-01-13 14:46:47","beatmap_id":"263368","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"12433169","score":"254335","maxcombo":"221","rank":"0","count50":"8","count100":"47","count300":"435","countmiss":"3","countgeki":"67","countkatu":"28","perfect":"0","pass":"1"},{"slot":"1","team":"0","user_id":"11326699","score":"822791","maxcombo":"759","rank":"0","count50":"0","count100":"43","count300":"449","countmiss":"1","countgeki":"74","countkatu":"29","perfect":"0","pass":"1"},{"slot":"2","team":"0","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"493","countgeki":"0","countkatu":"0","perfect":"0","pass":"0"}]}]}'
   match_timestamp: '2019-01-13 14:21:58'
   created_at: '2019-01-14 15:06:24.578804'
-  updated_at: '2019-01-14 15:06:25.732419'
+  updated_at: '2019-10-04 09:40:31.268277'
   tournament_id: 1
+  winner_id: 2
+  red_team_id: 1
+  blue_team_id: 2
 match_2:
   id: 2
   online_id: 48834580
-  player_red_id: 11866803
-  player_blue_id: 10122270
-  winner: 10122270
   round_name: Qualifiers
-  api_json: '{"match":{"match_id":"48834580","name":"OIWT Pradeep22 vs Vikastro","start_time":"2019-01-13
-    16:22:03","end_time":"2019-01-13 16:46:59"},"games":[{"game_id":"254291919","start_time":"2019-01-13
-    16:32:19","end_time":"2019-01-13 16:35:53","beatmap_id":"1428999","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"10122270","score":"888903","maxcombo":"1000","rank":"0","count50":"4","count100":"28","count300":"633","countmiss":"0","countgeki":"137","countkatu":"19","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"11866803","score":"534577","maxcombo":"565","rank":"0","count50":"0","count100":"40","count300":"623","countmiss":"2","countgeki":"126","countkatu":"31","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"665","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"254292674","start_time":"2019-01-13
-    16:38:02","end_time":"2019-01-13 16:40:33","beatmap_id":"766602","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"10122270","score":"371749","maxcombo":"381","rank":"0","count50":"5","count100":"49","count300":"417","countmiss":"1","countgeki":"52","countkatu":"31","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"11866803","score":"682649","maxcombo":"604","rank":"0","count50":"0","count100":"32","count300":"440","countmiss":"0","countgeki":"65","countkatu":"24","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"472","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"254293248","start_time":"2019-01-13
-    16:42:29","end_time":"2019-01-13 16:45:18","beatmap_id":"263368","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"10122270","score":"404752","maxcombo":"453","rank":"0","count50":"2","count100":"63","count300":"425","countmiss":"3","countgeki":"67","countkatu":"35","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"2","user_id":"11866803","score":"315763","maxcombo":"508","rank":"0","count50":"1","count100":"183","count300":"308","countmiss":"1","countgeki":"17","countkatu":"85","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"493","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-01-13 16:22:03'
   created_at: '2019-01-21 03:53:37.800039'
-  updated_at: '2019-01-21 03:53:38.315259'
+  updated_at: '2019-10-04 09:40:31.284160'
   tournament_id: 1
+  winner_id: 4
+  red_team_id: 3
+  blue_team_id: 4
 match_3:
   id: 3
   online_id: 48965931
-  player_red_id: 7840640
-  player_blue_id: 11326699
-  winner: 7840640
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48965931","name":"OIWT DarkNyte vs. jjm","start_time":"2019-01-19
-    10:49:41","end_time":"2019-01-19 11:37:39"},"games":[{"game_id":"255006205","start_time":"2019-01-19
-    11:09:02","end_time":"2019-01-19 11:11:37","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"11326699","score":"656377","maxcombo":"560","rank":"0","count50":"0","count100":"32","count300":"516","countmiss":"0","countgeki":"86","countkatu":"22","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"613237","maxcombo":"459","rank":"0","count50":"0","count100":"18","count300":"528","countmiss":"2","countgeki":"94","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255006732","start_time":"2019-01-19
-    11:14:42","end_time":"2019-01-19 11:16:53","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"11326699","score":"394501","maxcombo":"461","rank":"0","count50":"15","count100":"49","count300":"427","countmiss":"4","countgeki":"95","countkatu":"19","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"713044","maxcombo":"618","rank":"0","count50":"0","count100":"17","count300":"476","countmiss":"2","countgeki":"109","countkatu":"11","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255007100","start_time":"2019-01-19
-    11:18:44","end_time":"2019-01-19 11:21:28","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"11326699","score":"256918","maxcombo":"182","rank":"0","count50":"1","count100":"46","count300":"477","countmiss":"10","countgeki":"92","countkatu":"34","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"1","team":"2","user_id":"7840640","score":"353796","maxcombo":"319","rank":"0","count50":"3","count100":"29","count300":"494","countmiss":"8","countgeki":"108","countkatu":"19","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"534","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"255007635","start_time":"2019-01-19
-    11:24:35","end_time":"2019-01-19 11:28:54","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"11326699","score":"683397","maxcombo":"697","rank":"0","count50":"3","count100":"35","count300":"609","countmiss":"1","countgeki":"127","countkatu":"15","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"679611","maxcombo":"527","rank":"0","count50":"2","count100":"10","count300":"635","countmiss":"1","countgeki":"134","countkatu":"9","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255008178","start_time":"2019-01-19
-    11:31:08","end_time":"2019-01-19 11:36:27","beatmap_id":"1501711","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"11326699","score":"281177","maxcombo":"603","rank":"0","count50":"3","count100":"133","count300":"1055","countmiss":"9","countgeki":"191","countkatu":"74","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"2","user_id":"7840640","score":"639152","maxcombo":"1314","rank":"0","count50":"3","count100":"36","count300":"1158","countmiss":"3","countgeki":"245","countkatu":"27","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1200","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"8"}]}]}'
   match_timestamp: '2019-01-19 10:49:41'
   created_at: '2019-01-21 03:53:45.840303'
-  updated_at: '2019-01-21 03:53:50.396536'
+  updated_at: '2019-10-04 09:40:31.301724'
   tournament_id: 1
+  winner_id: 5
+  red_team_id: 5
+  blue_team_id: 6
 match_4:
   id: 4
   online_id: 48966671
-  player_red_id: 7753207
-  player_blue_id: 8141103
-  winner: 8141103
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48966671","name":"OIWT mlgafdoge vs NKshinkx","start_time":"2019-01-19
-    11:26:22","end_time":"2019-01-19 11:54:48"},"games":[{"game_id":"255008784","start_time":"2019-01-19
-    11:37:59","end_time":"2019-01-19 11:38:31","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"8141103","score":"2098","maxcombo":"7","rank":"0","count50":"0","count100":"0","count300":"4","countmiss":"0","countgeki":"1","countkatu":"0","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"7753207","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"8","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null},{"slot":"3","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"4","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255009035","start_time":"2019-01-19
-    11:40:48","end_time":"2019-01-19 11:44:54","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"8141103","score":"586356","maxcombo":"448","rank":"0","count50":"4","count100":"20","count300":"622","countmiss":"2","countgeki":"128","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"7753207","score":"452618","maxcombo":"519","rank":"0","count50":"5","count100":"48","count300":"590","countmiss":"5","countgeki":"107","countkatu":"32","perfect":"0","pass":"1","enabled_mods":null},{"slot":"3","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255009573","start_time":"2019-01-19
-    11:46:38","end_time":"2019-01-19 11:47:43","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"8141103","score":"93165","maxcombo":"194","rank":"0","count50":"0","count100":"14","count300":"143","countmiss":"1","countgeki":"18","countkatu":"10","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"7753207","score":"70436","maxcombo":"168","rank":"0","count50":"2","count100":"21","count300":"138","countmiss":"1","countgeki":"14","countkatu":"13","perfect":"0","pass":"0","enabled_mods":null},{"slot":"3","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"160","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255010017","start_time":"2019-01-19
-    11:51:08","end_time":"2019-01-19 11:53:36","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"8141103","score":"575698","maxcombo":"439","rank":"0","count50":"1","count100":"16","count300":"530","countmiss":"1","countgeki":"91","countkatu":"15","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"7753207","score":"349163","maxcombo":"283","rank":"0","count50":"3","count100":"37","count300":"500","countmiss":"8","countgeki":"77","countkatu":"25","perfect":"0","pass":"1","enabled_mods":null},{"slot":"3","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 11:26:22'
   created_at: '2019-01-21 03:53:54.751891'
-  updated_at: '2019-01-21 03:53:56.113830'
+  updated_at: '2019-10-04 09:40:31.318365'
   tournament_id: 1
+  winner_id: 8
+  red_team_id: 7
+  blue_team_id: 8
 match_5:
   id: 5
   online_id: 48968025
-  player_red_id: 9980266
-  player_blue_id: 2003720
-  winner: 2003720
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48968025","name":"OIWT Meet vs Xelane","start_time":"2019-01-19
-    12:27:35","end_time":"2019-01-19 12:59:51"},"games":[{"game_id":"255014685","start_time":"2019-01-19
-    12:35:04","end_time":"2019-01-19 12:37:45","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"1085801","maxcombo":"852","rank":"0","count50":"0","count100":"27","count300":"567","countmiss":"0","countgeki":"89","countkatu":"19","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"9980266","score":"609163","maxcombo":"413","rank":"0","count50":"3","count100":"30","count300":"560","countmiss":"1","countgeki":"88","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"594","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255015247","start_time":"2019-01-19
-    12:39:43","end_time":"2019-01-19 12:41:53","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"577267","maxcombo":"447","rank":"0","count50":"3","count100":"3","count300":"486","countmiss":"3","countgeki":"115","countkatu":"3","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"9980266","score":"967353","maxcombo":"752","rank":"0","count50":"0","count100":"7","count300":"488","countmiss":"0","countgeki":"116","countkatu":"6","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255015692","start_time":"2019-01-19
-    12:43:18","end_time":"2019-01-19 12:47:38","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"1058883","maxcombo":"940","rank":"0","count50":"0","count100":"8","count300":"640","countmiss":"0","countgeki":"139","countkatu":"7","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"9980266","score":"483781","maxcombo":"388","rank":"0","count50":"4","count100":"12","count300":"629","countmiss":"3","countgeki":"133","countkatu":"9","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255016448","start_time":"2019-01-19
-    12:49:26","end_time":"2019-01-19 12:52:08","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"727012","maxcombo":"636","rank":"0","count50":"0","count100":"17","count300":"515","countmiss":"2","countgeki":"121","countkatu":"13","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"1","team":"1","user_id":"9980266","score":"918147","maxcombo":"752","rank":"0","count50":"1","count100":"30","count300":"502","countmiss":"1","countgeki":"108","countkatu":"26","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"534","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"255016965","start_time":"2019-01-19
-    12:53:40","end_time":"2019-01-19 12:58:56","beatmap_id":"1501711","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"987736","maxcombo":"1876","rank":"0","count50":"1","count100":"17","count300":"1182","countmiss":"0","countgeki":"261","countkatu":"15","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"1","user_id":"9980266","score":"378301","maxcombo":"504","rank":"0","count50":"3","count100":"22","count300":"1169","countmiss":"6","countgeki":"259","countkatu":"10","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1199","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-01-19 12:27:35'
   created_at: '2019-01-21 03:54:00.457795'
-  updated_at: '2019-01-21 03:54:00.609936'
+  updated_at: '2019-10-04 09:40:31.333801'
   tournament_id: 1
+  winner_id: 10
+  red_team_id: 9
+  blue_team_id: 10
 match_6:
   id: 6
   online_id: 48970293
-  player_red_id: 10250612
-  player_blue_id: 8141103
-  winner: 8141103
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48970293","name":"OIWT mlgafdoge vs ThatCyanGuy","start_time":"2019-01-19
-    13:50:23","end_time":"2019-01-19 14:37:07"},"games":[{"game_id":"255026629","start_time":"2019-01-19
-    14:05:38","end_time":"2019-01-19 14:08:05","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"520240","maxcombo":"471","rank":"0","count50":"2","count100":"43","count300":"546","countmiss":"3","countgeki":"77","countkatu":"28","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10250612","score":"293413","maxcombo":"252","rank":"0","count50":"11","count100":"66","count300":"512","countmiss":"5","countgeki":"73","countkatu":"24","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"594","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255027511","start_time":"2019-01-19
-    14:11:45","end_time":"2019-01-19 14:14:15","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"504987","maxcombo":"398","rank":"0","count50":"0","count100":"17","count300":"527","countmiss":"4","countgeki":"90","countkatu":"14","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10250612","score":"569495","maxcombo":"436","rank":"0","count50":"0","count100":"19","count300":"526","countmiss":"3","countgeki":"88","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255028293","start_time":"2019-01-19
-    14:17:12","end_time":"2019-01-19 14:19:24","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"598593","maxcombo":"581","rank":"0","count50":"1","count100":"28","count300":"460","countmiss":"6","countgeki":"107","countkatu":"11","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10250612","score":"533046","maxcombo":"430","rank":"0","count50":"2","count100":"18","count300":"473","countmiss":"2","countgeki":"109","countkatu":"9","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255028993","start_time":"2019-01-19
-    14:22:05","end_time":"2019-01-19 14:26:22","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"556362","maxcombo":"498","rank":"0","count50":"0","count100":"13","count300":"628","countmiss":"7","countgeki":"132","countkatu":"8","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10250612","score":"718733","maxcombo":"697","rank":"0","count50":"1","count100":"18","count300":"628","countmiss":"1","countgeki":"130","countkatu":"14","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255030049","start_time":"2019-01-19
-    14:29:09","end_time":"2019-01-19 14:34:22","beatmap_id":"1501711","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"434039","maxcombo":"763","rank":"0","count50":"1","count100":"43","count300":"1152","countmiss":"4","countgeki":"240","countkatu":"32","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"2","user_id":"10250612","score":"377787","maxcombo":"706","rank":"0","count50":"7","count100":"53","count300":"1134","countmiss":"6","countgeki":"232","countkatu":"34","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1200","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"8"}]}]}'
   match_timestamp: '2019-01-19 13:50:23'
   created_at: '2019-01-21 03:54:03.737320'
-  updated_at: '2019-01-21 03:54:03.901408'
+  updated_at: '2019-10-04 09:40:31.351124'
   tournament_id: 1
+  winner_id: 12
+  red_team_id: 11
+  blue_team_id: 12
 match_7:
   id: 7
   online_id: 48971263
-  player_red_id: 7840640
-  player_blue_id: 2003720
-  winner: 2003720
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48971263","name":"OIWT Meet vs jjm","start_time":"2019-01-19
-    14:23:11","end_time":"2019-01-19 14:46:40"},"games":[{"game_id":"255030589","start_time":"2019-01-19
-    14:32:55","end_time":"2019-01-19 14:35:40","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"1","user_id":"2003720","score":"1097950","maxcombo":"849","rank":"0","count50":"0","count100":"23","count300":"571","countmiss":"0","countgeki":"92","countkatu":"16","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"569334","maxcombo":"565","rank":"0","count50":"6","count100":"52","count300":"533","countmiss":"3","countgeki":"75","countkatu":"25","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"594","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255031416","start_time":"2019-01-19
-    14:38:30","end_time":"2019-01-19 14:40:10","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"2003720","score":"469037","maxcombo":"446","rank":"0","count50":"0","count100":"3","count300":"348","countmiss":"0","countgeki":"66","countkatu":"3","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"261788","maxcombo":"321","rank":"0","count50":"0","count100":"13","count300":"319","countmiss":"11","countgeki":"57","countkatu":"3","perfect":"0","pass":"0","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"351","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255032231","start_time":"2019-01-19
-    14:43:37","end_time":"2019-01-19 14:45:41","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"1","user_id":"2003720","score":"924822","maxcombo":"608","rank":"0","count50":"0","count100":"31","count300":"314","countmiss":"0","countgeki":"57","countkatu":"25","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"670745","maxcombo":"525","rank":"0","count50":"3","count100":"51","count300":"291","countmiss":"0","countgeki":"50","countkatu":"29","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 14:23:11'
   created_at: '2019-01-21 03:54:07.190733'
-  updated_at: '2019-01-21 03:54:08.393400'
+  updated_at: '2019-10-04 09:40:31.368325'
   tournament_id: 1
+  winner_id: 14
+  red_team_id: 13
+  blue_team_id: 14
 match_8:
   id: 8
   online_id: 48971324
-  player_red_id: 10674817
-  player_blue_id: 8720534
-  winner: 8720534
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48971324","name":"OIWT: Juggernaut vs Hakamora","start_time":"2019-01-19
-    14:24:48","end_time":"2019-01-19 14:55:28"},"games":[{"game_id":"255031084","start_time":"2019-01-19
-    14:36:09","end_time":"2019-01-19 14:40:28","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"327753","maxcombo":"293","rank":"0","count50":"3","count100":"56","count300":"580","countmiss":"9","countgeki":"111","countkatu":"26","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"320353","maxcombo":"318","rank":"0","count50":"12","count100":"39","count300":"588","countmiss":"9","countgeki":"108","countkatu":"25","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255032048","start_time":"2019-01-19
-    14:42:23","end_time":"2019-01-19 14:44:35","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"283457","maxcombo":"202","rank":"0","count50":"7","count100":"19","count300":"439","countmiss":"9","countgeki":"93","countkatu":"13","perfect":"0","pass":"0","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"799630","maxcombo":"691","rank":"0","count50":"0","count100":"14","count300":"447","countmiss":"1","countgeki":"105","countkatu":"8","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"448","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255032706","start_time":"2019-01-19
-    14:46:35","end_time":"2019-01-19 14:49:02","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"744130","maxcombo":"735","rank":"0","count50":"1","count100":"55","count300":"461","countmiss":"0","countgeki":"62","countkatu":"33","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"310399","maxcombo":"295","rank":"0","count50":"6","count100":"60","count300":"449","countmiss":"6","countgeki":"51","countkatu":"35","perfect":"0","pass":"0","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"510","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255033617","start_time":"2019-01-19
-    14:52:38","end_time":"2019-01-19 14:53:45","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"184044","maxcombo":"302","rank":"0","count50":"1","count100":"10","count300":"180","countmiss":"0","countgeki":"32","countkatu":"7","perfect":"0","pass":"1","enabled_mods":"16"},{"slot":"1","team":"1","user_id":"10674817","score":"73121","maxcombo":"123","rank":"0","count50":"3","count100":"15","count300":"167","countmiss":"8","countgeki":"27","countkatu":"9","perfect":"0","pass":"0","enabled_mods":"8"},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"193","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-01-19 14:24:48'
   created_at: '2019-01-21 03:54:13.679985'
-  updated_at: '2019-01-21 03:54:13.814204'
+  updated_at: '2019-10-04 09:40:31.387388'
   tournament_id: 1
+  winner_id: 16
+  red_team_id: 15
+  blue_team_id: 16
 match_9:
   id: 9
   online_id: 48972123
-  player_red_id: 11082823
-  player_blue_id: 8141103
-  winner: 8141103
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48972123","name":"OIWT mlgafdoge vs ash4512","start_time":"2019-01-19
-    14:50:30","end_time":"2019-01-19 15:21:43"},"games":[{"game_id":"255035525","start_time":"2019-01-19
-    15:05:05","end_time":"2019-01-19 15:07:01","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"512600","maxcombo":"323","rank":"0","count50":"1","count100":"40","count300":"303","countmiss":"1","countgeki":"58","countkatu":"22","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"11082823","score":"280405","maxcombo":"336","rank":"0","count50":"6","count100":"107","count300":"228","countmiss":"4","countgeki":"22","countkatu":"51","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255036143","start_time":"2019-01-19
-    15:09:17","end_time":"2019-01-19 15:13:18","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"423798","maxcombo":"396","rank":"0","count50":"7","count100":"36","count300":"601","countmiss":"4","countgeki":"120","countkatu":"19","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"11082823","score":"349157","maxcombo":"340","rank":"0","count50":"12","count100":"70","count300":"564","countmiss":"2","countgeki":"89","countkatu":"49","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255037097","start_time":"2019-01-19
-    15:15:24","end_time":"2019-01-19 15:16:01","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"13564","maxcombo":"46","rank":"0","count50":"2","count100":"16","count300":"73","countmiss":"8","countgeki":"8","countkatu":"8","perfect":"0","pass":"0","enabled_mods":null},{"slot":"1","team":"2","user_id":"11082823","score":"27580","maxcombo":"84","rank":"0","count50":"0","count100":"17","count300":"79","countmiss":"1","countgeki":"8","countkatu":"10","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"101","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255037503","start_time":"2019-01-19
-    15:17:50","end_time":"2019-01-19 15:20:00","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8141103","score":"353757","maxcombo":"268","rank":"0","count50":"4","count100":"20","count300":"460","countmiss":"11","countgeki":"100","countkatu":"13","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"11082823","score":"263638","maxcombo":"268","rank":"0","count50":"9","count100":"53","count300":"428","countmiss":"5","countgeki":"85","countkatu":"29","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"1","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 14:50:30'
   created_at: '2019-01-21 03:54:18.122757'
-  updated_at: '2019-01-21 03:54:18.309119'
+  updated_at: '2019-10-04 09:40:31.406502'
   tournament_id: 1
+  winner_id: 18
+  red_team_id: 17
+  blue_team_id: 18
 match_10:
   id: 10
   online_id: 48973081
-  player_red_id: 7840640
-  player_blue_id: 9980266
-  winner: 9980266
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48973081","name":"OIWT Xelane vs jjm","start_time":"2019-01-19
-    15:19:51","end_time":"2019-01-19 15:58:03"},"games":[{"game_id":"255039954","start_time":"2019-01-19
-    15:32:50","end_time":"2019-01-19 15:35:34","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"9980266","score":"605015","maxcombo":"518","rank":"0","count50":"1","count100":"44","count300":"488","countmiss":"1","countgeki":"103","countkatu":"31","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"1","team":"2","user_id":"7840640","score":"231319","maxcombo":"199","rank":"0","count50":"7","count100":"35","count300":"475","countmiss":"17","countgeki":"100","countkatu":"19","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"534","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"255040757","start_time":"2019-01-19
-    15:37:38","end_time":"2019-01-19 15:39:41","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"1","user_id":"9980266","score":"497755","maxcombo":"376","rank":"0","count50":"3","count100":"39","count300":"303","countmiss":"0","countgeki":"53","countkatu":"26","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"788386","maxcombo":"576","rank":"0","count50":"3","count100":"40","count300":"302","countmiss":"0","countgeki":"44","countkatu":"35","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255041316","start_time":"2019-01-19
-    15:40:54","end_time":"2019-01-19 15:45:04","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"9980266","score":"764981","maxcombo":"678","rank":"0","count50":"0","count100":"4","count300":"643","countmiss":"1","countgeki":"141","countkatu":"4","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"728133","maxcombo":"678","rank":"0","count50":"0","count100":"15","count300":"632","countmiss":"1","countgeki":"133","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255042247","start_time":"2019-01-19
-    15:46:31","end_time":"2019-01-19 15:48:43","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"9980266","score":"626926","maxcombo":"427","rank":"0","count50":"2","count100":"6","count300":"487","countmiss":"0","countgeki":"118","countkatu":"3","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"7840640","score":"420305","maxcombo":"283","rank":"0","count50":"1","count100":"18","count300":"473","countmiss":"3","countgeki":"107","countkatu":"11","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 15:19:51'
   created_at: '2019-01-21 03:54:21.154595'
-  updated_at: '2019-01-21 03:54:21.294180'
+  updated_at: '2019-10-04 09:40:31.550410'
   tournament_id: 1
+  winner_id: 20
+  red_team_id: 19
+  blue_team_id: 20
 match_11:
   id: 11
   online_id: 48973170
-  player_red_id: 10674817
-  player_blue_id: 9098570
-  winner: 10674817
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48973170","name":"OIWT: --Ako-- vs Hakamora","start_time":"2019-01-19
-    15:23:30","end_time":"2019-01-19 15:51:54"},"games":[{"game_id":"255040658","start_time":"2019-01-19
-    15:36:58","end_time":"2019-01-19 15:39:31","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"9098570","score":"523592","maxcombo":"346","rank":"0","count50":"0","count100":"12","count300":"535","countmiss":"1","countgeki":"97","countkatu":"10","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"556928","maxcombo":"429","rank":"0","count50":"1","count100":"28","count300":"518","countmiss":"1","countgeki":"88","countkatu":"18","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255041454","start_time":"2019-01-19
-    15:41:38","end_time":"2019-01-19 15:43:48","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"9098570","score":"747351","maxcombo":"594","rank":"0","count50":"1","count100":"6","count300":"488","countmiss":"0","countgeki":"116","countkatu":"5","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"904832","maxcombo":"751","rank":"0","count50":"0","count100":"20","count300":"475","countmiss":"0","countgeki":"110","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255042261","start_time":"2019-01-19
-    15:46:36","end_time":"2019-01-19 15:50:53","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"9098570","score":"541551","maxcombo":"520","rank":"0","count50":"0","count100":"23","count300":"618","countmiss":"7","countgeki":"126","countkatu":"14","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10674817","score":"628536","maxcombo":"531","rank":"0","count50":"2","count100":"22","count300":"623","countmiss":"1","countgeki":"126","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 15:23:30'
   created_at: '2019-01-21 03:54:24.545976'
-  updated_at: '2019-01-21 03:54:24.696031'
+  updated_at: '2019-10-04 09:40:31.597761'
   tournament_id: 1
+  winner_id: 21
+  red_team_id: 21
+  blue_team_id: 22
 match_12:
   id: 12
   online_id: 48974274
-  player_red_id: 9098570
-  player_blue_id: 8720534
-  winner: 9098570
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48974274","name":"OIWT Juggernaut vs. --Ako--","start_time":"2019-01-19
-    15:57:33","end_time":"2019-01-19 16:23:42"},"games":[{"game_id":"255045473","start_time":"2019-01-19
-    16:06:35","end_time":"2019-01-19 16:08:36","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"1","user_id":"8720534","score":"572226","maxcombo":"324","rank":"0","count50":"1","count100":"27","count300":"317","countmiss":"0","countgeki":"61","countkatu":"20","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"9098570","score":"341446","maxcombo":"311","rank":"0","count50":"5","count100":"65","count300":"273","countmiss":"2","countgeki":"43","countkatu":"32","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255046046","start_time":"2019-01-19
-    16:09:58","end_time":"2019-01-19 16:12:38","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"1","user_id":"8720534","score":"613527","maxcombo":"570","rank":"0","count50":"1","count100":"51","count300":"541","countmiss":"1","countgeki":"73","countkatu":"33","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"9098570","score":"715923","maxcombo":"624","rank":"0","count50":"3","count100":"29","count300":"560","countmiss":"2","countgeki":"88","countkatu":"16","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"594","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255046993","start_time":"2019-01-19
-    16:15:42","end_time":"2019-01-19 16:17:14","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8720534","score":"239233","maxcombo":"353","rank":"0","count50":"2","count100":"13","count300":"274","countmiss":"12","countgeki":"70","countkatu":"5","perfect":"0","pass":"0","enabled_mods":null},{"slot":"1","team":"2","user_id":"9098570","score":"305467","maxcombo":"238","rank":"0","count50":"1","count100":"3","count300":"297","countmiss":"0","countgeki":"77","countkatu":"3","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"300","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255047560","start_time":"2019-01-19
-    16:19:15","end_time":"2019-01-19 16:22:17","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"8720534","score":"274178","maxcombo":"243","rank":"0","count50":"1","count100":"15","count300":"461","countmiss":"12","countgeki":"91","countkatu":"11","perfect":"0","pass":"0","enabled_mods":null},{"slot":"1","team":"2","user_id":"9098570","score":"411990","maxcombo":"457","rank":"0","count50":"0","count100":"19","count300":"461","countmiss":"1","countgeki":"92","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"7","team":"2","user_id":"10538021","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"482","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 15:57:33'
   created_at: '2019-01-21 03:54:27.617589'
-  updated_at: '2019-01-21 03:54:27.769810'
+  updated_at: '2019-10-04 09:40:31.681468'
   tournament_id: 1
+  winner_id: 23
+  red_team_id: 23
+  blue_team_id: 24
 match_13:
   id: 13
   online_id: 48974854
-  player_red_id: 11326699
-  player_blue_id: 2003720
-  winner: 2003720
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48974854","name":"OIWT Meet vs DarkNyte","start_time":"2019-01-19
-    16:16:44","end_time":"2019-01-19 16:45:28"},"games":[{"game_id":"255049880","start_time":"2019-01-19
-    16:33:08","end_time":"2019-01-19 16:34:25","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"185880","maxcombo":"276","rank":"0","count50":"0","count100":"9","count300":"209","countmiss":"1","countgeki":"32","countkatu":"7","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"11326699","score":"45914","maxcombo":"143","rank":"0","count50":"3","count100":"66","count300":"150","countmiss":"6","countgeki":"10","countkatu":"25","perfect":"0","pass":"0","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"217","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255050286","start_time":"2019-01-19
-    16:35:42","end_time":"2019-01-19 16:38:24","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"637281","maxcombo":"366","rank":"0","count50":"0","count100":"3","count300":"544","countmiss":"1","countgeki":"104","countkatu":"3","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"11326699","score":"610394","maxcombo":"436","rank":"0","count50":"0","count100":"15","count300":"531","countmiss":"2","countgeki":"94","countkatu":"12","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255050954","start_time":"2019-01-19
-    16:39:57","end_time":"2019-01-19 16:44:15","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"771674","maxcombo":"719","rank":"0","count50":"0","count100":"7","count300":"639","countmiss":"2","countgeki":"138","countkatu":"6","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"11326699","score":"672368","maxcombo":"749","rank":"0","count50":"8","count100":"46","count300":"591","countmiss":"3","countgeki":"121","countkatu":"18","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 16:16:44'
   created_at: '2019-01-21 03:54:30.823790'
-  updated_at: '2019-01-21 03:54:30.957357'
+  updated_at: '2019-10-04 09:40:31.698039'
   tournament_id: 1
+  winner_id: 26
+  red_team_id: 25
+  blue_team_id: 26
 match_14:
   id: 14
   online_id: 48975882
-  player_red_id: 10674817
-  player_blue_id: 8850646
-  winner: 10674817
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"48975882","name":"OIWT RudeDud3 vs Hakamora","start_time":"2019-01-19
-    16:51:13","end_time":"2019-01-19 17:19:22"},"games":[{"game_id":"255054318","start_time":"2019-01-19
-    17:01:41","end_time":"2019-01-19 17:02:32","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8850646","score":"60409","maxcombo":"193","rank":"0","count50":"0","count100":"27","count300":"97","countmiss":"0","countgeki":"9","countkatu":"17","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"1","team":"2","user_id":"10674817","score":"23346","maxcombo":"84","rank":"0","count50":"8","count100":"26","count300":"90","countmiss":"3","countgeki":"6","countkatu":"13","perfect":"0","pass":"0","enabled_mods":"16"},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"131","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"255055040","start_time":"2019-01-19
-    17:05:57","end_time":"2019-01-19 17:08:32","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"8850646","score":"272333","maxcombo":"224","rank":"0","count50":"3","count100":"49","count300":"486","countmiss":"10","countgeki":"74","countkatu":"25","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10674817","score":"609616","maxcombo":"461","rank":"0","count50":"0","count100":"22","count300":"525","countmiss":"1","countgeki":"90","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255055768","start_time":"2019-01-19
-    17:10:19","end_time":"2019-01-19 17:12:20","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"1","user_id":"8850646","score":"270732","maxcombo":"223","rank":"0","count50":"6","count100":"77","count300":"259","countmiss":"3","countgeki":"32","countkatu":"41","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10674817","score":"512197","maxcombo":"458","rank":"0","count50":"3","count100":"66","count300":"276","countmiss":"0","countgeki":"39","countkatu":"41","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255056204","start_time":"2019-01-19
-    17:13:05","end_time":"2019-01-19 17:17:19","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"8850646","score":"383091","maxcombo":"265","rank":"0","count50":"4","count100":"47","count300":"592","countmiss":"5","countgeki":"109","countkatu":"31","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10674817","score":"712885","maxcombo":"716","rank":"0","count50":"1","count100":"25","count300":"619","countmiss":"3","countgeki":"126","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-19 16:51:13'
   created_at: '2019-01-21 03:54:35.649123'
-  updated_at: '2019-01-21 03:54:35.795246'
+  updated_at: '2019-10-04 09:40:31.718091'
   tournament_id: 1
+  winner_id: 27
+  red_team_id: 27
+  blue_team_id: 28
 match_15:
   id: 15
   online_id: 49000910
-  player_red_id: 10476961
-  player_blue_id: 9822897
-  winner: 9822897
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"49000910","name":"OIWT: arulson vs SanjuBSK","start_time":"2019-01-20
-    12:27:40","end_time":"2019-01-20 12:51:19"},"games":[{"game_id":"255191032","start_time":"2019-01-20
-    12:37:44","end_time":"2019-01-20 12:39:55","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"9822897","score":"580737","maxcombo":"461","rank":"0","count50":"8","count100":"13","count300":"474","countmiss":"0","countgeki":"113","countkatu":"7","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10476961","score":"329416","maxcombo":"234","rank":"0","count50":"6","count100":"24","count300":"460","countmiss":"5","countgeki":"99","countkatu":"14","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255191492","start_time":"2019-01-20
-    12:41:33","end_time":"2019-01-20 12:45:35","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"9822897","score":"761424","maxcombo":"754","rank":"0","count50":"1","count100":"18","count300":"628","countmiss":"1","countgeki":"127","countkatu":"17","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10476961","score":"528124","maxcombo":"437","rank":"0","count50":"2","count100":"12","count300":"632","countmiss":"2","countgeki":"132","countkatu":"10","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255192162","start_time":"2019-01-20
-    12:47:17","end_time":"2019-01-20 12:49:14","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"2","user_id":"9822897","score":"901383","maxcombo":"607","rank":"0","count50":"1","count100":"33","count300":"311","countmiss":"0","countgeki":"55","countkatu":"26","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10476961","score":"891555","maxcombo":"608","rank":"0","count50":"0","count100":"37","count300":"308","countmiss":"0","countgeki":"54","countkatu":"28","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-20 12:27:40'
   created_at: '2019-01-21 03:54:41.785217'
-  updated_at: '2019-01-21 03:54:41.908210'
+  updated_at: '2019-10-04 09:40:31.797203'
   tournament_id: 1
+  winner_id: 30
+  red_team_id: 29
+  blue_team_id: 30
 match_16:
   id: 16
   online_id: 49004606
-  player_red_id: 10122270
-  player_blue_id: 10476961
-  winner: 10476961
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"49004606","name":"OIWT SanjuBSK vs Pradeep22","start_time":"2019-01-20
-    14:56:06","end_time":"2019-01-20 15:16:11"},"games":[{"game_id":"255210244","start_time":"2019-01-20
-    15:04:19","end_time":"2019-01-20 15:08:39","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"10476961","score":"384874","maxcombo":"247","rank":"0","count50":"2","count100":"16","count300":"622","countmiss":"8","countgeki":"127","countkatu":"10","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10122270","score":"270873","maxcombo":"444","rank":"0","count50":"24","count100":"125","count300":"494","countmiss":"5","countgeki":"85","countkatu":"44","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"641","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255210964","start_time":"2019-01-20
-    15:09:39","end_time":"2019-01-20 15:11:51","beatmap_id":"1674896","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"10476961","score":"928656","maxcombo":"754","rank":"0","count50":"4","count100":"10","count300":"481","countmiss":"0","countgeki":"115","countkatu":"6","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10122270","score":"214730","maxcombo":"276","rank":"0","count50":"8","count100":"89","count300":"390","countmiss":"8","countgeki":"59","countkatu":"53","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"495","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255211434","start_time":"2019-01-20
-    15:13:03","end_time":"2019-01-20 15:15:04","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"2","user_id":"10476961","score":"800869","maxcombo":"563","rank":"0","count50":"2","count100":"35","count300":"308","countmiss":"0","countgeki":"58","countkatu":"22","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"10122270","score":"732669","maxcombo":"607","rank":"0","count50":"3","count100":"77","count300":"265","countmiss":"0","countgeki":"35","countkatu":"44","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"12347147","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]}]}'
   match_timestamp: '2019-01-20 14:56:06'
   created_at: '2019-01-21 04:06:30.906356'
-  updated_at: '2019-01-21 04:06:31.131586'
+  updated_at: '2019-10-04 09:40:31.862001'
   tournament_id: 1
+  winner_id: 32
+  red_team_id: 31
+  blue_team_id: 32
 match_17:
   id: 17
   online_id: 49006138
-  player_red_id: 10122270
-  player_blue_id: 9822897
-  winner: 9822897
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"49006138","name":"OIWT arulson vs Pradeep22","start_time":"2019-01-20
-    15:56:56","end_time":"2019-01-20 16:29:13"},"games":[{"game_id":"255218213","start_time":"2019-01-20
-    16:03:22","end_time":"2019-01-20 16:05:55","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"1","user_id":"9822897","score":"1090669","maxcombo":"848","rank":"0","count50":"1","count100":"23","count300":"570","countmiss":"0","countgeki":"91","countkatu":"16","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10122270","score":"400306","maxcombo":"588","rank":"0","count50":"16","count100":"148","count300":"428","countmiss":"2","countgeki":"33","countkatu":"61","perfect":"0","pass":"0","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"591","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255218921","start_time":"2019-01-20
-    16:08:18","end_time":"2019-01-20 16:10:53","beatmap_id":"1618799","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"1","user_id":"9822897","score":"976260","maxcombo":"716","rank":"0","count50":"0","count100":"6","count300":"542","countmiss":"0","countgeki":"103","countkatu":"5","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10122270","score":"359543","maxcombo":"384","rank":"0","count50":"5","count100":"62","count300":"475","countmiss":"6","countgeki":"59","countkatu":"39","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255219601","start_time":"2019-01-20
-    16:13:00","end_time":"2019-01-20 16:17:21","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"1","user_id":"9822897","score":"1041271","maxcombo":"942","rank":"0","count50":"0","count100":"10","count300":"638","countmiss":"0","countgeki":"139","countkatu":"7","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"2","user_id":"10122270","score":"234365","maxcombo":"254","rank":"0","count50":"16","count100":"96","count300":"531","countmiss":"5","countgeki":"90","countkatu":"39","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"10519824","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255220950","start_time":"2019-01-20
-    16:22:12","end_time":"2019-01-20 16:27:27","beatmap_id":"1501711","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"9822897","score":"270018","maxcombo":"423","rank":"0","count50":"12","count100":"78","count300":"1091","countmiss":"19","countgeki":"202","countkatu":"51","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"1","team":"0","user_id":"10122270","score":"87289","maxcombo":"311","rank":"0","count50":"43","count100":"412","count300":"719","countmiss":"26","countgeki":"74","countkatu":"151","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"2","team":"0","user_id":"10519824","score":"159775","maxcombo":"262","rank":"0","count50":"16","count100":"136","count300":"1023","countmiss":"25","countgeki":"176","countkatu":"72","perfect":"0","pass":"1","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-01-20 15:56:56'
   created_at: '2019-01-21 04:06:34.710363'
-  updated_at: '2019-01-21 04:06:34.809360'
+  updated_at: '2019-10-04 09:40:31.889215'
   tournament_id: 1
+  winner_id: 34
+  red_team_id: 33
+  blue_team_id: 34
 match_18:
   id: 18
   online_id: 49008554
-  player_red_id: 8850646
-  player_blue_id: 8720534
-  winner: 8850646
   round_name: Group Stage
-  api_json: '{"match":{"match_id":"49008554","name":"OIWT Juggernaut vs Rud3Dud3","start_time":"2019-01-20
-    17:27:55","end_time":"2019-01-20 18:04:57"},"games":[{"game_id":"255231844","start_time":"2019-01-20
-    17:37:44","end_time":"2019-01-20 17:40:21","beatmap_id":"178643","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"420498","maxcombo":"415","rank":"0","count50":"0","count100":"58","count300":"531","countmiss":"5","countgeki":"67","countkatu":"37","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"8850646","score":"505724","maxcombo":"447","rank":"0","count50":"7","count100":"57","count300":"528","countmiss":"2","countgeki":"73","countkatu":"28","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"594","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255232593","start_time":"2019-01-20
-    17:42:49","end_time":"2019-01-20 17:44:56","beatmap_id":"1260122","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"915411","maxcombo":"607","rank":"0","count50":"0","count100":"30","count300":"315","countmiss":"0","countgeki":"58","countkatu":"24","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"8850646","score":"567593","maxcombo":"501","rank":"0","count50":"6","count100":"64","count300":"274","countmiss":"1","countgeki":"36","countkatu":"39","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"345","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255233142","start_time":"2019-01-20
-    17:46:42","end_time":"2019-01-20 17:50:49","beatmap_id":"703042","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"8","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"298579","maxcombo":"235","rank":"0","count50":"6","count100":"48","count300":"586","countmiss":"8","countgeki":"108","countkatu":"27","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"8850646","score":"643740","maxcombo":"679","rank":"0","count50":"1","count100":"39","count300":"604","countmiss":"4","countgeki":"114","countkatu":"27","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"648","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"255233980","start_time":"2019-01-20
-    17:52:35","end_time":"2019-01-20 17:55:17","beatmap_id":"1262906","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"715549","maxcombo":"681","rank":"0","count50":"2","count100":"58","count300":"474","countmiss":"0","countgeki":"94","countkatu":"40","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"1","team":"1","user_id":"8850646","score":"472746","maxcombo":"577","rank":"0","count50":"9","count100":"93","count300":"428","countmiss":"4","countgeki":"64","countkatu":"64","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"534","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"255234633","start_time":"2019-01-20
-    17:57:08","end_time":"2019-01-20 18:02:21","beatmap_id":"1501711","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"8720534","score":"176952","maxcombo":"248","rank":"0","count50":"10","count100":"108","count300":"1054","countmiss":"28","countgeki":"181","countkatu":"66","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"1","user_id":"8850646","score":"515932","maxcombo":"1274","rank":"0","count50":"8","count100":"122","count300":"1065","countmiss":"5","countgeki":"197","countkatu":"67","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1200","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-01-20 17:27:55'
   created_at: '2019-01-21 04:15:13.812036'
-  updated_at: '2019-01-21 04:15:13.957971'
+  updated_at: '2019-10-04 09:40:31.912949'
   tournament_id: 1
+  winner_id: 35
+  red_team_id: 35
+  blue_team_id: 36
 match_19:
   id: 19
   online_id: 49503235
-  player_red_id: 1788022
-  player_blue_id: 2003720
-  winner: 1788022
   round_name: Grand Finals
-  api_json: '{"match":{"match_id":"49503235","name":"OIWT Meet vs Potla","start_time":"2019-02-10
-    16:51:41","end_time":"2019-02-10 18:11:32"},"games":[{"game_id":"257933100","start_time":"2019-02-10
-    16:58:04","end_time":"2019-02-10 17:03:01","beatmap_id":"151229","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"2003720","score":"196453","maxcombo":"477","rank":"0","count50":"41","count100":"152","count300":"1571","countmiss":"19","countgeki":"159","countkatu":"36","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"0","user_id":"1788022","score":"112131","maxcombo":"327","rank":"0","count50":"37","count100":"375","count300":"1333","countmiss":"38","countgeki":"81","countkatu":"107","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"2","team":"0","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1783","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"257933912","start_time":"2019-02-10
-    17:04:08","end_time":"2019-02-10 17:12:35","beatmap_id":"890190","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"2003720","score":"192255","maxcombo":"1143","rank":"0","count50":"23","count100":"281","count300":"2199","countmiss":"89","countgeki":"251","countkatu":"108","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"0","user_id":"1788022","score":"76167","maxcombo":"443","rank":"0","count50":"90","count100":"495","count300":"1859","countmiss":"148","countgeki":"175","countkatu":"147","perfect":"0","pass":"0","enabled_mods":"24"},{"slot":"2","team":"0","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"2592","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"257935491","start_time":"2019-02-10
-    17:15:13","end_time":"2019-02-10 17:19:29","beatmap_id":"95382","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"2003720","score":"39771","maxcombo":"173","rank":"0","count50":"77","count100":"321","count300":"1106","countmiss":"155","countgeki":"92","countkatu":"54","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"0","user_id":"1788022","score":"28892","maxcombo":"157","rank":"0","count50":"138","count100":"493","count300":"932","countmiss":"96","countgeki":"56","countkatu":"92","perfect":"0","pass":"1","enabled_mods":"24"},{"slot":"2","team":"0","user_id":"5139358","score":"241","maxcombo":"18","rank":"0","count50":"3","count100":"9","count300":"28","countmiss":"1619","countgeki":"3","countkatu":"1","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"257936737","start_time":"2019-02-10
-    17:24:01","end_time":"2019-02-10 17:27:02","beatmap_id":"383536","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"215511","maxcombo":"293","rank":"0","count50":"15","count100":"100","count300":"1042","countmiss":"5","countgeki":"92","countkatu":"38","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"97767","maxcombo":"294","rank":"0","count50":"55","count100":"226","count300":"866","countmiss":"16","countgeki":"68","countkatu":"51","perfect":"0","pass":"0","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1138","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257937369","start_time":"2019-02-10
-    17:28:43","end_time":"2019-02-10 17:32:41","beatmap_id":"1120184","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"101177","maxcombo":"169","rank":"0","count50":"30","count100":"166","count300":"821","countmiss":"17","countgeki":"119","countkatu":"101","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"509423","maxcombo":"1261","rank":"0","count50":"5","count100":"96","count300":"928","countmiss":"5","countgeki":"176","countkatu":"74","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1034","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257938118","start_time":"2019-02-10
-    17:34:12","end_time":"2019-02-10 17:37:35","beatmap_id":"559446","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"710187","maxcombo":"887","rank":"0","count50":"8","count100":"46","count300":"757","countmiss":"1","countgeki":"123","countkatu":"32","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"676991","maxcombo":"990","rank":"0","count50":"5","count100":"108","count300":"697","countmiss":"2","countgeki":"93","countkatu":"61","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"812","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257938814","start_time":"2019-02-10
-    17:39:26","end_time":"2019-02-10 17:41:25","beatmap_id":"872657","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"454578","maxcombo":"274","rank":"0","count50":"1","count100":"26","count300":"404","countmiss":"6","countgeki":"84","countkatu":"19","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"765804","maxcombo":"469","rank":"0","count50":"1","count100":"21","count300":"414","countmiss":"1","countgeki":"93","countkatu":"14","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"437","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257939361","start_time":"2019-02-10
-    17:43:27","end_time":"2019-02-10 17:46:03","beatmap_id":"660887","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"16","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"302610","maxcombo":"331","rank":"0","count50":"2","count100":"108","count300":"446","countmiss":"2","countgeki":"77","countkatu":"64","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"608309","maxcombo":"714","rank":"0","count50":"7","count100":"111","count300":"435","countmiss":"5","countgeki":"70","countkatu":"72","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"558","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257940180","start_time":"2019-02-10
-    17:49:19","end_time":"2019-02-10 17:51:54","beatmap_id":"713932","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"64","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"1011150","maxcombo":"549","rank":"0","count50":"0","count100":"34","count300":"427","countmiss":"0","countgeki":"47","countkatu":"29","perfect":"0","pass":"1","enabled_mods":null},{"slot":"1","team":"1","user_id":"1788022","score":"1036097","maxcombo":"551","rank":"0","count50":"0","count100":"29","count300":"432","countmiss":"0","countgeki":"55","countkatu":"21","perfect":"0","pass":"1","enabled_mods":null},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"461","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":null}]},{"game_id":"257940792","start_time":"2019-02-10
-    17:53:37","end_time":"2019-02-10 17:55:45","beatmap_id":"173391","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"197086","maxcombo":"659","rank":"0","count50":"3","count100":"18","count300":"546","countmiss":"10","countgeki":"82","countkatu":"10","perfect":"0","pass":"0","enabled_mods":"8"},{"slot":"1","team":"1","user_id":"1788022","score":"185364","maxcombo":"342","rank":"0","count50":"3","count100":"13","count300":"559","countmiss":"2","countgeki":"85","countkatu":"8","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"577","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"257941380","start_time":"2019-02-10
-    17:57:44","end_time":"2019-02-10 18:01:15","beatmap_id":"1040424","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"2","mods":"0","scores":[{"slot":"0","team":"2","user_id":"2003720","score":"292253","maxcombo":"536","rank":"0","count50":"4","count100":"52","count300":"767","countmiss":"8","countgeki":"339","countkatu":"45","perfect":"0","pass":"0","enabled_mods":"0"},{"slot":"1","team":"1","user_id":"1788022","score":"425846","maxcombo":"622","rank":"0","count50":"0","count100":"32","count300":"791","countmiss":"2","countgeki":"363","countkatu":"22","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"2","team":"1","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"814","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]},{"game_id":"257942071","start_time":"2019-02-10
-    18:02:43","end_time":"2019-02-10 18:08:32","beatmap_id":"669496","play_mode":"0","match_type":"0","scoring_type":"3","team_type":"0","mods":"0","scores":[{"slot":"0","team":"0","user_id":"2003720","score":"296838","maxcombo":"368","rank":"0","count50":"11","count100":"57","count300":"1462","countmiss":"18","countgeki":"256","countkatu":"32","perfect":"0","pass":"1","enabled_mods":"0"},{"slot":"1","team":"0","user_id":"1788022","score":"276442","maxcombo":"462","rank":"0","count50":"15","count100":"81","count300":"1419","countmiss":"33","countgeki":"241","countkatu":"44","perfect":"0","pass":"1","enabled_mods":"8"},{"slot":"2","team":"0","user_id":"5139358","score":"0","maxcombo":"0","rank":"0","count50":"0","count100":"0","count300":"0","countmiss":"1548","countgeki":"0","countkatu":"0","perfect":"0","pass":"0","enabled_mods":"0"}]}]}'
   match_timestamp: '2019-02-10 16:51:41'
   created_at: '2019-05-25 17:41:08.940648'
-  updated_at: '2019-05-25 17:41:12.443049'
+  updated_at: '2019-10-04 09:40:31.983523'
   tournament_id: 1
+  winner_id: 37
+  red_team_id: 37
+  blue_team_id: 38
+match_20:
+  id: 20
+  online_id: 53451529
+  round_name: Group Stage
+  match_timestamp: '2019-07-19 13:50:23'
+  created_at: '2019-09-10 08:24:46.169677'
+  updated_at: '2019-10-04 09:40:32.083743'
+  tournament_id: 11
+  winner_id: 40
+  red_team_id: 39
+  blue_team_id: 40
+match_21:
+  id: 21
+  online_id: 53452453
+  round_name: Group Stage
+  match_timestamp: '2019-07-19 14:33:14'
+  created_at: '2019-09-10 08:45:21.818031'
+  updated_at: '2019-10-04 09:40:32.117933'
+  tournament_id: 11
+  winner_id: 42
+  red_team_id: 41
+  blue_team_id: 42
+match_22:
+  id: 22
+  online_id: 53453925
+  round_name: Group Stage
+  match_timestamp: '2019-07-19 15:38:15'
+  created_at: '2019-09-10 08:47:13.587137'
+  updated_at: '2019-10-04 09:40:32.263917'
+  tournament_id: 11
+  winner_id: 44
+  red_team_id: 43
+  blue_team_id: 44
+match_23:
+  id: 23
+  online_id: 53467946
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 04:30:28'
+  created_at: '2019-09-10 09:01:06.473882'
+  updated_at: '2019-10-04 09:40:32.307607'
+  tournament_id: 11
+  winner_id: 46
+  red_team_id: 45
+  blue_team_id: 46
+match_24:
+  id: 24
+  online_id: 53469569
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 06:31:33'
+  created_at: '2019-09-10 09:15:38.869703'
+  updated_at: '2019-10-04 09:40:32.330059'
+  tournament_id: 11
+  winner_id: 48
+  red_team_id: 47
+  blue_team_id: 48
+match_25:
+  id: 25
+  online_id: 53470596
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 07:52:22'
+  created_at: '2019-09-10 09:36:37.406425'
+  updated_at: '2019-10-04 09:40:32.430874'
+  tournament_id: 11
+  winner_id: 49
+  red_team_id: 49
+  blue_team_id: 50
+match_26:
+  id: 26
+  online_id: 53473447
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 11:27:13'
+  created_at: '2019-09-10 10:17:12.682516'
+  updated_at: '2019-10-04 09:40:32.487116'
+  tournament_id: 11
+  winner_id: 52
+  red_team_id: 51
+  blue_team_id: 52
+match_27:
+  id: 27
+  online_id: 53473476
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 11:28:39'
+  created_at: '2019-09-10 10:17:13.911335'
+  updated_at: '2019-10-04 09:40:32.508873'
+  tournament_id: 11
+  winner_id: 53
+  red_team_id: 53
+  blue_team_id: 54
+match_28:
+  id: 28
+  online_id: 53474165
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 12:08:57'
+  created_at: '2019-09-10 10:17:14.434311'
+  updated_at: '2019-10-04 09:40:32.522437'
+  tournament_id: 11
+  winner_id: 56
+  red_team_id: 55
+  blue_team_id: 56
+match_29:
+  id: 29
+  online_id: 53477119
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 14:29:51'
+  created_at: '2019-09-10 10:17:15.014779'
+  updated_at: '2019-10-04 09:40:32.535725'
+  tournament_id: 11
+  winner_id: 58
+  red_team_id: 57
+  blue_team_id: 58
+match_30:
+  id: 30
+  online_id: 53477692
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 14:58:55'
+  created_at: '2019-09-10 10:23:23.405953'
+  updated_at: '2019-10-04 09:40:32.550850'
+  tournament_id: 11
+  winner_id: 60
+  red_team_id: 59
+  blue_team_id: 60
+match_31:
+  id: 31
+  online_id: 53478049
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 15:16:25'
+  created_at: '2019-09-10 10:24:17.348147'
+  updated_at: '2019-10-04 09:40:32.629387'
+  tournament_id: 11
+  winner_id: 62
+  red_team_id: 61
+  blue_team_id: 62
+match_32:
+  id: 32
+  online_id: 53479935
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 16:44:48'
+  created_at: '2019-09-10 10:24:18.091266'
+  updated_at: '2019-10-04 09:40:32.684445'
+  tournament_id: 11
+  winner_id: 63
+  red_team_id: 63
+  blue_team_id: 64
+match_33:
+  id: 33
+  online_id: 53480712
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 17:23:53'
+  created_at: '2019-09-10 10:24:18.771542'
+  updated_at: '2019-10-04 09:40:32.707928'
+  tournament_id: 11
+  winner_id: 66
+  red_team_id: 65
+  blue_team_id: 66
+match_34:
+  id: 34
+  online_id: 53481453
+  round_name: Group Stage
+  match_timestamp: '2019-07-20 18:03:16'
+  created_at: '2019-09-10 10:24:20.193888'
+  updated_at: '2019-10-04 09:40:32.725229'
+  tournament_id: 11
+  winner_id: 68
+  red_team_id: 67
+  blue_team_id: 68
+match_35:
+  id: 35
+  online_id: 53494411
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 08:32:33'
+  created_at: '2019-09-10 10:25:18.540965'
+  updated_at: '2019-10-04 09:40:32.738855'
+  tournament_id: 11
+  winner_id: 70
+  red_team_id: 69
+  blue_team_id: 70
+match_36:
+  id: 36
+  online_id: 53495745
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 10:14:36'
+  created_at: '2019-09-10 10:25:19.808285'
+  updated_at: '2019-10-04 09:40:32.754525'
+  tournament_id: 11
+  winner_id: 71
+  red_team_id: 71
+  blue_team_id: 72
+match_37:
+  id: 37
+  online_id: 53495157
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 09:32:41'
+  created_at: '2019-09-10 10:25:21.093269'
+  updated_at: '2019-10-04 09:40:32.847831'
+  tournament_id: 11
+  winner_id: 73
+  red_team_id: 73
+  blue_team_id: 74
+match_38:
+  id: 38
+  online_id: 53495878
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 10:26:31'
+  created_at: '2019-09-10 10:25:22.109929'
+  updated_at: '2019-10-04 09:40:32.901292'
+  tournament_id: 11
+  winner_id: 76
+  red_team_id: 75
+  blue_team_id: 76
+match_39:
+  id: 39
+  online_id: 53500088
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 14:30:13'
+  created_at: '2019-09-10 10:25:23.225580'
+  updated_at: '2019-10-04 09:40:32.918203'
+  tournament_id: 11
+  winner_id: 78
+  red_team_id: 77
+  blue_team_id: 78
+match_40:
+  id: 40
+  online_id: 53500798
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 15:08:09'
+  created_at: '2019-09-11 04:32:48.031678'
+  updated_at: '2019-10-04 09:40:32.931934'
+  tournament_id: 11
+  winner_id: 80
+  red_team_id: 79
+  blue_team_id: 80
+match_41:
+  id: 41
+  online_id: 53501279
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 15:34:12'
+  created_at: '2019-09-12 06:16:47.590673'
+  updated_at: '2019-10-04 09:40:32.945643'
+  tournament_id: 11
+  winner_id: 82
+  red_team_id: 81
+  blue_team_id: 82
+match_42:
+  id: 42
+  online_id: 53502371
+  round_name: Group Stage
+  match_timestamp: '2019-07-21 16:32:11'
+  created_at: '2019-09-12 06:16:48.817207'
+  updated_at: '2019-10-04 09:40:32.962674'
+  tournament_id: 11
+  winner_id: 83
+  red_team_id: 83
+  blue_team_id: 84
+match_43:
+  id: 43
+  online_id: 53640042
+  round_name: Group Stage
+  match_timestamp: '2019-07-27 14:39:14'
+  created_at: '2019-09-12 06:22:05.279343'
+  updated_at: '2019-10-04 09:40:33.016808'
+  tournament_id: 11
+  winner_id: 85
+  red_team_id: 85
+  blue_team_id: 86
+match_44:
+  id: 44
+  online_id: 53638555
+  round_name: Group Stage
+  match_timestamp: '2019-07-27 13:36:25'
+  created_at: '2019-09-12 06:22:10.754375'
+  updated_at: '2019-10-04 09:40:33.053801'
+  tournament_id: 11
+  winner_id: 88
+  red_team_id: 87
+  blue_team_id: 88
+match_45:
+  id: 45
+  online_id: 53641013
+  round_name: Group Stage
+  match_timestamp: '2019-07-27 15:18:13'
+  created_at: '2019-09-12 06:22:12.420431'
+  updated_at: '2019-10-04 09:40:33.117931'
+  tournament_id: 11
+  winner_id: 89
+  red_team_id: 89
+  blue_team_id: 90
+match_46:
+  id: 46
+  online_id: 53687732
+  round_name: Group Stage
+  match_timestamp: '2019-07-29 14:22:14'
+  created_at: '2019-09-12 06:22:14.183210'
+  updated_at: '2019-10-04 09:40:33.130703'
+  tournament_id: 11
+  winner_id: 91
+  red_team_id: 91
+  blue_team_id: 92
+match_47:
+  id: 47
+  online_id: 53807481
+  round_name: Group Stage
+  match_timestamp: '2019-08-03 14:27:02'
+  created_at: '2019-09-12 06:22:17.114164'
+  updated_at: '2019-10-04 09:40:33.145353'
+  tournament_id: 11
+  winner_id: 93
+  red_team_id: 93
+  blue_team_id: 94
+match_48:
+  id: 48
+  online_id: 53806237
+  round_name: Group Stage
+  match_timestamp: '2019-08-03 13:31:34'
+  created_at: '2019-09-12 06:22:23.031388'
+  updated_at: '2019-10-04 09:40:33.159438'
+  tournament_id: 11
+  winner_id: 95
+  red_team_id: 95
+  blue_team_id: 96
+match_49:
+  id: 49
+  online_id: 53706775
+  round_name: Group Stage
+  match_timestamp: '2019-07-30 10:29:38'
+  created_at: '2019-09-12 06:22:25.669495'
+  updated_at: '2019-10-04 09:40:33.228540'
+  tournament_id: 11
+  winner_id: 98
+  red_team_id: 97
+  blue_team_id: 98
+match_50:
+  id: 50
+  online_id: 53683444
+  round_name: Group Stage
+  match_timestamp: '2019-07-29 10:31:54'
+  created_at: '2019-09-12 06:22:27.543713'
+  updated_at: '2019-10-04 09:40:33.275430'
+  tournament_id: 11
+  winner_id: 99
+  red_team_id: 99
+  blue_team_id: 100
+match_51:
+  id: 51
+  online_id: 53830108
+  round_name: Group Stage
+  match_timestamp: '2019-08-04 13:25:01'
+  created_at: '2019-09-12 06:22:29.282772'
+  updated_at: '2019-10-04 09:40:33.301133'
+  tournament_id: 11
+  winner_id: 102
+  red_team_id: 101
+  blue_team_id: 102
+match_52:
+  id: 52
+  online_id: 53974478
+  round_name: Group Stage
+  match_timestamp: '2019-08-10 14:29:09'
+  created_at: '2019-09-12 06:22:30.613574'
+  updated_at: '2019-10-04 09:40:33.319309'
+  tournament_id: 11
+  winner_id: 104
+  red_team_id: 103
+  blue_team_id: 104
+match_53:
+  id: 53
+  online_id: 53976581
+  round_name: Group Stage
+  match_timestamp: '2019-08-10 15:58:51'
+  created_at: '2019-09-12 06:22:33.821525'
+  updated_at: '2019-10-04 09:40:33.336694'
+  tournament_id: 11
+  winner_id: 106
+  red_team_id: 105
+  blue_team_id: 106
+match_54:
+  id: 54
+  online_id: 54000813
+  round_name: Group Stage
+  match_timestamp: '2019-08-11 14:31:37'
+  created_at: '2019-09-12 06:22:36.979878'
+  updated_at: '2019-10-04 09:40:33.350129'
+  tournament_id: 11
+  winner_id: 108
+  red_team_id: 107
+  blue_team_id: 108
+match_55:
+  id: 55
+  online_id: 54173530
+  round_name: Group Stage
+  match_timestamp: '2019-08-18 15:27:31'
+  created_at: '2019-09-12 06:26:30.618854'
+  updated_at: '2019-10-04 09:40:33.362986'
+  tournament_id: 11
+  winner_id: 110
+  red_team_id: 109
+  blue_team_id: 110

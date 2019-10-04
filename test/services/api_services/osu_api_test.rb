@@ -10,6 +10,7 @@ class OsuApiTest < Test::Unit::TestCase
     e = assert_raise(OsuApiParserExceptions::BeatmapLoadFailedError) do
       ApiServices::OsuApi.new.get_or_load_beatmap(12_345)
     end
+
     assert_equal('Beatmap with id 12345 not found on osu! server', e.message)
     assert_requested(:get, %r{https://osu\.ppy\.sh/api/get_beatmaps}, times: 1)
   end
