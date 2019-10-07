@@ -12,6 +12,7 @@ import "./MatchListTable.scss";
 
 export interface IMatchListTableProps {
   tournamentId?: number;
+  initialData?: IMatch[];
 }
 
 interface IMatchListTableState {
@@ -26,16 +27,20 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
     return 0;
   }
 
-  public state = {
-    data: [],
-    isLoading: true,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: props.initialData || [],
+      isLoading: props.data ? false : true,
+    }
+  }
 
   public async componentDidMount() {
     const { tournamentId } = this.props;
 
     if (!tournamentId) {
-      this.setState({ isLoading: false, data: [] });
+      this.setState({ isLoading: false });
       return;
     }
 
@@ -53,6 +58,7 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
 
   public render() {
     const { data, isLoading } = this.state;
+    const { tournamentId } = this.props;
 
     const columns: Array<ColumnProps<IMatch>> = [
       {
@@ -63,7 +69,7 @@ export default class MatchListTable extends React.Component<IMatchListTableProps
             {text} <i className="fas fa-external-link-alt" />
           </a>
         ),
-        title: "Round",
+        title: tournamentId ? "Round" : "Name",
       }, {
         className: "team-cell",
         dataIndex: "red_team",

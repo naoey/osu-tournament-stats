@@ -7,7 +7,7 @@ import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
 import ITournament from "../../entities/ITournament";
 import { IUser } from "../../entities/IUser";
 import AddMatchButton from "./AddMatchButton";
-import MatchListTable from "./MatchListTable";
+import MatchListTable from "../matches/MatchListTable";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;

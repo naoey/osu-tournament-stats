@@ -2,12 +2,7 @@
 # Handles all match related operations in the application.
 class MatchesController < ApplicationController
   def show
-    @data = Match.all
-
-    unless params[:tournament_id].nil?
-      @data = @data.where(tournament_id: params[:tournament_id]) unless params[:tournament_id] == '0'
-      @data = @data.where(tournament_id: nil) if params[:tournament_id] == '0'
-    end
+    @data = Match.all.where(tournament_id: params[:tournament_id])
 
     respond_to do |format|
       format.html
