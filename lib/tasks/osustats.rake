@@ -2,6 +2,17 @@ require 'json'
 require 'csv'
 
 namespace :osustats do
+  desc 'Load a single match'
+  task :load_match, %i[match_id name tournament_id red_captain blue_captain] => [:environment] do |task, args|
+    ApiServices::OsuApi.new.load_match(
+      osu_match_id: args[:match_id],
+      tournament_id: args[:tournament_id],
+      round_name: args[:name],
+      red_captain: args[:red_captain],
+      blue_captain: args[:blue_captain]
+    )
+  end
+
   desc 'Load a CSV of matches'
   task :load_match_csv, %i[csv_path round_name tournament_id] => [:environment] do |task, args|
     csv = CSV.parse(File.read(args[:csv_path]), headers: true)
