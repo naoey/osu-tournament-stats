@@ -5,7 +5,7 @@
     "test": "echo \"JS tests not yet implemented\" && exit 0"
   },
   "dependencies": {
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-react": "^7.6.3",
     "@types/jquery": "^3.3.31",
     "@rails/webpacker": "^4.0.7",
     "@types/lodash": "^4.14.141",
