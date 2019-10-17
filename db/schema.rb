@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_133711) do
     t.index ["invitations_count"], name: "index_players_on_invitations_count"
     t.index ["invited_by_id"], name: "index_players_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_players_on_invited_by_type_and_invited_by_id"
+    t.index ["osu_id"], name: "players_uniq_online_id", unique: true
     t.index ["reset_password_token"], name: "index_players_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end

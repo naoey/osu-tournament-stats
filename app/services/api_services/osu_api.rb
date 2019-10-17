@@ -111,7 +111,7 @@ module ApiServices
 
       player = Player
         .where('LOWER(name) = ?', username.to_s.downcase)
-        .or(Player.where(id: username))
+        .or(Player.where(osu_id: username))
 
       return player[0] unless player.empty?
 
@@ -126,7 +126,7 @@ module ApiServices
 
       api_player = json[0]
 
-      player = Player.find_by_id(api_player['user_id'].to_i)
+      player = Player.find_by_osu_id(api_player['user_id'].to_i)
 
       if !player.nil? && player.name != api_player['username']
         Rails.logger.tagged(self.class.name) { Rails.logger.warn("Player with ID #{api_player['username']} already exists but name doesn't match, updating #{player.name} => #{api_player['username']}") }

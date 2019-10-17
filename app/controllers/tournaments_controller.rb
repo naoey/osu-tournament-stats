@@ -39,7 +39,7 @@ class TournamentsController < ApplicationController
   def add
     tournament = Tournament.new(add_params)
 
-    tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.id)
+    tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.osu_id)
 
     return render json: create_tournament_json(tournament), status: :ok if tournament.save
 
