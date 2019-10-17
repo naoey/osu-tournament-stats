@@ -11,7 +11,15 @@ module ApiServices
     ##
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
-    def load_match(osu_match_id:, round_name: nil, tournament_id: nil, discard_list: nil, red_captain: nil, blue_captain: nil)
+    def load_match(
+        osu_match_id:,
+        round_name: nil,
+        tournament_id: nil,
+        discard_list: nil,
+        red_captain: nil,
+        blue_captain: nil,
+        referees: nil
+    )
       Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       unless Match.find_by_online_id(osu_match_id).nil?
@@ -35,11 +43,11 @@ module ApiServices
       # TODO: eventually this will have to identify team names and not player names
       players = correct_match_name(json['match']['name'], osu_match_id).split(/:/)
 
-      Rails.logger.tagged { Rails.logger.debug "Determining players from match name part 1 #{players}" }
+      Rails.logger.tagged { Rails.logger.debug "Determining team names from match name part 1 #{players}" }
 
       players = players[1]&.split(/\s?vs?.?\s?/i)
 
-      Rails.logger.tagged { Rails.logger.debug "Determining players from match name part 2 #{players}" }
+      Rails.logger.tagged { Rails.logger.debug "Determining team names from match name part 2 #{players}" }
 
       ActiveRecord::Base.transaction do
         red_team = MatchTeam.create(
@@ -65,7 +73,7 @@ module ApiServices
           tournament_id: tournament_id
         )
 
-        db_match.save
+        db_match.save!
 
         # we need to discard games at the given indexes for whatever reason
         Rails.logger.tagged(self.class.name) { Rails.logger.info "Discarding games #{discard_list}" }
@@ -82,12 +90,12 @@ module ApiServices
         # remove aborted maps
         games_after_discard = games_after_discard.filter { |g| !g['scores'].empty? }
 
-        parse_match_games games_after_discard, db_match, red_team: red_team, blue_team: blue_team
+        parse_match_games games_after_discard, db_match, red_team: red_team, blue_team: blue_team, referees: referees
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug('Finished parsing games, determining winner') }
 
-        db_match.winner = match_winner?(json['games'], red_team, blue_team, osu_match_id)
-        db_match.save
+        db_match.winner = match_winner?(games_after_discard, red_team, blue_team, osu_match_id, referees: referees)
+        db_match.save!
       end
     end
 
@@ -126,7 +134,7 @@ module ApiServices
       elsif player.nil?
         player = Player.create(
           name: api_player['username'],
-          id: api_player['user_id'].to_i
+          osu_id: api_player['user_id'].to_i,
         )
       end
 
@@ -191,22 +199,28 @@ module ApiServices
       json['games'].first['scores'].select { |s| s['team'] == team_id.to_s }.first.user_id.to_i
     end
 
-    def parse_match_games(games, match, red_team: nil, blue_team: nil)
+    def parse_match_games(games, match, red_team: nil, blue_team: nil, referees: nil)
       puts "Parsing #{games.length} match games"
 
       # marker to know whether the games were parsed correctly
       total_score_count = 0
 
       games.each do |game|
-        red_team_scores = game['scores'].select { |score| score['team'] == '1' }
-        blue_team_scores = game['scores'].select { |score| score['team'] == '2' }
+        red_team_scores = game['scores'].select { |score| score['team'] == '1' && !referees&.include?(score['user_id'].to_i) }
+        blue_team_scores = game['scores'].select { |score| score['team'] == '2' && !referees&.include?(score['user_id'].to_i) }
 
         total_score_count += red_team_scores.length
         total_score_count += blue_team_scores.length
 
         get_or_load_beatmap game['beatmap_id'].to_i
 
-        match.match_scores.push MatchScore.create(red_team_scores.map { |score| create_match_score(match, game, score) })
+        red_team_scores.each do |score|
+          s = MatchScore.new(create_match_score(match, game, score))
+          s.save!
+
+          match.match_scores.push(s)
+        end
+
         new_red_team_members = (red_team_scores.map { |p| p['user_id'].to_i }) - red_team.players.map(&:osu_id)
         red_team.players.push(new_red_team_members.map(&method(:get_or_load_player)))
 
@@ -214,7 +228,13 @@ module ApiServices
 
         Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player scores saved' }
 
-        match.match_scores.push MatchScore.create(blue_team_scores.map { |score| create_match_score(match, game, score) })
+        blue_team_scores.each do |score|
+          s = MatchScore.new(create_match_score(match, game, score))
+          s.save!
+
+          match.match_scores.push(s)
+        end
+
         new_blue_team_members = (blue_team_scores.map { |p| p['user_id'].to_i }) - blue_team.players.map(&:osu_id)
         blue_team.players.push(new_blue_team_members.map(&method(:get_or_load_player)))
 
@@ -223,19 +243,19 @@ module ApiServices
         Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Blue player scores saved' }
       end
 
-      matches_in_db = MatchScore.where(match: match).count(:all)
+      scores_in_db = MatchScore.where(match_id: match.id).count(:all)
 
-      return unless matches_in_db != total_score_count
+      return unless scores_in_db != total_score_count
 
-      raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{matches_in_db} scores parsed, expected #{total_score_count}"
+      raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{scores_in_db} scores parsed, expected #{total_score_count}"
     end
 
     def create_match_score(match, game, player_score)
       {
         match: match,
-        beatmap_id: game['beatmap_id'].to_i,
+        beatmap: get_or_load_beatmap(game['beatmap_id'].to_i),
         online_game_id: game['game_id'].to_i,
-        player_id: player_score['user_id'].to_i,
+        player: get_or_load_player(player_score['user_id'].to_i),
         score: player_score['score'].to_i,
         max_combo: player_score['maxcombo'].to_i,
         count_50: player_score['count50'].to_i,
@@ -249,7 +269,7 @@ module ApiServices
       }
     end
 
-    def match_winner?(match_games, red_team, blue_team, match_id)
+    def match_winner?(match_games, red_team, blue_team, match_id, referees: nil)
       winners = YAML.load_file(File.join(Rails.root, 'config', 'preset_match_winners.yml'))
 
       if winners.key?(match_id)
@@ -269,7 +289,7 @@ module ApiServices
         next if g['scores'].empty?
 
         team_totals = g['scores']
-          .select { |s| s['pass'] == '1' }
+          .select { |s| s['pass'] == '1' && !referees&.include?(s['user_id'].to_i) }
           .each do |s|
           s['score'] = s['score'].to_i
 

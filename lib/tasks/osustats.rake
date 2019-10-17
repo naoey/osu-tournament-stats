@@ -3,13 +3,15 @@ require 'csv'
 
 namespace :osustats do
   desc 'Load a single match'
-  task :load_match, %i[match_id name tournament_id red_captain blue_captain] => [:environment] do |task, args|
+  task :load_match, %i[match_id name tournament_id red_captain blue_captain discard_list referees] => [:environment] do |task, args|
     ApiServices::OsuApi.new.load_match(
       osu_match_id: args[:match_id],
       tournament_id: args[:tournament_id],
       round_name: args[:name],
       red_captain: args[:red_captain],
-      blue_captain: args[:blue_captain]
+      blue_captain: args[:blue_captain],
+      discard_list: args[:discard_list].nil? ? nil : args[:discard_list].split('|').map(&:to_i),
+      referees: args[:referees].nil? ? nil : args[:referees].split('|').map(&:to_i)
     )
   end
 

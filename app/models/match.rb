@@ -1,5 +1,5 @@
 class Match < ApplicationRecord
-  belongs_to :winner, class_name: 'MatchTeam'
+  belongs_to :winner, class_name: 'MatchTeam', optional: true
   belongs_to :tournament, optional: true
   belongs_to :red_team, class_name: 'MatchTeam', dependent: :delete
   belongs_to :blue_team, class_name: 'MatchTeam', dependent: :delete
