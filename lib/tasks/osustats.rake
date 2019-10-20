@@ -22,14 +22,17 @@ namespace :osustats do
     csv.each do |row|
       next if row['MP Links'].downcase == 'forfeit'
 
-      discard = JSON.parse(row['Discard List']).map { |i| i - 1 }
+      discard = JSON.parse(row['Discard list']).map { |i| i - 1 }
       match_id = row['MP Links'].split('/').last.to_i
 
       begin
         ApiServices::OsuApi.new.load_match(
           osu_match_id: match_id,
           tournament_id: args[:tournament_id].to_i,
-          round_name: args[:round_name],
+          round_name: row['Match name'],
+          red_captain: args['Red captain'],
+          blue_captain: args['Blue captain'],
+          referees: row['Referees'],
           discard_list: discard,
         )
       rescue OsuApiParserExceptions::MatchExistsError
