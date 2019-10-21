@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_17_133711) do
+ActiveRecord::Schema.define(version: 2019_10_21_115719) do
 
   create_table "beatmaps", force: :cascade do |t|
     t.string "name"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_133711) do
     t.index ["match_id"], name: "index_match_teams_on_match_id"
   end
 
-  create_table "match_teams_players", id: false, force: :cascade do |t|
+  create_table "match_teams_players", force: :cascade do |t|
     t.integer "match_team_id", null: false
     t.integer "player_id", null: false
     t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true

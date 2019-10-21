@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   delete 'tournaments/:id', to: 'tournaments#delete'
   put 'tournaments/:id', to: 'tournaments#edit'
 
+  get 'statistics/players', to: 'statistics#show_all_players'
+
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',

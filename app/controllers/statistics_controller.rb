@@ -1,57 +1,40 @@
 class StatisticsController < ApplicationController
-  def show_matches
-    @data = Match.all.map do |match|
-      {
-        round_name: match.round_name,
-        winner: match.winner,
-        online_id: match.online_id,
-        red_player: {
-          id: match.player_red.id,
-          name: match.player_red.name,
-        },
-        blue_player: {
-          id: match.player_blue.id,
-          name: match.player_blue.name,
-        },
-        timestamp: match.match_timestamp.to_time.iso8601,
-        id: match.id,
-      }
-    end
-  end
-
   def show_all_players
     @data = []
 
     Player.all.each do |player|
       player_scores = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .joins('LEFT JOIN tournaments ON matches.tournament_id = tournaments.id')
         .select('match_scores.*, matches.round_name')
         .where(player: player)
-        .where('matches.round_name like ?', "%#{params[:round_name]}%")
+
+      player_scores = player_scores.where('matches.round_name like ?', "%#{params[:match_name]}%") if params[:match_name]
+
+      if params[:tournament_name]
+        player_scores = player_scores.where('tournaments.name like ?', "%#{params[:tournament_name]}%")
+      end
 
       next if player_scores.count(:all) == 0
 
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
+      matches_won_query = matches_won_query
+        .joins('LEFT JOIN match_teams ON matches.winner_id = match_teams.id')
+        .joins('LEFT JOIN match_teams_players ON match_teams.id = match_teams_players.match_team_id')
+        .joins('LEFT JOIN players ON match_teams_players.id = players.id')
+        .where('players.id = ?', player.id)
+
       @data.push(
-        name: player.name,
-        online_id: player.id,
-        matches_played: Match
-          .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
-          .where('matches.round_name like ?', "%#{params[:round_name]}%")
-          .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
-          .count,
-        matches_won: Match
-          .where('round_name like ?', "%#{params[:round_name]}%")
-          .where(winner: player.id).count,
+        player: player,
+        matches_played: player_scores.distinct.count(:match_id),
+        matches_won: matches_won_query.count(:id),
         maps_played: player_scores.count(:all),
         # TODO: figure out how to do a count where for maps won in the DB itself o.o
-        maps_won: MatchScore
-          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        maps_won: player_scores
           .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name')
           .group(:beatmap_id, :match_id)
           .where(pass: true)
-          .where('matches.round_name like ?', "%#{params[:round_name]}%")
           .all
           .to_a
           .select { |s| s.player_id == player.id }
@@ -70,6 +53,11 @@ class StatisticsController < ApplicationController
           .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
           .count(:all)
       )
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @data, status: :ok }
     end
   end
 
