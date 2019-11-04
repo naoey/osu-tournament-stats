@@ -17,10 +17,14 @@ class OsuApiTest < Test::Unit::TestCase
   end
 
   def test_get_or_load_beatmaps_already_exists
+    test_map = Beatmap.create(online_id: 1_428_999, name: 'Test beatmap')
+
     b = ApiServices::OsuApi.new.get_or_load_beatmap(1_428_999)
 
     assert_not_requested(:get, %r{https://osu\.ppy\.sh/api/get_beatmaps})
     assert_instance_of(Beatmap, b)
+
+    test_map.destroy!
   end
 
   def test_get_or_load_beatmap_new
@@ -65,10 +69,14 @@ class OsuApiTest < Test::Unit::TestCase
   end
 
   def test_get_or_load_player_already_exists_id
+    test_player = Player.create(osu_id: 1_788_022, name: 'Test player')
+
     p = ApiServices::OsuApi.new.get_or_load_player(1_788_022)
 
     assert_not_requested(:get, %r{https://osu\.ppy\.sh/api/get_user})
     assert_instance_of(Player, p)
+
+    test_player.destroy!
   end
 
   def test_get_or_load_player_already_exists_username
