@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_14_104449) do
+ActiveRecord::Schema.define(version: 2019_10_21_115719) do
 
   create_table "beatmaps", force: :cascade do |t|
     t.string "name"
@@ -42,19 +42,31 @@ ActiveRecord::Schema.define(version: 2019_09_14_104449) do
     t.index ["player_id"], name: "index_match_scores_on_player"
   end
 
+  create_table "match_teams", force: :cascade do |t|
+    t.string "name"
+    t.integer "captain_id", null: false
+    t.integer "match_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["match_id"], name: "index_match_teams_on_match_id"
+  end
+
+  create_table "match_teams_players", force: :cascade do |t|
+    t.integer "match_team_id", null: false
+    t.integer "player_id", null: false
+    t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
+  end
+
   create_table "matches", force: :cascade do |t|
     t.integer "online_id"
-    t.integer "player_red_id"
-    t.integer "player_blue_id"
-    t.integer "winner"
     t.string "round_name"
-    t.text "api_json"
     t.datetime "match_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "tournament_id"
-    t.index ["player_blue_id"], name: "index_matches_on_player_blue_id"
-    t.index ["player_red_id"], name: "index_matches_on_player_red_id"
+    t.integer "winner_id"
+    t.integer "red_team_id"
+    t.integer "blue_team_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -95,6 +107,7 @@ ActiveRecord::Schema.define(version: 2019_09_14_104449) do
     t.index ["invitations_count"], name: "index_players_on_invitations_count"
     t.index ["invited_by_id"], name: "index_players_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_players_on_invited_by_type_and_invited_by_id"
+    t.index ["osu_id"], name: "players_uniq_online_id", unique: true
     t.index ["reset_password_token"], name: "index_players_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
@@ -108,6 +121,8 @@ ActiveRecord::Schema.define(version: 2019_09_14_104449) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "match_teams", "players", column: "captain_id"
+  add_foreign_key "matches", "match_teams", column: "winner_id", on_delete: :restrict
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end

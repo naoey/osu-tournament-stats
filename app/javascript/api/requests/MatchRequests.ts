@@ -13,7 +13,7 @@ const createMatch = ({ name, onlineId }): IRequest => ({
 });
 
 const getMatches = (params = {}): IRequest => ({
-  url: `/matches${$.param(params)}`,
+  url: `/matches?${$.param(params)}`,
 });
 
 export default {

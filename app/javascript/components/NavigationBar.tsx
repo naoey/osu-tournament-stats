@@ -12,6 +12,9 @@ export default class NavigationBar extends React.Component {
         <Menu.Item key="tournaments">
           <a href="/tournaments">Tournaments</a>
         </Menu.Item>
+        <Menu.Item key="matches">
+          <a href="/matches">Matches</a>
+        </Menu.Item>
 
         <Menu.Item key="authentication" style={{ float: "right" }}>
           {

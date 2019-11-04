@@ -1,7 +1,7 @@
 namespace :db do
   desc 'Convert development DB to Rails test fixtures'
   task create_fixtures: :environment do
-    TABLES_TO_SKIP = %w[ar_internal_metadata delayed_jobs schema_info schema_migrations].freeze
+    TABLES_TO_SKIP = %w[ar_internal_metadata delayed_jobs schema_info schema_migrations, players].freeze
 
     begin
       ActiveRecord::Base.establish_connection

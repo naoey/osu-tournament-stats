@@ -161,3 +161,480 @@ beatmap_18:
   max_combo: 1552
   created_at: '2019-05-25 17:41:12.430641'
   updated_at: '2019-05-25 17:41:12.430641'
+beatmap_19:
+  id: 19
+  name: DJ S3RL feat. Tamika - Rainbow Girl
+  online_id: 891250
+  star_difficulty: 4.439479827880859
+  difficulty_name: Insane
+  max_combo: 821
+  created_at: '2019-09-10 08:24:46.612780'
+  updated_at: '2019-09-10 08:24:46.612780'
+beatmap_20:
+  id: 20
+  name: FELT - Goldrop
+  online_id: 483882
+  star_difficulty: 3.9447975158691406
+  difficulty_name: Lunatic
+  max_combo: 670
+  created_at: '2019-09-10 08:24:47.065487'
+  updated_at: '2019-09-10 08:24:47.065487'
+beatmap_21:
+  id: 21
+  name: Goose house - Hikaru nara
+  online_id: 947166
+  star_difficulty: 5.045790672302246
+  difficulty_name: Synesthesia
+  max_combo: 1255
+  created_at: '2019-09-10 08:24:47.496583'
+  updated_at: '2019-09-10 08:24:47.496583'
+beatmap_22:
+  id: 22
+  name: Mitani Nana - Chikyuu Saigo no Kokuhaku o
+  online_id: 256294
+  star_difficulty: 5.261754989624023
+  difficulty_name: Ra's Insane
+  max_combo: 1543
+  created_at: '2019-09-10 08:24:47.916714'
+  updated_at: '2019-09-10 08:24:47.916714'
+beatmap_23:
+  id: 23
+  name: HyuN - Infinity Heaven
+  online_id: 1863246
+  star_difficulty: 5.098419666290283
+  difficulty_name: Ad Infinitum
+  max_combo: 1045
+  created_at: '2019-09-10 08:24:48.332636'
+  updated_at: '2019-09-10 08:24:48.332636'
+beatmap_24:
+  id: 24
+  name: SPYAIR - Sakura Mitsutsuki
+  online_id: 1966582
+  star_difficulty: 5.200519561767578
+  difficulty_name: Irohas' Expert
+  max_combo: 1192
+  created_at: '2019-09-10 08:24:48.759683'
+  updated_at: '2019-09-10 08:24:48.759683'
+beatmap_25:
+  id: 25
+  name: RIOT - Overkill
+  online_id: 1894397
+  star_difficulty: 5.78129243850708
+  difficulty_name: OVERKILL
+  max_combo: 1729
+  created_at: '2019-09-10 08:45:22.260806'
+  updated_at: '2019-09-10 08:45:22.260806'
+beatmap_26:
+  id: 26
+  name: Jin - Yobanashi Deceive
+  online_id: 223146
+  star_difficulty: 5.22506856918335
+  difficulty_name: Dance
+  max_combo: 1416
+  created_at: '2019-09-10 08:45:22.737399'
+  updated_at: '2019-09-10 08:45:22.737399'
+beatmap_27:
+  id: 27
+  name: Skrillex & Diplo - To U ft AlunaGeorge
+  online_id: 1527725
+  star_difficulty: 4.768362045288086
+  difficulty_name: 1112's Insane
+  max_combo: 1107
+  created_at: '2019-09-10 08:45:23.177156'
+  updated_at: '2019-09-10 08:45:23.177156'
+beatmap_28:
+  id: 28
+  name: SPYAIR - Sakura Mitsutsuki
+  online_id: 1959741
+  star_difficulty: 4.950515270233154
+  difficulty_name: Kallius' Insane
+  max_combo: 1206
+  created_at: '2019-09-10 08:47:14.114722'
+  updated_at: '2019-09-10 08:47:14.114722'
+beatmap_29:
+  id: 29
+  name: yuiko - GLORIOUS DAYS
+  online_id: 1178758
+  star_difficulty: 4.863941669464111
+  difficulty_name: Farewell
+  max_combo: 1255
+  created_at: '2019-09-10 08:47:14.619176'
+  updated_at: '2019-09-10 08:47:14.619176'
+beatmap_30:
+  id: 30
+  name: Yousei Teikoku - Zetsubou plantation
+  online_id: 235880
+  star_difficulty: 6.734711170196533
+  difficulty_name: Zetsubou!
+  max_combo: 1450
+  created_at: '2019-09-10 09:15:39.286687'
+  updated_at: '2019-09-10 09:15:39.286687'
+beatmap_31:
+  id: 31
+  name: Au5 & Fractal - Blue
+  online_id: 1477138
+  star_difficulty: 5.333797454833984
+  difficulty_name: "#0000FF"
+  max_combo: 1851
+  created_at: '2019-09-10 09:15:39.888666'
+  updated_at: '2019-09-10 09:15:39.888666'
+beatmap_32:
+  id: 32
+  name: beatMARIO - Night of Knights
+  online_id: 786018
+  star_difficulty: 5.5360493659973145
+  difficulty_name: Guy's Extra
+  max_combo: 1218
+  created_at: '2019-09-12 06:22:05.734368'
+  updated_at: '2019-09-12 06:22:05.734368'
+beatmap_33:
+  id: 33
+  name: P*Light feat. yukacco - Stargazer (DJ Shimamura Remix)
+  online_id: 782287
+  star_difficulty: 5.259408473968506
+  difficulty_name: RLC's Constellation
+  max_combo: 625
+  created_at: '2019-09-12 06:22:06.325549'
+  updated_at: '2019-09-12 06:22:06.325549'
+beatmap_34:
+  id: 34
+  name: S.S.H. - The Decisive Battle with the Fugitives
+  online_id: 383939
+  star_difficulty: 5.28687047958374
+  difficulty_name: Insane
+  max_combo: 1560
+  created_at: '2019-09-12 06:22:06.896036'
+  updated_at: '2019-09-12 06:22:06.896036'
+beatmap_35:
+  id: 35
+  name: Outsider - Like A Man
+  online_id: 1410776
+  star_difficulty: 5.247610092163086
+  difficulty_name: Freestyle
+  max_combo: 1023
+  created_at: '2019-09-12 06:22:07.674487'
+  updated_at: '2019-09-12 06:22:07.674487'
+beatmap_36:
+  id: 36
+  name: Chata - enn
+  online_id: 904566
+  star_difficulty: 5.344563961029053
+  difficulty_name: Collab Lunatic
+  max_combo: 1883
+  created_at: '2019-09-12 06:22:08.113225'
+  updated_at: '2019-09-12 06:22:08.113225'
+beatmap_37:
+  id: 37
+  name: yuikonnu - Genjitsu Game
+  online_id: 391520
+  star_difficulty: 5.121050834655762
+  difficulty_name: captin's Insane
+  max_combo: 1052
+  created_at: '2019-09-12 06:22:09.809264'
+  updated_at: '2019-09-12 06:22:09.809264'
+beatmap_38:
+  id: 38
+  name: jippusu - Mushikui Saikede Rhythm
+  online_id: 240730
+  star_difficulty: 5.300660133361816
+  difficulty_name: Chewin
+  max_combo: 1190
+  created_at: '2019-09-12 06:22:10.274769'
+  updated_at: '2019-09-12 06:22:10.274769'
+beatmap_39:
+  id: 39
+  name: Chata - Harukaze Dance
+  online_id: 256580
+  star_difficulty: 4.070985317230225
+  difficulty_name: Insane
+  max_combo: 903
+  created_at: '2019-09-12 06:22:11.205972'
+  updated_at: '2019-09-12 06:22:11.205972'
+beatmap_40:
+  id: 40
+  name: Camellia - Chirality
+  online_id: 1464590
+  star_difficulty: 5.457265377044678
+  difficulty_name: StarR's Another
+  max_combo: 710
+  created_at: '2019-09-12 06:22:11.740283'
+  updated_at: '2019-09-12 06:22:11.740283'
+beatmap_41:
+  id: 41
+  name: Yuyoyuppe - AiAe
+  online_id: 589969
+  star_difficulty: 5.812574863433838
+  difficulty_name: Eternal
+  max_combo: 2228
+  created_at: '2019-09-12 06:22:14.629408'
+  updated_at: '2019-09-12 06:22:14.629408'
+beatmap_42:
+  id: 42
+  name: MYTH & ROID - Paradisus-Paradoxum
+  online_id: 1104323
+  star_difficulty: 5.759355068206787
+  difficulty_name: Collab Extra
+  max_combo: 1248
+  created_at: '2019-09-12 06:22:15.078017'
+  updated_at: '2019-09-12 06:22:15.078017'
+beatmap_43:
+  id: 43
+  name: yuiko - petit bonheur
+  online_id: 1327955
+  star_difficulty: 4.677479267120361
+  difficulty_name: Insane.
+  max_combo: 1277
+  created_at: '2019-09-12 06:22:15.583022'
+  updated_at: '2019-09-12 06:22:15.583022'
+beatmap_44:
+  id: 44
+  name: Virtual Riot feat. Varia - Edge
+  online_id: 1369388
+  star_difficulty: 5.425512313842773
+  difficulty_name: Boundary
+  max_combo: 1882
+  created_at: '2019-09-12 06:22:16.184898'
+  updated_at: '2019-09-12 06:22:16.184898'
+beatmap_45:
+  id: 45
+  name: Araki - Teo
+  online_id: 1578009
+  star_difficulty: 5.469610691070557
+  difficulty_name: Extra
+  max_combo: 1369
+  created_at: '2019-09-12 06:22:17.588425'
+  updated_at: '2019-09-12 06:22:17.588425'
+beatmap_46:
+  id: 46
+  name: Sharlo - Vidro Moyou
+  online_id: 347171
+  star_difficulty: 4.4224114418029785
+  difficulty_name: Collab
+  max_combo: 1230
+  created_at: '2019-09-12 06:22:18.014044'
+  updated_at: '2019-09-12 06:22:18.014044'
+beatmap_47:
+  id: 47
+  name: TrySail - High Free Spirits
+  online_id: 1046444
+  star_difficulty: 5.75089693069458
+  difficulty_name: Tt's Extra
+  max_combo: 1590
+  created_at: '2019-09-12 06:22:18.452721'
+  updated_at: '2019-09-12 06:22:18.452721'
+beatmap_48:
+  id: 48
+  name: Manami Numakura - Sakebe
+  online_id: 1532044
+  star_difficulty: 5.76821756362915
+  difficulty_name: Delis' Extra
+  max_combo: 1386
+  created_at: '2019-09-12 06:22:18.891749'
+  updated_at: '2019-09-12 06:22:18.891749'
+beatmap_49:
+  id: 49
+  name: HujuniseikouyuuP - Too young to beer.
+  online_id: 341005
+  star_difficulty: 5.603684425354004
+  difficulty_name: 833Rcc01y
+  max_combo: 1685
+  created_at: '2019-09-12 06:22:19.331196'
+  updated_at: '2019-09-12 06:22:19.331196'
+beatmap_50:
+  id: 50
+  name: Camellia feat. Nanahira - PAPAYAPA BASS
+  online_id: 1123616
+  star_difficulty: 5.39342737197876
+  difficulty_name: Papayapa!
+  max_combo: 1002
+  created_at: '2019-09-12 06:22:19.764472'
+  updated_at: '2019-09-12 06:22:19.764472'
+beatmap_51:
+  id: 51
+  name: PSYQUI - Don't you want me feat. Such
+  online_id: 1984424
+  star_difficulty: 5.403864860534668
+  difficulty_name: Jellyfish
+  max_combo: 1722
+  created_at: '2019-09-12 06:22:20.303751'
+  updated_at: '2019-09-12 06:22:20.303751'
+beatmap_52:
+  id: 52
+  name: orangentle - HAELEQUIN
+  online_id: 656337
+  star_difficulty: 5.60440731048584
+  difficulty_name: Extra
+  max_combo: 1270
+  created_at: '2019-09-12 06:22:20.750698'
+  updated_at: '2019-09-12 06:22:20.750698'
+beatmap_53:
+  id: 53
+  name: Noriko Mitose - Duel Alternatives
+  online_id: 1532546
+  star_difficulty: 6.000722408294678
+  difficulty_name: Duel Kaizer
+  max_combo: 2668
+  created_at: '2019-09-12 06:22:21.804421'
+  updated_at: '2019-09-12 06:22:21.804421'
+beatmap_54:
+  id: 54
+  name: Toyosaki Aki - Diamond
+  online_id: 290581
+  star_difficulty: 5.145516395568848
+  difficulty_name: Insane
+  max_combo: 816
+  created_at: '2019-09-12 06:22:25.080623'
+  updated_at: '2019-09-12 06:22:25.080623'
+beatmap_55:
+  id: 55
+  name: BlackYooh vs. siromaru - BLACK or WHITE?
+  online_id: 358362
+  star_difficulty: 5.5727972984313965
+  difficulty_name: SCV's INFINITE
+  max_combo: 942
+  created_at: '2019-09-12 06:22:31.044485'
+  updated_at: '2019-09-12 06:22:31.044485'
+beatmap_56:
+  id: 56
+  name: LeaF - Calamity Fortune
+  online_id: 789752
+  star_difficulty: 5.837500095367432
+  difficulty_name: Cataclysm
+  max_combo: 1168
+  created_at: '2019-09-12 06:22:31.518544'
+  updated_at: '2019-09-12 06:22:31.518544'
+beatmap_57:
+  id: 57
+  name: Function Phantom - Integral Cube
+  online_id: 1715114
+  star_difficulty: 5.698546409606934
+  difficulty_name: Leibniz
+  max_combo: 1397
+  created_at: '2019-09-12 06:22:31.975971'
+  updated_at: '2019-09-12 06:22:31.975971'
+beatmap_58:
+  id: 58
+  name: Primary - Kage
+  online_id: 2015060
+  star_difficulty: 5.462040901184082
+  difficulty_name: Regret
+  max_combo: 1258
+  created_at: '2019-09-12 06:22:32.439979'
+  updated_at: '2019-09-12 06:22:32.439979'
+beatmap_59:
+  id: 59
+  name: Younha - Houkiboshi
+  online_id: 1636976
+  star_difficulty: 3.9773571491241455
+  difficulty_name: Insane
+  max_combo: 1034
+  created_at: '2019-09-12 06:22:32.893412'
+  updated_at: '2019-09-12 06:22:32.893412'
+beatmap_60:
+  id: 60
+  name: Paperblossom - Blumenkranz
+  online_id: 801841
+  star_difficulty: 4.554328441619873
+  difficulty_name: Insane
+  max_combo: 1126
+  created_at: '2019-09-12 06:22:33.308919'
+  updated_at: '2019-09-12 06:22:33.308919'
+beatmap_61:
+  id: 61
+  name: Iguchi Yuka - RE-ILLUSION
+  online_id: 1856696
+  star_difficulty: 5.775508880615234
+  difficulty_name: Lasse's Expert
+  max_combo: 1170
+  created_at: '2019-09-12 06:22:34.296870'
+  updated_at: '2019-09-12 06:22:34.296870'
+beatmap_62:
+  id: 62
+  name: Zips - Reiwai Terrorism
+  online_id: 337914
+  star_difficulty: 5.0516037940979
+  difficulty_name: Insane
+  max_combo: 1083
+  created_at: '2019-09-12 06:22:34.758474'
+  updated_at: '2019-09-12 06:22:34.758474'
+beatmap_63:
+  id: 63
+  name: Wakeshima Kanon - killy killy JOKER
+  online_id: 717391
+  star_difficulty: 5.845897197723389
+  difficulty_name: Eternal
+  max_combo: 1746
+  created_at: '2019-09-12 06:22:35.524537'
+  updated_at: '2019-09-12 06:22:35.524537'
+beatmap_64:
+  id: 64
+  name: Nitta Emi - White Eternity (Soleily & Epsilon Remix)
+  online_id: 1099369
+  star_difficulty: 5.872303009033203
+  difficulty_name: Yuuki
+  max_combo: 2291
+  created_at: '2019-09-12 06:22:36.029412'
+  updated_at: '2019-09-12 06:22:36.029412'
+beatmap_65:
+  id: 65
+  name: An - Saigo
+  online_id: 1109818
+  star_difficulty: 5.589277744293213
+  difficulty_name: Saika's Extra
+  max_combo: 1299
+  created_at: '2019-09-12 06:26:31.042317'
+  updated_at: '2019-09-12 06:26:31.042317'
+beatmap_66:
+  id: 66
+  name: Dark PHOENiX - Taketori Hishou
+  online_id: 86324
+  star_difficulty: 5.52803373336792
+  difficulty_name: Extra
+  max_combo: 1387
+  created_at: '2019-09-12 06:26:31.552176'
+  updated_at: '2019-09-12 06:26:31.552176'
+beatmap_67:
+  id: 67
+  name: senya - Nagori Tori
+  online_id: 464496
+  star_difficulty: 4.438243865966797
+  difficulty_name: Collab
+  max_combo: 1151
+  created_at: '2019-09-12 06:26:31.952460'
+  updated_at: '2019-09-12 06:26:31.952460'
+beatmap_68:
+  id: 68
+  name: Dummy beatmap
+  online_id: -1
+  star_difficulty: 
+  difficulty_name: 
+  max_combo: 
+  created_at: '2019-09-12 06:26:32.358923'
+  updated_at: '2019-09-12 06:26:32.358923'
+beatmap_69:
+  id: 69
+  name: nowisee - confusion
+  online_id: 1522329
+  star_difficulty: 5.994680881500244
+  difficulty_name: Fearful Star Extra
+  max_combo: 1283
+  created_at: '2019-09-12 06:26:32.769592'
+  updated_at: '2019-09-12 06:26:32.769592'
+beatmap_70:
+  id: 70
+  name: Uchida Maaya - Sekai ga Katachi Nakushitemo
+  online_id: 1417945
+  star_difficulty: 6.656630516052246
+  difficulty_name: EXIST
+  max_combo: 1010
+  created_at: '2019-09-12 06:26:33.640075'
+  updated_at: '2019-09-12 06:26:33.640075'
+beatmap_71:
+  id: 71
+  name: KOKIA - Chouwa oto ~with reflection~
+  online_id: 1775268
+  star_difficulty: 5.3606414794921875
+  difficulty_name: three twenty five fifteen twenty one twenty three one
+  max_combo: 779
+  created_at: '2019-09-12 06:26:34.046955'
+  updated_at: '2019-09-12 06:26:34.046955'

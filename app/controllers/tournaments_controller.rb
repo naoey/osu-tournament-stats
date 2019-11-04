@@ -17,29 +17,10 @@ class TournamentsController < ApplicationController
 
   def show_tournament
     @tournament = create_tournament_json(Tournament.find_by_id(params[:id]))
-    @matches = Match
-      .where(tournament_id: params[:id])
-      .all
-      .map do |m|
-        {
-          id: m.id,
-          name: m.round_name,
-          online_id: m.online_id,
-          winning_team: m.winner == m.player_red_id ? 'red' : 'blue',
-          created_at: m.created_at,
-          updated_at: m.updated_at,
-          timestamp: m.match_timestamp,
-          red_team: m.player_red.as_json.slice('id', 'name'),
-          blue_team: m.player_blue.as_json.slice('id', 'name'),
-          beatmap_pool: nil,
-          type: m.tournament_id.nil? ? 'tournament' : 'monthly',
-        }
-      end
-    @players = StatisticsServices::PlayerStatistics.new.get_all_player_stats_for_tournament(params[:id], params[:round_name])
 
     respond_to do |format|
       format.html
-      format.json { render json: { tournament: @tournament, matches: @matches, player_statistics: @players }, status: :ok }
+      format.json { render json: @tournament, status: :ok }
     end
   end
 
@@ -58,7 +39,7 @@ class TournamentsController < ApplicationController
   def add
     tournament = Tournament.new(add_params)
 
-    tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.id)
+    tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.osu_id)
 
     return render json: create_tournament_json(tournament), status: :ok if tournament.save
 
@@ -71,7 +52,6 @@ class TournamentsController < ApplicationController
     params.require(:tournament).permit(:name, :start_date, :end_date)
   end
 
-  # TODO: these should probably be moved into MatchServices
   def create_tournament_json(tournament)
     {
       id: tournament.id,
@@ -80,13 +60,13 @@ class TournamentsController < ApplicationController
       match_count: Match.where(tournament_id: tournament.id).count(:all),
       start_date: tournament.start_date,
       end_date: tournament.end_date,
+      created_at: tournament.created_at,
+      updated_at: tournament.updated_at,
     }
   end
 
   def create_player_json(player)
-    if player == nil
-      return nil
-    end
+    return nil if player.nil?
 
     player.as_json.except('updated_at')
   end

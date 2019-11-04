@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
+  get 'matches', to: 'matches#show'
   get 'matches/:id', to: 'matches#show_match'
-  get 'matches/show', to: 'matches#show'
   post 'matches/add', to: 'matche#add'
   delete 'matches/:id', to: 'matches#delete'
   put 'matches/:id', to: 'matches#edit'
@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   post 'tournaments', to: 'tournaments#add'
   delete 'tournaments/:id', to: 'tournaments#delete'
   put 'tournaments/:id', to: 'tournaments#edit'
+
+  get 'statistics/players', to: 'statistics#show_all_players'
 
   devise_for :players, path: '', path_names: {
     sign_in: 'login',

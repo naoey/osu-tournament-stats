@@ -2,7 +2,7 @@
 # Handles all match related operations in the application.
 class MatchesController < ApplicationController
   def show
-    @data = Match.all
+    @data = Match.all.where(tournament_id: params[:tournament_id])
 
     respond_to do |format|
       format.html
@@ -12,8 +12,6 @@ class MatchesController < ApplicationController
 
   def show_match
     @data = Match.find(params[:id])
-      .as_json(include: { match_scores: { include: :beatmap }, player_red: {}, player_blue: {} })
-      .except('player_red_id', 'player_blue_id', 'api_json')
 
     render json: @data, status: :ok
   end
@@ -24,7 +22,6 @@ class MatchesController < ApplicationController
 
       match = Match.find_by_online_id(add_match_params[:online_id])
 
-      match.added_by = current_player
       match.save
 
       render json: match, status: :ok
@@ -44,6 +41,6 @@ class MatchesController < ApplicationController
   private
 
   def add_match_params
-    params.require(:match).permit(:online_id, :name, :tournament_id)
+    params.require(:match).permit(:osu_match_id, :round_name, :tournament_id, :discard_list)
   end
 end
