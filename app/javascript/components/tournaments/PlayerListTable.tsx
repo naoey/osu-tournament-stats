@@ -1,12 +1,20 @@
-import { Table, Tooltip } from "antd";
-import { ColumnProps } from 'antd/lib/table';
+import { message, Table, Tooltip } from "antd";
+import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
 import * as React from "react";
 import * as v from "voca";
+import Api from "../../api/Api";
+import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
 
 export interface IPlayerListTableProps {
+  tournamentId?: number;
+  matchId?: number;
+}
+
+export interface IPlayerListTableState {
   data: IPlayerStatistic[];
+  isLoading: boolean;
 }
 
 interface IPlayerListTableColumnDefinition {
@@ -16,7 +24,7 @@ interface IPlayerListTableColumnDefinition {
   titleTooltip?: string;
 }
 
-export default class PlayerListTable extends React.Component<IPlayerListTableProps> {
+export default class PlayerListTable extends React.Component<IPlayerListTableProps, IPlayerListTableState> {
   private static sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
     let aValue = valueExtractor(a);
     let bValue = valueExtractor(b);
@@ -29,8 +37,31 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
     return 0;
   }
 
+  public state = { data: [], isLoading: true };
+
+  public async componentDidMount() {
+    const { matchId, tournamentId } = this.props;
+
+    try {
+      let request;
+
+      if (matchId) request = StatisticsRequests.getMatchStatistics({ matchId });
+      else if (tournamentId) request = StatisticsRequests.getTournamentStatistics({ tournamentId });
+      else {
+        this.setState({ isLoading: false });
+        return;
+      }
+
+      const response = await Api.performRequest<IPlayerStatistic[]>(request);
+
+      this.setState({ isLoading: false, data: response });
+    } catch (e) {
+      message.error(e.message);
+    }
+  }
+
   public render() {
-    const { data } = this.props;
+    const { data, isLoading } = this.state;
 
     const augmentedData = data.map(d => ({
       ...d,
@@ -89,9 +120,10 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
 
     return (
       <Table
+        loading={isLoading}
         dataSource={augmentedData}
         columns={columns.map(this.createSortedColumn)}
-        rowKey={this.keyExtrator}
+        rowKey={this.keyExtractor}
         sortDirections={["ascend", "descend"]}
         pagination={{
           pageSize: 10,
@@ -102,13 +134,13 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
     );
   }
 
-  private keyExtrator = (record: IPlayerStatistic): string => record.player.id.toString();
+  private keyExtractor = (record: IPlayerStatistic): string => record.player.id.toString();
 
   private createSortedColumn = (
     { key, title = null, render = null, titleTooltip = null }: IPlayerListTableColumnDefinition,
     index: number,
   ): ColumnProps<IPlayerStatistic> => {
-    const { data } = this.props;
+    const { data } = this.state;
 
     const column: ColumnProps<IPlayerStatistic> = {
       dataIndex: key,
