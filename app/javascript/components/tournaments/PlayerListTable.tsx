@@ -57,6 +57,7 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
       this.setState({ isLoading: false, data: response });
     } catch (e) {
       message.error(e.message);
+      this.setState({ isLoading: false });
     }
   }
 

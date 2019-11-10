@@ -61,20 +61,22 @@ module StatisticsServices
     # TODO: all these x? methods should take a queryable and get the result
     def matches_played?(player, tournament_id: nil, round_name: nil)
       q = Match
-        .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
-        .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
+        .joins('JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)')
+        .where('match_teams_players.player_id = ?', player.id)
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where('matches.round_name LIKE ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
-      q.count
+      q.count(:all)
     end
 
     def matches_won?(player, tournament_id: nil, round_name: nil)
-      q = Match.where(winner: player.id)
+      q = Match
+        .joins('JOIN match_teams_players ON match_teams_players.match_team_id = matches.winner_id')
+        .where('match_teams_players.player_id = ?', player.id)
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
       q.count
     end
@@ -98,17 +100,18 @@ module StatisticsServices
       # TODO: figure out how to do a count where for maps won in the DB itself o.o
       q = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .joins('LEFT JOIN players ON match_scores.player_id = players.id')
         .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name, matches.tournament_id')
         .group(:beatmap_id, :match_id)
         .where(pass: true)
+        .where('players.id = ?', player.id)
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
       q
         .all
         .to_a
-        .select { |s| s.player_id == player.id }
         .length
     end
 
@@ -116,7 +119,7 @@ module StatisticsServices
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
-        player: player.as_json.slice('id', 'name'),
+        player: player,
         matches_played: matches_played?(player),
         matches_won: matches_won?(player),
         maps_played: player_scores.count(:all),
@@ -137,7 +140,7 @@ module StatisticsServices
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
-        player: player.as_json.slice('id', 'name'),
+        player: player,
         matches_played: matches_played?(player, tournament_id: tournament_id, round_name: round_name_search),
         matches_won: matches_won?(player, tournament_id: tournament_id, round_name: round_name_search),
         maps_played: player_scores.count(:all),

@@ -1,17 +1,17 @@
 import { IRequest } from "../IRequest";
 
 const getMatchStatistics = ({ matchId }): IRequest => ({
-  url: `/statistics/match/${matchId}`,
+  url: `/statistics/matches/${matchId}`,
 });
 
 const getTournamentStatistics = ({ tournamentId }): IRequest => ({
-  url: `/statistics/tournament/${tournamentId}`,
+  url: `/statistics/tournaments/${tournamentId}`,
 });
 
 const getPlayerStatistics = ({ playerId = null }): IRequest => {
-  const request = { url: "/statistics/player" };
+  const request = { url: "/statistics/players" };
 
-  if (playerId) request.url += playerId.toString();
+  if (playerId) request.url += `/${playerId.toString()}`;
 
   return request;
 };
