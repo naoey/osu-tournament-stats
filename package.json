@@ -28,7 +28,7 @@
     "voca": "^1.4.0"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.12.2",
+    "babel-plugin-import": "^1.13.0",
     "postcss-cssnext": "^3.1.0",
     "tslint": "^5.20.1",
     "tslint-react": "^4.1.0",
