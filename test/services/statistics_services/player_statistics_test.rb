@@ -1,10 +1,6 @@
 require 'test/unit'
 
 class PlayerStatisticsTest < Test::Unit::TestCase
-  setup do
-    empty_database!
-  end
-
   def test_tournament_statistics_single_player_team
     red_captain = Player.create(osu_id: 2, name: 'Player1', email: 'test1@test.com')
     blue_captain = Player.create(osu_id: 3, name: 'Player2', email: 'test2@test.com')
@@ -51,6 +47,17 @@ class PlayerStatisticsTest < Test::Unit::TestCase
 
     assert_equal(999_999_999 + 111_111_111 + 777_777_777, red_stats[:total_score])
     assert_equal(333_333_333 + 555_555_555 + 222_222_222, blue_stats[:total_score])
+
+    MatchScore.where(match: match).destroy_all!
+    beatmap1.destroy!
+    beatmap2.destroy!
+    beatmap3.destroy!
+    match.destroy!
+    red_team.destroy!
+    blue_team.destroy!
+    red_captain.destroy!
+    blue_captain.destroy!
+    tournament.destroy!
   end
 
   private
@@ -72,15 +79,6 @@ class PlayerStatisticsTest < Test::Unit::TestCase
       perfect: true,
       pass: true,
     )
-  end
-
-  def empty_database!
-    MatchScore.delete_all
-    Beatmap.delete_all
-    Match.delete_all
-    MatchTeam.delete_all
-    Tournament.delete_all
-    Player.delete_all
   end
 
   def service
