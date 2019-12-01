@@ -164,7 +164,7 @@ module StatisticsServices
                 ) AS team_players ON team_players.team_id = match_teams_players.match_team_id
                 -- Get scores for these players
                 JOIN match_scores ON match_scores.player_id = match_teams_players.player_id AND match_scores.match_id = team_players.match_id
-                WHERE #{match_id.nil? ? '' : player_match_fragment}
+                #{match_id.nil? ? '' : "WHERE #{player_match_fragment}"}
                 GROUP BY team_players.team_id, match_scores.beatmap_id
               )
               GROUP BY beatmap_id

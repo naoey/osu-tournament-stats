@@ -12,128 +12,129 @@ import "./MatchListTable.scss";
 
 export interface IMatchListTableProps {
   tournamentId?: number;
+  hiddenColumns?: string[];
+  isFocused?: boolean;
   initialData?: IMatch[];
 }
 
-interface IMatchListTableState {
-  data: IMatch[];
-  isLoading: boolean;
+function sortTimestamp(a: IMatch, b: IMatch) {
+  if (moment(a.match_timestamp) > moment(b.match_timestamp)) return 1;
+  if (moment(a.match_timestamp) < moment(b.match_timestamp)) return -1;
+  return 0;
 }
 
-export default class MatchListTable extends React.Component<IMatchListTableProps, IMatchListTableState> {
-  public static sortTimestamp(a: IMatch, b: IMatch) {
-    if (moment(a.match_timestamp) > moment(b.match_timestamp)) return 1;
-    if (moment(a.match_timestamp) < moment(b.match_timestamp)) return -1;
-    return 0;
-  }
+export default function MatchListTable({
+  tournamentId,
+  hiddenColumns = [],
+  initialData = [],
+  isFocused = true,
+}: IMatchListTableProps) {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [data, setData] = React.useState(initialData);
 
-  constructor(props) {
-    super(props);
+  const isFirstLoad = React.useRef(true);
 
-    this.state = {
-      data: props.initialData || [],
-      isLoading: props.data ? false : true,
-    }
-  }
-
-  public async componentDidMount() {
-    const { tournamentId } = this.props;
-
-    if (!tournamentId) {
-      this.setState({ isLoading: false });
+  const loadData = async () => {
+    // If tournament ID is missing or we had initial data and this is still the first load attempt, then skip
+    // the API trip
+    if (!tournamentId || (initialData.length > 0 && isFirstLoad.current)) {
+      setIsLoading(false);
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const request = MatchRequests.getMatches({ tournament_id: tournamentId });
       const response = await Api.performRequest<IMatch[]>(request);
 
-      this.setState({ data: response });
+      setData(response);
     } catch (e) {
       console.error(e);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
+
+      if (isFirstLoad.current) isFirstLoad.current = false;
     }
   }
 
-  public render() {
-    const { data, isLoading } = this.state;
-    const { tournamentId } = this.props;
+  React.useEffect(() => {
+    if (isFocused) loadData();
+  }, [isFocused]);
 
-    const columns: Array<ColumnProps<IMatch>> = [
-      {
-        dataIndex: "round_name",
-        key: "1",
-        render: (text, record) => (
-          <a href={`https://osu.ppy.sh/mp/${record.online_id}`} target="_blank">
-            {text} <i className="fas fa-external-link-alt" />
-          </a>
-        ),
-        title: tournamentId ? "Round" : "Name",
-      }, {
-        className: "team-cell",
-        dataIndex: "red_team",
-        key: "3",
-        render: (text, record) => this.renderTeam(
-          record.red_team,
-          record.winning_team.id === record.red_team.id,
-          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
-        ),
-        title: "Red Player",
-      }, {
-        className: "team-cell",
-        dataIndex: "blue_team",
-        key: "2",
-        render: (text, record) => this.renderTeam(
-          record.blue_team,
-          record.winning_team.id === record.blue_team.id,
-          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
-        ),
-        title: "Blue Team",
-      }, {
-        dataIndex: "match_timestamp",
-        defaultSortOrder: "ascend",
-        key: "4",
-        render: text => moment(text).format("LLL"),
-        sortDirections: ["ascend", "descend"],
-        sorter: MatchListTable.sortTimestamp,
-        title: "Date",
-      },
-    ];
-
-    return (
-      <div className="match-list-table">
-        <Table
-          dataSource={data}
-          loading={isLoading}
-          columns={columns}
-          rowKey={this.keyExtractor}
-          pagination={{
-            pageSize: 10,
-            position: "top",
-          }}
-        />
-      </div>
-    );
-  }
-
-  private renderTeam = (team: IMatchTeam, isWinner: boolean, showTeamNames: boolean = false) => (
+  const renderTeam = (team: IMatchTeam, isWinner: boolean, showTeamNames: boolean = false) => (
     <List
       header={showTeamNames ? <b>{team.name || `Team ${team.captain.name}`}</b> : null}
       dataSource={team.players}
-      renderItem={this.renderTeamPlayerItem}
+      renderItem={renderTeamPlayerItem}
       className={isWinner ? "team-list--winner" : "team-list"}
     />
-  )
+  );
 
-  private renderTeamPlayerItem = (player: IPlayer) => (
+  const renderTeamPlayerItem = (player: IPlayer) => (
     <List.Item>
       <List.Item.Meta
         avatar={<Avatar src={`https://a.ppy.sh/${player.osu_id}`} />}
         title={<a href={`https://osu.ppy.sh/users/${player.osu_id}`} target="_blank">{player.name}</a>}
       />
     </List.Item>
-  )
+  );
 
-  private keyExtractor = (record: IMatch): string => record.id.toString();
+  const keyExtractor = (record: IMatch): string => record.id.toString();
+
+  const columns: Array<ColumnProps<IMatch>> = [
+    {
+      dataIndex: "round_name",
+      key: "1",
+      render: (text, record) => (
+        <a href={`/matches/${record.id}`}>
+          {text}
+        </a>
+      ),
+      title: tournamentId ? "Round" : "Name",
+    }, {
+      className: "team-cell",
+      dataIndex: "red_team",
+      key: "3",
+      render: (text, record) => renderTeam(
+        record.red_team,
+        record.winning_team.id === record.red_team.id,
+        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+      ),
+      title: "Red Player",
+    }, {
+      className: "team-cell",
+      dataIndex: "blue_team",
+      key: "2",
+      render: (text, record) => renderTeam(
+        record.blue_team,
+        record.winning_team.id === record.blue_team.id,
+        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+      ),
+      title: "Blue Team",
+    }, {
+      dataIndex: "match_timestamp",
+      defaultSortOrder: "ascend",
+      key: "4",
+      render: text => moment(text).format("LLL"),
+      sortDirections: ["ascend", "descend"],
+      sorter: sortTimestamp,
+      title: "Date",
+    },
+  ];
+
+  return (
+    <div className="match-list-table">
+      <Table
+        dataSource={data}
+        loading={isLoading}
+        columns={columns.filter(c => !hiddenColumns.includes(c.dataIndex))}
+        rowKey={keyExtractor}
+        pagination={{
+          pageSize: 10,
+          position: "top",
+        }}
+      />
+    </div>
+  );
 }

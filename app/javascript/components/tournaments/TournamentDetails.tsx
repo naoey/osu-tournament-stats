@@ -20,12 +20,6 @@ interface ITournamentDetailsState {
   activeTab: string;
 }
 
-interface IAPITournament {
-  tournament: ITournament;
-  matches: IMatch[];
-  player_statistics: IPlayerStatistic[];
-}
-
 const DATE_DISPLAY_FORMAT = "DD MMM YYYY";
 
 export default class TournamentDetails extends React.Component<ITournamentDetailsProps, ITournamentDetailsState> {
@@ -58,10 +52,10 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
           renderTabBar={this.renderTabBar}
         >
           <Tabs.TabPane key="matches" tab="Matches">
-            <MatchListTable tournamentId={tournament.id} />
+            <MatchListTable isFocused={activeTab === "matches"} tournamentId={tournament.id} />
           </Tabs.TabPane>
           <Tabs.TabPane key="players" tab="Player statistics">
-            <PlayerStatsListTable tournamentId={tournament.id} />
+            <PlayerStatsListTable isFocused={activeTab === "players"} tournamentId={tournament.id} />
           </Tabs.TabPane>
         </Tabs>
       </div>

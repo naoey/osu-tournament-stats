@@ -11,9 +11,17 @@ class MatchesController < ApplicationController
   end
 
   def show_match
-    @data = Match.find(params[:id])
+    begin
+      @data = StatisticsServices::PlayerStatistics.new.get_all_player_stats_for_match(params[:id])
+    rescue GenericExceptions::NotFoundError
+      respond_to do |format|
+        format.html { render status: :not_found }
+      end
+    end
 
-    render json: @data, status: :ok
+    respond_to do |format|
+      format.html
+    end
   end
 
   def add
