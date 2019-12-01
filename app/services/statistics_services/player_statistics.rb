@@ -5,6 +5,8 @@ module StatisticsServices
     def get_all_player_stats_for_tournament(tournament_id, round_name_search = '')
       @data = []
 
+      raise GenericExceptions::NotFoundError 'Tournament not found' if Tournament.find(tournament_id).nil?
+
       Player.all.each do |player|
         player_scores = MatchScore
           .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
@@ -22,6 +24,30 @@ module StatisticsServices
       @data
     end
 
+    def get_all_player_stats_for_match(match_id, round_name_search = '')
+      @data = []
+
+      match = Match.find(match_id)
+
+      raise GenericExceptions::NotFoundError 'Match not found' if match.nil?
+
+      match.players.each do |player|
+        player_scores = MatchScore
+          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+          .joins('LEFT JOIN tournaments ON matches.tournament_id = tournaments.id')
+          .select('match_scores.*, matches.round_name')
+          .where('match_scores.match_id = ?', match_id)
+          .where(player: player)
+          .where('matches.round_name like ?', "%#{round_name_search}%")
+
+        next if player_scores.count(:all).zero?
+
+        @data.push(create_player_match_statistic(player, player_scores, round_name_search, match_id))
+      end
+
+      @data
+    end
+
     def get_player_stats(player)
       player_scores = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
@@ -30,7 +56,7 @@ module StatisticsServices
 
       return {} if player_scores.count(:all).zero?
 
-      create_player_match_statistic(player, player_scores)
+      create_player_match_statistic(player, player_scores, '', nil)
     end
 
     def get_player_leaderboard(*player_ids)
@@ -42,9 +68,7 @@ module StatisticsServices
       return [] if player_scores.count(:all).zero?
     end
 
-    private
-
-    def score_accuracy(score)
+    def calculate_score_accuracy(score)
       # https://osu.ppy.sh/help/wiki/Accuracy
       d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
@@ -57,6 +81,8 @@ module StatisticsServices
 
       n / d.to_f
     end
+
+    private
 
     # TODO: all these x? methods should take a queryable and get the result
     def matches_played?(player, tournament_id: nil, round_name: nil)
@@ -81,7 +107,7 @@ module StatisticsServices
       q.count
     end
 
-    def full_combos?(player, tournament_id: nil, round_name: nil)
+    def full_combos?(player, tournament_id: nil, match_id: nil, round_name: nil)
       # this is following Potla's formula for approximated FCs since we we can't differentiate sliderbreaks
       # from slider end misses from the scores alone
       q = MatchScore
@@ -93,23 +119,29 @@ module StatisticsServices
         .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
+      q = q.where('matches.id = ?', match_id) unless match_id.nil?
       q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
 
       q.count(:all)
     end
 
-    def maps_won?(player, tournament_id: nil, round_name: nil)
+    def maps_won?(player, tournament_id: nil, match_id: nil, round_name: nil)
       # FIXME: this monstrosity has to go away aaaaaaa
 
       player_tournament_fragment = Match.sanitize_sql_for_conditions([
         "match_teams_players.player_id = ? #{!tournament_id.nil? ? "AND matches.tournament_id = ?" : ''}",
         player.id,
-        tournament_id,
+        *(tournament_id unless tournament_id.nil?),
       ])
 
       player_team_fragment = Match.sanitize_sql_for_conditions([
         "player_id = ?",
         player.id,
+      ])
+
+      player_match_fragment = Match.sanitize_sql_for_conditions([
+        "match_scores.match_id = ?",
+        match_id
       ])
 
       sql = "SELECT COUNT(*) as maps_won FROM (
@@ -132,8 +164,8 @@ module StatisticsServices
                 ) AS team_players ON team_players.team_id = match_teams_players.match_team_id
                 -- Get scores for these players
                 JOIN match_scores ON match_scores.player_id = match_teams_players.player_id AND match_scores.match_id = team_players.match_id
+                WHERE #{match_id.nil? ? '' : player_match_fragment}
                 GROUP BY team_players.team_id, match_scores.beatmap_id
-                ORDER BY match_scores.beatmap_id
               )
               GROUP BY beatmap_id
             )
@@ -143,15 +175,13 @@ module StatisticsServices
     end
 
     # TODO: dedupe all this crap
-    def create_player_match_statistic(player, player_scores)
-      player_accuracies = player_scores.map(&method(:score_accuracy))
+    def create_player_match_statistic(player, player_scores, round_name_search, match_id)
+      player_accuracies = player_scores.map(&method(:calculate_score_accuracy))
 
       {
         player: player,
-        matches_played: matches_played?(player),
-        matches_won: matches_won?(player),
         maps_played: player_scores.count(:all),
-        maps_won: maps_won?(player),
+        maps_won: maps_won?(player, match_id: match_id),
         best_accuracy: (player_accuracies.max * 100.0).round(2),
         average_accuracy: (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
         perfect_count: player_scores.where(perfect: true).count(:all),
@@ -165,7 +195,7 @@ module StatisticsServices
     end
 
     def create_player_tournament_statistic(player, player_scores, round_name_search, tournament_id)
-      player_accuracies = player_scores.map(&method(:score_accuracy))
+      player_accuracies = player_scores.map(&method(:calculate_score_accuracy))
 
       {
         player: player,

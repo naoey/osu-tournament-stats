@@ -26,6 +26,20 @@ class StatisticsController < ApplicationController
     end
   end
 
+  def show_match
+    if params[:id].nil?
+      return respond_to do |f|
+        f.json { render nothing: true, status: :bad_request }
+      end
+    end
+
+    @data = service.get_all_player_stats_for_match(params[:id], params[:round_name])
+
+    respond_to do |f|
+      f.json { render json: @data, status: :ok }
+    end
+  end
+
   private
 
   def score_accuracy(score)

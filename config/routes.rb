@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   get 'statistics/players', to: 'statistics#show_all_players'
   get 'statistics/tournaments/:id', to: 'statistics#show_tournament'
-  get 'statistics/matches/:id', to: 'statistics#show_matches'
+  get 'statistics/matches/:id', to: 'statistics#show_match'
 
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
