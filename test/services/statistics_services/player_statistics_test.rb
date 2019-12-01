@@ -48,16 +48,16 @@ class PlayerStatisticsTest < Test::Unit::TestCase
     assert_equal(999_999_999 + 111_111_111 + 777_777_777, red_stats[:total_score])
     assert_equal(333_333_333 + 555_555_555 + 222_222_222, blue_stats[:total_score])
 
-    MatchScore.where(match: match).destroy_all!
+    MatchScore.where(match: match).destroy_all
     beatmap1.destroy!
     beatmap2.destroy!
     beatmap3.destroy!
     match.destroy!
     red_team.destroy!
     blue_team.destroy!
+    tournament.destroy!
     red_captain.destroy!
     blue_captain.destroy!
-    tournament.destroy!
   end
 
   private
