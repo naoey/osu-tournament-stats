@@ -24,7 +24,7 @@ interface IPlayerListTableColumnDefinition {
   titleTooltip?: string;
 }
 
-export default class PlayerListTable extends React.Component<IPlayerListTableProps, IPlayerListTableState> {
+export default class PlayerStatsListTable extends React.Component<IPlayerListTableProps, IPlayerListTableState> {
   private static sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
     let aValue = valueExtractor(a);
     let bValue = valueExtractor(b);
@@ -57,6 +57,7 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
       this.setState({ isLoading: false, data: response });
     } catch (e) {
       message.error(e.message);
+      this.setState({ isLoading: false });
     }
   }
 
@@ -147,7 +148,7 @@ export default class PlayerListTable extends React.Component<IPlayerListTablePro
       defaultSortOrder: "ascend",
       key,
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => PlayerListTable.sorter(a, b, item => item[key]),
+      sorter: (a, b) => PlayerStatsListTable.sorter(a, b, item => item[key]),
       title: titleTooltip ?
         () => <Tooltip title={titleTooltip}>{title || v.titleCase(key.split("_").join(" "))}</Tooltip>
         : title || v.titleCase(key.split("_").join(" ")),

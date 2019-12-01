@@ -61,25 +61,29 @@ module StatisticsServices
     # TODO: all these x? methods should take a queryable and get the result
     def matches_played?(player, tournament_id: nil, round_name: nil)
       q = Match
-        .joins('JOIN matches AS player_matches ON matches.id = player_matches.id')
-        .where('player_matches.player_red_id = ? OR player_matches.player_blue_id = ?', player.id, player.id)
+        .joins('JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)')
+        .where('match_teams_players.player_id = ?', player.id)
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where('matches.round_name LIKE ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
-      q.count
+      q.count(:all)
     end
 
     def matches_won?(player, tournament_id: nil, round_name: nil)
-      q = Match.where(winner: player.id)
+      q = Match
+        .joins('JOIN match_teams_players ON match_teams_players.match_team_id = matches.winner_id')
+        .where('match_teams_players.player_id = ?', player.id)
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
       q.count
     end
 
     def full_combos?(player, tournament_id: nil, round_name: nil)
+      # this is following Potla's formula for approximated FCs since we we can't differentiate sliderbreaks
+      # from slider end misses from the scores alone
       q = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
         .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
@@ -95,28 +99,55 @@ module StatisticsServices
     end
 
     def maps_won?(player, tournament_id: nil, round_name: nil)
-      # TODO: figure out how to do a count where for maps won in the DB itself o.o
-      q = MatchScore
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.beatmap_id, MAX(match_scores.score), match_scores.player_id, matches.round_name, matches.tournament_id')
-        .group(:beatmap_id, :match_id)
-        .where(pass: true)
+      # FIXME: this monstrosity has to go away aaaaaaa
 
-      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      player_tournament_fragment = Match.sanitize_sql_for_conditions([
+        "match_teams_players.player_id = ? #{!tournament_id.nil? ? "AND matches.tournament_id = ?" : ''}",
+        player.id,
+        tournament_id,
+      ])
 
-      q
-        .all
-        .to_a
-        .select { |s| s.player_id == player.id }
-        .length
+      player_team_fragment = Match.sanitize_sql_for_conditions([
+        "player_id = ?",
+        player.id,
+      ])
+
+      sql = "SELECT COUNT(*) as maps_won FROM (
+              SELECT MAX(team_total_score), team_id FROM (
+                -- Get all players in a given set of teams
+                SELECT SUM(match_scores.score) as team_total_score, match_scores.beatmap_id, team_players.match_id, match_teams_players.player_id, team_players.team_id FROM match_teams_players
+                JOIN (
+                  -- Get all teams in given set of matches
+                  SELECT * FROM (
+                    SELECT id as match_id, red_team_id AS team_id FROM matches
+                    UNION ALL
+                    SELECT id, blue_team_id AS team_id FROM matches
+                  ) AS teams_in_matches
+                  WHERE teams_in_matches.match_id IN (
+                    -- Get all matches that a player participated in
+                    SELECT matches.id FROM matches
+                    JOIN match_teams_players ON match_team_id IN (matches.red_team_id, matches.blue_team_id)
+                    WHERE #{player_tournament_fragment}
+                  )
+                ) AS team_players ON team_players.team_id = match_teams_players.match_team_id
+                -- Get scores for these players
+                JOIN match_scores ON match_scores.player_id = match_teams_players.player_id AND match_scores.match_id = team_players.match_id
+                GROUP BY team_players.team_id, match_scores.beatmap_id
+                ORDER BY match_scores.beatmap_id
+              )
+              GROUP BY beatmap_id
+            )
+            WHERE team_id IN (SELECT match_team_id FROM match_teams_players WHERE #{player_team_fragment})"
+
+      ActiveRecord::Base.connection.execute(sql)[0]['maps_won']
     end
 
+    # TODO: dedupe all this crap
     def create_player_match_statistic(player, player_scores)
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
-        player: player.as_json.slice('id', 'name'),
+        player: player,
         matches_played: matches_played?(player),
         matches_won: matches_won?(player),
         maps_played: player_scores.count(:all),
@@ -137,7 +168,7 @@ module StatisticsServices
       player_accuracies = player_scores.map(&method(:score_accuracy))
 
       {
-        player: player.as_json.slice('id', 'name'),
+        player: player,
         matches_played: matches_played?(player, tournament_id: tournament_id, round_name: round_name_search),
         matches_won: matches_won?(player, tournament_id: tournament_id, round_name: round_name_search),
         maps_played: player_scores.count(:all),
