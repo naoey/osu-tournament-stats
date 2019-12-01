@@ -56,7 +56,7 @@ export default class Api {
 
       return json;
     } catch (e) {
-      console.error(`Request to ${url} failed!`);
+      console.error(`Request to ${url} failed!`, e.code, e.status);
 
       if (e.code === "AbortError") {
         throw new RequestError("Request cancelled!", 0, e.code);

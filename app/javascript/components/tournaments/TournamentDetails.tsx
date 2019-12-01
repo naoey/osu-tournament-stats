@@ -8,7 +8,7 @@ import ITournament from "../../entities/ITournament";
 import { IUser } from "../../entities/IUser";
 import AddMatchButton from "./AddMatchButton";
 import MatchListTable from "../matches/MatchListTable";
-import PlayerListTable from "./PlayerListTable";
+import PlayerStatsListTable from "../matches/PlayerStatsListTable";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;
@@ -61,7 +61,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
             <MatchListTable tournamentId={tournament.id} />
           </Tabs.TabPane>
           <Tabs.TabPane key="players" tab="Player statistics">
-            <PlayerListTable tournamentId={tournament.id} />
+            <PlayerStatsListTable tournamentId={tournament.id} />
           </Tabs.TabPane>
         </Tabs>
       </div>
