@@ -312,6 +312,12 @@ module ApiServices
         if red_total == blue_total
           raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where red and blue teams have identical score'
         end
+
+        if red_total > blue_total
+          red_wins += 1
+        else
+          blue_wins += 1
+        end
       end
 
       Rails.logger.tagged { Rails.logger.debug("Determined wins: blue: #{blue_wins}, red: #{red_wins}") }
