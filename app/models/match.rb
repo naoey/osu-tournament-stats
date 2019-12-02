@@ -8,6 +8,10 @@ class Match < ApplicationRecord
 
   validates_uniqueness_of :online_id
 
+  def players
+    red_team.players + blue_team.players
+  end
+
   def as_json(*)
     super.except('winner_id', 'created_at', 'updated_at', 'red_team_id', 'blue_team_id').tap do |m|
       m['winning_team'] = winner.as_json
