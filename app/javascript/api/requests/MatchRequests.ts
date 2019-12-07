@@ -1,15 +1,26 @@
 import { HttpMethod } from "../Constants";
 import { IRequest } from "../IRequest";
 
-const createMatch = ({ name, onlineId }): IRequest => ({
+const createMatch = ({
+  roundName,
+  matchId,
+  referees,
+  redCaptain,
+  blueCaptain,
+  discardList,
+}): IRequest => ({
   options: {
     method: HttpMethod.Post,
   },
   payload: {
-    name,
-    online_id: onlineId,
+    blue_captain: blueCaptain,
+    discard_list: discardList,
+    osu_match_id: matchId,
+    red_captain: redCaptain,
+    referees,
+    round_name: roundName,
   },
-  url: "/tournaments",
+  url: "/matches",
 });
 
 const getMatches = (params = {}): IRequest => ({

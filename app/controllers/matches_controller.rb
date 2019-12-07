@@ -26,11 +26,14 @@ class MatchesController < ApplicationController
 
   def add
     begin
-      ApiServices::OsuApi.new.load_match(add_match_params)
-
-      match = Match.find_by_online_id(add_match_params[:online_id])
-
-      match.save
+      match = osu_api_service.load_match(
+        osu_match_id: add_match_params[:osu_match_id],
+        red_captain: add_match_params[:red_captain],
+        blue_captain: add_match_params[:blue_captain],
+        referees: add_match_params[:referees],
+        discard_list: add_match_params[:discard_list],
+        round_name: add_match_params[:round_name],
+      )
 
       render json: match, status: :ok
     rescue OsuApiParserExceptions::MatchExistsError
@@ -49,6 +52,18 @@ class MatchesController < ApplicationController
   private
 
   def add_match_params
-    params.require(:match).permit(:osu_match_id, :round_name, :tournament_id, :discard_list)
+    params.permit(
+      :osu_match_id,
+      :round_name,
+      :tournament_id,
+      :discard_list,
+      :red_captain,
+      :blue_captain,
+      :referees,
+    )
+  end
+
+  def osu_api_service
+    ApiServices::OsuApi.new
   end
 end

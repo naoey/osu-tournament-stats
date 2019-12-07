@@ -3,7 +3,7 @@ import IMatchTeam from "./IMatchTeam";
 
 export interface IMatch {
   id: number;
-  name: string;
+  round_name: string;
   match_timestamp: string;
   red_team: IMatchTeam;
   blue_team: IMatchTeam;

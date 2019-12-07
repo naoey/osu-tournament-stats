@@ -96,6 +96,8 @@ module ApiServices
 
         db_match.winner = match_winner?(games_after_discard, red_team, blue_team, osu_match_id, referees: referees)
         db_match.save!
+
+        db_match
       end
     end
 

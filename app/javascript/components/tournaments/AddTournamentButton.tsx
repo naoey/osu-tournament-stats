@@ -4,7 +4,7 @@ import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import ITournament from "../../entities/ITournament";
-import { TournamentEvents } from "../../events/TournamentEvents";
+import { GeneralEvents } from "../../events/GeneralEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 
 interface IAddButtonState {
@@ -90,7 +90,7 @@ class AddTournamentButton extends React.Component<FormComponentProps, IAddButton
       form.resetFields();
       this.setModalVisibility(false);
 
-      $(document).trigger(TournamentEvents.Created);
+      $(document).trigger(GeneralEvents.TournamentCreated);
       message.success(`Tournament "${response.name}" created!`);
     } catch (e) {
       message.error(e.message);
