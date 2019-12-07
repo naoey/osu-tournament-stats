@@ -9,6 +9,7 @@ import IMatchTeam from "../../../entities/IMatchTeam";
 import IPlayer from "../../../entities/IPlayer";
 
 import "./MatchListTable.scss";
+import { GeneralEvents } from "../../../events/GeneralEvents";
 
 export interface IMatchListTableProps {
   tournamentId?: number;
@@ -37,8 +38,9 @@ export default function MatchListTable({
   const loadData = async () => {
     // If tournament ID is missing or we had initial data and this is still the first load attempt, then skip
     // the API trip
-    if (!tournamentId || (initialData.length > 0 && isFirstLoad.current)) {
+    if (initialData.length > 0 && isFirstLoad.current) {
       setIsLoading(false);
+      isFirstLoad.current = false;
       return;
     }
 
@@ -53,10 +55,22 @@ export default function MatchListTable({
       console.error(e);
     } finally {
       setIsLoading(false);
-
-      if (isFirstLoad.current) isFirstLoad.current = false;
     }
-  }
+  };
+
+  const onMatchesChanged = React.useCallback(() => {
+    if (isFocused) loadData();
+  }, []);
+
+  React.useEffect(() => {
+    $(document).on(GeneralEvents.MatchCreated, onMatchesChanged);
+    $(document).on(GeneralEvents.MatchDeleted, onMatchesChanged);
+
+    return () => {
+      $(document).off(GeneralEvents.MatchCreated, onMatchesChanged);
+      $(document).off(GeneralEvents.MatchDeleted, onMatchesChanged);
+    };
+  });
 
   React.useEffect(() => {
     if (isFocused) loadData();

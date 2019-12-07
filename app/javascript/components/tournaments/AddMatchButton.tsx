@@ -4,8 +4,10 @@ import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import ITournament from "../../entities/ITournament";
-import { TournamentEvents } from "../../events/TournamentEvents";
+import { GeneralEvents } from "../../events/GeneralEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
+import MatchRequests from "../../api/requests/MatchRequests";
+import { IMatch } from "../../entities/IMatch";
 
 interface IAddButtonState {
   isModalOpen: boolean;
@@ -37,20 +39,61 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
           title="Create tournament"
         >
           <Form onSubmit={this.onCreate}>
-            <Form.Item label="Name">
+            <Form.Item label="Match name">
               {
                 getFieldDecorator(
-                  "name",
-                  { rules: [{ required: true, message: "Please enter a tournament anem!" }] },
-                )(<Input placeholder="Tournament name" name="name" />)
+                  "roundName",
+                  { rules: [{ required: true, message: "Match name is required" }] },
+                )(<Input placeholder="Match name" />)
               }
             </Form.Item>
-            <Form.Item label="RangePicker">
+            <Form.Item label="osu! multiplayer ID">
               {
                 getFieldDecorator(
                   "matchId",
-                  { rules: [{ type: "array", required: true, message: "Please select dates!" }] },
+                  {
+                    getValueFromEvent: (e: any) => parseInt(e.target.value, 10),
+                    rules: [{ type: "number", required: true, message: "Match ID is required" }],
+                  },
                 )(<Input type="number" placeholder="osu! multiplayer ID" />)
+              }
+            </Form.Item>
+            <Form.Item label="Discard list">
+              {
+                getFieldDecorator(
+                  "discardList",
+                  {
+                    getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    rules: [{ type: "array" }],
+                  },
+                )(<Input type="text" placeholder="0|1|3..." />)
+              }
+            </Form.Item>
+            <Form.Item label="Red team captain">
+              {
+                getFieldDecorator(
+                  "redCaptain",
+                  { rules: [{ required: true, message: "Red captain is required" }]},
+                )(<Input type="text" placeholder="Player name or ID" />)
+              }
+            </Form.Item>
+            <Form.Item label="Blue team captain">
+              {
+                getFieldDecorator(
+                  "blueCaptain",
+                  { rules: [{ required: true, message: "Blue captain is required" }]},
+                )(<Input type="text" placeholder="Player name or ID" />)
+              }
+            </Form.Item>
+            <Form.Item label="Referees">
+              {
+                getFieldDecorator(
+                  "referees",
+                  {
+                    getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    rules: [{ type: "array" }],
+                  },
+                )(<Input type="text" placeholder="Potla|nitr0f|2" />)
               }
             </Form.Item>
           </Form>
@@ -68,35 +111,31 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
   private onCreate = async (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();
 
-    // const { form } = this.props;
+    const { form } = this.props;
 
-    // const { error, values } = await new Promise(resolve => form.validateFieldsAndScroll((err, v) => resolve({ error: err, values: v })));
+    const { error, values } = await new Promise(
+      resolve => form.validateFieldsAndScroll((err, v) => resolve({ error: err, values: v })),
+    );
 
-    // if (error) return;
+    if (error) return;
 
-    // this.setState({ isWorking: true });
+    this.setState({ isWorking: true });
 
-    // const [startDate, endDate] = values.duration;
+    try {
+      const request = MatchRequests.createMatch(values);
 
-    // try {
-    //   const request = TournamentRequests.createTournament({
-    //     endDate: endDate.toISOString(),
-    //     name: values.name,
-    //     startDate: startDate.toISOString(),
-    //   });
+      const response = await Api.performRequest<IMatch>(request);
 
-    //   const response = await Api.performRequest<ITournament>(request);
+      form.resetFields();
+      this.setModalVisibility(false);
 
-    //   form.resetFields();
-    //   this.setModalVisibility(false);
-
-    //   $(document).trigger(TournamentEvents.Created);
-    //   message.success(`Tournament "${response.name}" created!`);
-    // } catch (e) {
-    //   message.error(e.message);
-    // } finally {
-    //   this.setState({ isWorking: false });
-    // }
+      $(document).trigger(GeneralEvents.MatchCreated, [response]);
+      message.success(`${response.round_name} created!`);
+    } catch (e) {
+      message.error(e.message);
+    } finally {
+      this.setState({ isWorking: false });
+    }
   }
 }
 

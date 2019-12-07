@@ -4,7 +4,7 @@ import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import { IRecentActivity } from "../../entities/IRecentActivity";
 import ITournament from "../../entities/ITournament";
-import { TournamentEvents } from "../../events/TournamentEvents";
+import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
@@ -33,9 +33,9 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
   }
 
   public componentDidMount() {
-    $(document).on(TournamentEvents.Created, () => this.reloadTournaments());
-    $(document).on(TournamentEvents.Updated, () => this.reloadTournaments());
-    $(document).on(TournamentEvents.Deleted, () => this.reloadTournaments());
+    $(document).on(GeneralEvents.TournamentCreated, () => this.reloadTournaments());
+    $(document).on(GeneralEvents.TournamentUpdated, () => this.reloadTournaments());
+    $(document).on(GeneralEvents.TournamentDeleted, () => this.reloadTournaments());
   }
 
   public componentWillUnmount() {

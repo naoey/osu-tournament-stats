@@ -14,7 +14,7 @@ ReactRailsUJS.useContext(componentRequireContext)
 
 $(document).on('user.session_expired', function() {
   window.location.href = "/login";
-})
+});
 
 document.addEventListener("DOMContentLoaded", function() {
   var userDataContainer = document.getElementById('current-user');
@@ -26,5 +26,5 @@ document.addEventListener("DOMContentLoaded", function() {
     window.currentUser = null;
     window.isAuthenticated = false;
   }
-})
+});
 
