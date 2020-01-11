@@ -304,12 +304,15 @@ module ApiServices
 
         team_totals = team_totals.group_by { |s| s['team'] }
 
+        team_totals['red'] = [] if team_totals['red'].nil?
+        team_totals['blue'] = [] if team_totals['blue'].nil?
+
         if team_totals['red'].empty? && team_totals['blue'].empty?
           raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where map has no passes at all'
         end
 
-        red_total = team_totals['red'].map { |s| s['score'] }.reduce(:+)
-        blue_total = team_totals['blue'].map { |s| s['score'] }.reduce(:+)
+        red_total = team_totals['red'].map { |s| s['score'] }.reduce(:+) || 0
+        blue_total = team_totals['blue'].map { |s| s['score'] }.reduce(:+) || 0
 
         if red_total == blue_total
           raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where red and blue teams have identical score'

@@ -14,6 +14,10 @@ interface IAddButtonState {
   isWorking: boolean;
 }
 
+interface IAddButtonProps {
+  tournamentId?: number;
+}
+
 class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState> {
   public state: IAddButtonState = {
     isModalOpen: false,
@@ -64,6 +68,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
                   "discardList",
                   {
                     getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    getValueProps: (value: string[]) => (value ?? []).join("|"),
                     rules: [{ type: "array" }],
                   },
                 )(<Input type="text" placeholder="0|1|3..." />)
@@ -91,6 +96,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
                   "referees",
                   {
                     getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    getValueProps: (value: string[]) => (value ?? []).join("|"),
                     rules: [{ type: "array" }],
                   },
                 )(<Input type="text" placeholder="Potla|nitr0f|2" />)
@@ -104,9 +110,15 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
 
   private setModalVisibility = (visible: boolean) => this.setState({ isModalOpen: visible });
 
-  private onAdd = () => this.setModalVisibility(true);
+  private onAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(true);
+  }
 
-  private onCancel = () => this.setModalVisibility(false);
+  private onCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(false);
+  }
 
   private onCreate = async (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();
