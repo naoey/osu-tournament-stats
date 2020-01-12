@@ -20,6 +20,10 @@ module ApiServices
         blue_captain: nil,
         referees: nil
     )
+      referees = (referees || [])
+        .map { |r| get_or_load_player(r) }
+        .map(&:osu_id)
+
       Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
 
       unless Match.find_by_online_id(osu_match_id).nil?
@@ -208,8 +212,12 @@ module ApiServices
       total_score_count = 0
 
       games.each do |game|
-        red_team_scores = game['scores'].select { |score| score['team'] == '1' && !referees&.include?(score['user_id'].to_i) }
-        blue_team_scores = game['scores'].select { |score| score['team'] == '2' && !referees&.include?(score['user_id'].to_i) }
+        red_team_scores = game['scores'].select { |score|
+          score['team'] == '1' && !referees.include?(score['user_id'].to_i)
+        }
+        blue_team_scores = game['scores'].select { |score|
+          score['team'] == '2' && !referees.include?(score['user_id'].to_i)
+        }
 
         total_score_count += red_team_scores.length
         total_score_count += blue_team_scores.length
@@ -224,6 +232,7 @@ module ApiServices
         end
 
         new_red_team_members = (red_team_scores.map { |p| p['user_id'].to_i }) - red_team.players.map(&:osu_id)
+          .reject { |p| referees.include?(p) }
         red_team.players.push(new_red_team_members.map(&method(:get_or_load_player)))
 
         red_team.save!
@@ -238,6 +247,7 @@ module ApiServices
         end
 
         new_blue_team_members = (blue_team_scores.map { |p| p['user_id'].to_i }) - blue_team.players.map(&:osu_id)
+          .reject { |p| referees.include?(p) }
         blue_team.players.push(new_blue_team_members.map(&method(:get_or_load_player)))
 
         blue_team.save!
@@ -291,7 +301,7 @@ module ApiServices
         next if g['scores'].empty?
 
         team_totals = g['scores']
-          .select { |s| s['pass'] == '1' && !referees&.include?(s['user_id'].to_i) }
+          .select { |s| s['pass'] == '1' && !referees.include?(s['user_id'].to_i) }
           .each do |s|
           s['score'] = s['score'].to_i
 

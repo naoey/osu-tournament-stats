@@ -61,7 +61,7 @@ class MatchesController < ApplicationController
       :blue_captain,
       :tournament_id,
       referees: [],
-      discard_list: []
+      discard_list: [],
     )
   end
 
