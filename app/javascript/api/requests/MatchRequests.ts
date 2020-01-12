@@ -8,6 +8,7 @@ const createMatch = ({
   redCaptain,
   blueCaptain,
   discardList,
+  tournamentId = null,
 }): IRequest => ({
   options: {
     method: HttpMethod.Post,
@@ -19,6 +20,7 @@ const createMatch = ({
     red_captain: redCaptain,
     referees,
     round_name: roundName,
+    tournament_id: tournamentId,
   },
   url: "/matches",
 });

@@ -9,6 +9,7 @@ import { IUser } from "../../entities/IUser";
 import AddMatchButton from "./AddMatchButton";
 import MatchListTable from "../matches/MatchListTable";
 import PlayerStatsListTable from "../matches/PlayerStatsListTable";
+import TournamentContext from "./TournamentContext";
 
 export interface ITournamentDetailsProps {
   tournament: ITournament;
@@ -32,33 +33,35 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
     const { activeTab } = this.state;
 
     return (
-      <div className="p-4">
-        <div className="flex_ends">
-          <div>
-            <h2>{tournament.name}</h2>
-            <h5>hosted by {this.getHostLink()}</h5>
-            <h6>
-              {`${moment(tournament.start_date).format(DATE_DISPLAY_FORMAT)} - ${moment(tournament.end_date).format(DATE_DISPLAY_FORMAT)}`}
-            </h6>
+      <TournamentContext.Provider value={tournament}>
+        <div className="p-4">
+          <div className="flex_ends">
+            <div>
+              <h2>{tournament.name}</h2>
+              <h5>hosted by {this.getHostLink()}</h5>
+              <h6>
+                {`${moment(tournament.start_date).format(DATE_DISPLAY_FORMAT)} - ${moment(tournament.end_date).format(DATE_DISPLAY_FORMAT)}`}
+              </h6>
+            </div>
+
+            <div>
+              <AddMatchButton checkAllowed={this.checkUserIsTournamentHost} />
+            </div>
           </div>
 
-          <div>
-            <AddMatchButton checkAllowed={this.checkUserIsTournamentHost} />
-          </div>
+          <Tabs
+            activeKey={activeTab}
+            renderTabBar={this.renderTabBar}
+          >
+            <Tabs.TabPane key="matches" tab="Matches">
+              <MatchListTable isFocused={activeTab === "matches"} tournamentId={tournament.id} />
+            </Tabs.TabPane>
+            <Tabs.TabPane key="players" tab="Player statistics">
+              <PlayerStatsListTable isFocused={activeTab === "players"} tournamentId={tournament.id} />
+            </Tabs.TabPane>
+          </Tabs>
         </div>
-
-        <Tabs
-          activeKey={activeTab}
-          renderTabBar={this.renderTabBar}
-        >
-          <Tabs.TabPane key="matches" tab="Matches">
-            <MatchListTable isFocused={activeTab === "matches"} tournamentId={tournament.id} />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="players" tab="Player statistics">
-            <PlayerStatsListTable isFocused={activeTab === "players"} tournamentId={tournament.id} />
-          </Tabs.TabPane>
-        </Tabs>
-      </div>
+      </TournamentContext.Provider>
     );
   }
 
