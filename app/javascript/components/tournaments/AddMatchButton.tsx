@@ -2,19 +2,26 @@ import { Button, DatePicker, Form, Input, message, Modal } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import * as React from "react";
 import Api from "../../api/Api";
+import MatchRequests from "../../api/requests/MatchRequests";
 import TournamentRequests from "../../api/requests/TournamentRequests";
+import { IMatch } from "../../entities/IMatch";
 import ITournament from "../../entities/ITournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
 import { authenticated } from "../../helpers/AuthenticationHOC";
-import MatchRequests from "../../api/requests/MatchRequests";
-import { IMatch } from "../../entities/IMatch";
+import TournamentContext from "./TournamentContext";
 
 interface IAddButtonState {
   isModalOpen: boolean;
   isWorking: boolean;
 }
 
-class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState> {
+interface IAddButtonProps extends FormComponentProps {
+  tournamentId?: number;
+}
+
+class AddMatchButton extends React.Component<IAddButtonProps, IAddButtonState> {
+  public static contextType = TournamentContext;
+
   public state: IAddButtonState = {
     isModalOpen: false,
     isWorking: false,
@@ -64,6 +71,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
                   "discardList",
                   {
                     getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    getValueProps: (value: string[]) => (value ?? []).join("|"),
                     rules: [{ type: "array" }],
                   },
                 )(<Input type="text" placeholder="0|1|3..." />)
@@ -73,7 +81,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
               {
                 getFieldDecorator(
                   "redCaptain",
-                  { rules: [{ required: true, message: "Red captain is required" }]},
+                  { rules: [{ required: true, message: "Red captain is required" }] },
                 )(<Input type="text" placeholder="Player name or ID" />)
               }
             </Form.Item>
@@ -81,7 +89,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
               {
                 getFieldDecorator(
                   "blueCaptain",
-                  { rules: [{ required: true, message: "Blue captain is required" }]},
+                  { rules: [{ required: true, message: "Blue captain is required" }] },
                 )(<Input type="text" placeholder="Player name or ID" />)
               }
             </Form.Item>
@@ -91,6 +99,7 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
                   "referees",
                   {
                     getValueFromEvent: (e: any) => (e.target.value || "").split("|"),
+                    getValueProps: (value: string[]) => (value ?? []).join("|"),
                     rules: [{ type: "array" }],
                   },
                 )(<Input type="text" placeholder="Potla|nitr0f|2" />)
@@ -104,9 +113,15 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
 
   private setModalVisibility = (visible: boolean) => this.setState({ isModalOpen: visible });
 
-  private onAdd = () => this.setModalVisibility(true);
+  private onAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(true);
+  }
 
-  private onCancel = () => this.setModalVisibility(false);
+  private onCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(false);
+  }
 
   private onCreate = async (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +137,8 @@ class AddMatchButton extends React.Component<FormComponentProps, IAddButtonState
     this.setState({ isWorking: true });
 
     try {
+      if (this.context) values.tournamentId = this.context.id;
+
       const request = MatchRequests.createMatch(values);
 
       const response = await Api.performRequest<IMatch>(request);

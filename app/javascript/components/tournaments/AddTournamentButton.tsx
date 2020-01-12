@@ -61,9 +61,15 @@ class AddTournamentButton extends React.Component<FormComponentProps, IAddButton
 
   private setModalVisibility = (visible: boolean) => this.setState({ isModalOpen: visible });
 
-  private onAdd = () => this.setModalVisibility(true);
+  private onAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(true);
+  }
 
-  private onCancel = () => this.setModalVisibility(false);
+  private onCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    this.setModalVisibility(false);
+  }
 
   private onCreate = async (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();

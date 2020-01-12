@@ -31,8 +31,9 @@ class MatchesController < ApplicationController
         red_captain: add_match_params[:red_captain],
         blue_captain: add_match_params[:blue_captain],
         referees: add_match_params[:referees],
-        discard_list: add_match_params[:discard_list],
+        discard_list: add_match_params[:discard_list].map(&:to_i),
         round_name: add_match_params[:round_name],
+        tournament_id: add_match_params[:tournament_id],
       )
 
       render json: match, status: :ok
@@ -56,10 +57,11 @@ class MatchesController < ApplicationController
       :osu_match_id,
       :round_name,
       :tournament_id,
-      :discard_list,
       :red_captain,
       :blue_captain,
-      :referees,
+      :tournament_id,
+      referees: [],
+      discard_list: [],
     )
   end
 
