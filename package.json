@@ -19,7 +19,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.23.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.10.0",
+    "query-string": "^6.10.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react_ujs": "^2.6.1",
