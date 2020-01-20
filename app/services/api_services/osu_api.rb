@@ -21,6 +21,7 @@ module ApiServices
         referees: nil
     )
       referees = (referees || [])
+        .reject { |r| r.nil? || r.empty? }
         .map { |r| get_or_load_player(r) }
         .map(&:osu_id)
 
@@ -92,7 +93,7 @@ module ApiServices
         end
 
         # remove aborted maps
-        games_after_discard = games_after_discard.filter { |g| !g['scores'].empty? }
+        games_after_discard = games_after_discard.filter { |g| !g['scores'].empty? || g['end_time'].nil? }
 
         parse_match_games games_after_discard, db_match, red_team: red_team, blue_team: blue_team, referees: referees
 
