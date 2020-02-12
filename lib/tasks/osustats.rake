@@ -40,7 +40,7 @@ namespace :osustats do
 
   desc 'Load an osu! API format JSON match'
   task :load_match_json, %i[json_file_path name tournament_id red_captain blue_captain discard_list referees] => [:environment] do |_, args|
-    json = JSON.parse(File.read(args[:json_file]))
+    json = JSON.parse(File.read(args[:json_file_path]))
 
     ApiServices::OsuApi.new.load_match_from_json(
       json,
@@ -49,6 +49,7 @@ namespace :osustats do
       blue_captain: args[:blue_captain],
       discard_list: args[:discard_list].nil? ? nil : args[:discard_list].split('|').map(&:to_i),
       referees: args[:referees].nil? ? nil : args[:referees].split('|'),
+      tournament_id: args[:tournament_id],
     )
   end
 end

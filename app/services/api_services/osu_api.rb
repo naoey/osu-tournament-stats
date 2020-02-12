@@ -115,7 +115,7 @@ module ApiServices
         end
 
         # remove aborted maps
-        games_after_discard = games_after_discard.filter { |g| !g['scores'].empty? }
+        games_after_discard = games_after_discard.reject { |g| g['scores'].empty? }
 
         parse_match_games games_after_discard, db_match, red_team: red_team, blue_team: blue_team, referees: referees
 
@@ -226,7 +226,7 @@ module ApiServices
 
     def get_captain(json, team_id)
       json['games']
-        .select { |g| g['team_type'] == '2' }
+        .select { |g| g['team_type'] == '2' && g['scores'].length > 0 }
         .first['scores']
         .select { |s| s['team'] == team_id.to_s }
         .first['user_id']
@@ -346,7 +346,7 @@ module ApiServices
         team_totals['blue'] = [] if team_totals['blue'].nil?
 
         if team_totals['red'].empty? && team_totals['blue'].empty?
-          raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where map has no passes at all'
+          raise OsuApiParserExceptions::MatchParseFailedError, "Impossible situation where map with beatmap id #{g['beatmap_id']} has no passes at all"
         end
 
         red_total = team_totals['red'].map { |s| s['score'] }.reduce(:+) || 0
