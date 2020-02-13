@@ -12,13 +12,13 @@ module ApiServices
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
     def load_match(
-        osu_match_id:,
-        round_name: nil,
-        tournament_id: nil,
-        discard_list: nil,
-        red_captain: nil,
-        blue_captain: nil,
-        referees: nil
+      osu_match_id:,
+      round_name: nil,
+      tournament_id: nil,
+      discard_list: nil,
+      red_captain: nil,
+      blue_captain: nil,
+      referees: nil
     )
       referees = (referees || [])
         .reject { |r| r.nil? || r.empty? }
@@ -45,7 +45,30 @@ module ApiServices
 
       raise OsuApiParserExceptions::MatchParseFailedError, "Match #{osu_match_id} has no games in it" if json['games'].empty?
 
-      # TODO: eventually this will have to identify team names and not player names
+      load_match_from_json(
+        json,
+        round_name: round_name,
+        tournament_id: tournament_id,
+        discard_list: discard_list,
+        red_captain: red_captain,
+        blue_captain: blue_captain,
+        referees: referees
+      )
+    end
+
+    ##
+    # Parses and loads a match into the database from the osu! API JSON.
+    def load_match_from_json(
+      json,
+      round_name: nil,
+      tournament_id: nil,
+      discard_list: nil,
+      red_captain: nil,
+      blue_captain: nil,
+      referees: nil
+    )
+      osu_match_id = json['match_id'].to_i
+
       players = correct_match_name(json['match']['name'], osu_match_id).split(/:/)
 
       Rails.logger.tagged { Rails.logger.debug "Determining team names from match name part 1 #{players}" }
@@ -57,14 +80,14 @@ module ApiServices
       ActiveRecord::Base.transaction do
         red_team = MatchTeam.create(
           name: players.nil? ? 'Red team' : players[0].tr(' ()', ''),
-          captain: red_captain ? get_or_load_player(red_captain) : get_captain(json, 0)
+          captain: get_or_load_player(red_captain || get_captain(json, 1)),
         )
 
         red_team.save!
 
         blue_team = MatchTeam.create(
           name: players.nil? ? 'Blue team' : players[1].tr(' ()', ''),
-          captain: red_captain ? get_or_load_player(blue_captain) : get_captain(json, 1)
+          captain: get_or_load_player(blue_captain || get_captain(json, 1)),
         )
 
         blue_team.save!
@@ -203,7 +226,12 @@ module ApiServices
     private
 
     def get_captain(json, team_id)
-      json['games'].first['scores'].select { |s| s['team'] == team_id.to_s }.first.user_id.to_i
+      json['games']
+        .select { |g| g['team_type'] == '2' && g['scores'].length > 0 }
+        .first['scores']
+        .select { |s| s['team'] == team_id.to_s }
+        .first['user_id']
+        .to_i
     end
 
     def parse_match_games(games, match, red_team: nil, blue_team: nil, referees: nil)
@@ -319,7 +347,7 @@ module ApiServices
         team_totals['blue'] = [] if team_totals['blue'].nil?
 
         if team_totals['red'].empty? && team_totals['blue'].empty?
-          raise OsuApiParserExceptions::MatchParseFailedError, 'Impossible situation where map has no passes at all'
+          raise OsuApiParserExceptions::MatchParseFailedError, "Impossible situation where map with beatmap id #{g['beatmap_id']} has no passes at all"
         end
 
         red_total = team_totals['red'].map { |s| s['score'] }.reduce(:+) || 0
