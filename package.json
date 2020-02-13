@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@babel/preset-react": "^7.8.3",
-    "@types/jquery": "^3.3.31",
+    "@types/jquery": "^3.3.32",
     "@rails/webpacker": "^4.2.2",
     "@types/jquery": "^3.3.31",
     "@types/lodash": "^4.14.149",
