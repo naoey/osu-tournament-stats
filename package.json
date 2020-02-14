@@ -19,7 +19,7 @@
     "moment": "^2.23.0",
     "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
-    "query-string": "^6.10.1",
+    "query-string": "^6.11.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react_ujs": "^2.6.1",
