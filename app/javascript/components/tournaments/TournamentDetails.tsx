@@ -45,7 +45,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
             </div>
 
             <div>
-              <AddMatchButton checkAllowed={this.checkUserIsTournamentHost} />
+              <AddMatchButton />
             </div>
           </div>
 
