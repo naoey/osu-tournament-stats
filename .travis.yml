@@ -19,8 +19,10 @@ before_script:
   - bundle exec rails db:fixtures:load RAILS_ENV=test
 script:
   - TESTOPTS="-v" bundle exec rails test
+  - rails assets:precompile
   - yarn test
-# TODO: add precompile and deploy after ssh is setup
+  - rails assets:precompile RAILS_ENV=production
+# TODO: add deploy after ssh is setup
 # after_success:
   # - bundle exec rails assets:precompile
 notifications:
