@@ -307,7 +307,6 @@ $RECYCLE.BIN/
 *.tmp
 *.rst
 *.os
-*.js
 *.pb
 *.dcp
 *.hwdef
@@ -409,3 +408,5 @@ ipshared
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+.idea/
