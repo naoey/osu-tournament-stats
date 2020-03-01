@@ -36,7 +36,7 @@ export default function MatchListTable({
   const isFirstLoad = React.useRef(true);
 
   const loadData = async () => {
-    // If tournament ID is missing or we had initial data and this is still the first load attempt, then skip
+    // If we had initial data and this is still the first load attempt, then skip
     // the API trip
     if (initialData.length > 0 && isFirstLoad.current) {
       setIsLoading(false);
@@ -96,7 +96,7 @@ export default function MatchListTable({
 
   const keyExtractor = (record: IMatch): string => record.id.toString();
 
-  const columns: Array<ColumnProps<IMatch>> = [
+  const columns: ColumnProps<IMatch>[] = [
     {
       dataIndex: "round_name",
       key: "1",
@@ -142,7 +142,7 @@ export default function MatchListTable({
       <Table
         dataSource={data}
         loading={isLoading}
-        columns={columns.filter(c => !hiddenColumns.includes(c.dataIndex))}
+        columns={columns.filter(c => !hiddenColumns.includes(c.dataIndex as string))}
         rowKey={keyExtractor}
         pagination={{
           pageSize: 10,
