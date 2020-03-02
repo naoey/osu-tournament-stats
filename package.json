@@ -24,7 +24,7 @@
     "react-dom": "^16.13.0",
     "react_ujs": "^2.6.1",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.8.2",
+    "typescript": "^3.8.3",
     "uuid": "^7.0.1",
     "voca": "^1.4.0"
   },
