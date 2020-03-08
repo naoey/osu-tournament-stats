@@ -12,14 +12,14 @@ class MatchesPlayedStatisticTest < Test::Unit::TestCase
 
     test_match1 = Match.create(
       online_id: 9999,
-      name: 'Test Match 1',
+      round_name: 'Test Match 1',
       red_team: test_match_red_team1,
       blue_team: test_match_blue_team1,
     )
 
     test_match2 = Match.create(
       online_id: 9998,
-      name: 'Test Match 2',
+      round_name: 'Test Match 2',
       red_team: test_match_red_team2,
       blue_team: test_match_blue_team2,
     )
