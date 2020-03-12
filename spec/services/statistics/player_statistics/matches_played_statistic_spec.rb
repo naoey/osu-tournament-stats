@@ -2,14 +2,18 @@ require 'rails_helper'
 
 require_relative '../../../../app/services/statistics/player_statistics.rb'
 
-describe 'MatchesPlayedStatistic' do
+describe 'MatchesPlayedStatisticTest' do
   context 'when invalid initialisation'
-  it 'throws error' do
-    expect { PlayerStatistics::MatchesPlayedStatistic.new(nil).compute }.to raise_error(ArgumentError)
+  it 'throws error for nil player' do
+    expect { PlayerStatistics::MatchesPlayedStatistic.new(nil) }.to raise_error(ArgumentError)
+  end
+
+  it 'throws error for non-Player type argument' do
+    expect { PlayerStatistics::MatchesPlayedStatistic.new(build(:match)) }.to raise_error(ArgumentError)
   end
 
   context 'when valid initialisation'
-  it 'should count matches played correctly' do
+  it 'counts matches played correctly' do
     test_player = create(:player)
     other_player = create(:player)
 
