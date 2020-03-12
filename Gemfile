@@ -10,7 +10,7 @@ gem 'rails', '~> 6.0.2'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 4.3.3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -52,8 +52,7 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen', '>= 3.0.5', '< 3.3'
-  gem 'rubocop', '~> 0.80.0', require: false
+  gem 'rubocop', '~> 0.80.1', require: false
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
