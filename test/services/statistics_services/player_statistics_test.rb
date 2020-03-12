@@ -82,6 +82,6 @@ class PlayerStatisticsTest < Test::Unit::TestCase
   end
 
   def service
-    StatisticsServices::PlayerStatistics.new
+    StatisticsServices::PlayerStatistics_Legacy.new
   end
 end

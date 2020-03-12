@@ -49,6 +49,6 @@ class StatisticsController < ApplicationController
   end
 
   def service
-    StatisticsServices::PlayerStatistics.new
+    StatisticsServices::PlayerStatistics_Legacy.new
   end
 end

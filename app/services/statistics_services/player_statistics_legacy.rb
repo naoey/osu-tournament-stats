@@ -1,7 +1,7 @@
 module StatisticsServices
   ##
   # Service that provides functionality for various player statistics related operations.
-  class PlayerStatistics
+  class PlayerStatistics_Legacy
     def get_all_player_stats_for_tournament(tournament_id, round_name_search = '')
       @data = []
 

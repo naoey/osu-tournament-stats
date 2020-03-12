@@ -87,7 +87,7 @@ module Discord
     end
 
     def player_statistics_service
-      StatisticsServices::PlayerStatistics.new
+      StatisticsServices::PlayerStatistics_Legacy.new
     end
   end
 end
