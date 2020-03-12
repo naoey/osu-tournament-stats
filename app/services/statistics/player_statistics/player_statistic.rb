@@ -1,9 +1,13 @@
+require_relative '../statistic.rb'
+
 module PlayerStatistics
   class PlayerStatistic < Statistic
     attr_reader :player
 
     def initialize(player)
       @player = player
+
+      super()
     end
 
     protected
