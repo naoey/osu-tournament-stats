@@ -12,4 +12,8 @@ class Statistic
   def validate!
     true
   end
+
+  def apply_filter
+    raise NotImplementedError, "#{self.class.name} does not implement filters"
+  end
 end
