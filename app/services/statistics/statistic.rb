@@ -13,7 +13,7 @@ class Statistic
     true
   end
 
-  def apply_filter
-    raise NotImplementedError, "#{self.class.name} does not implement filters"
+  def apply_filter(query)
+    query
   end
 end
