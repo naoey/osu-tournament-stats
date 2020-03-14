@@ -23,3 +23,8 @@ Layout/MultilineMethodCallIndentation:
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
   IndentationWidth: 2
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+  IndentationWidth: 2
+
