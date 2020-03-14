@@ -3,16 +3,22 @@ require 'rails_helper'
 require_relative '../../../../app/services/statistics/player_statistics.rb'
 
 describe 'AverageAccuracyStatisticTest' do
-  it 'counts average misses correctly' do
+  it 'counts average accuracy correctly' do
     player = create(:player)
-    create_list(:match_score, 5, player: player, count_miss: 7)
+    scores = create_list(:match_score, 5, player: player, count_miss: 7)
 
-    expect(PlayerStatistics::AverageMissesStatistic.new(player).compute).to equal(7.0)
+    expected_acc = scores
+      .map { |s| AccuracyHelper.calculate_accuracy(s) }
+      .reduce(:+)
+
+    expected_acc /= scores.size.to_f
+
+    expect(PlayerStatistics::AverageAccuracyStatistic.new(player).compute).to equal(expected_acc.round(4))
   end
 
   it 'returns 0 for no scores' do
     player = create(:player)
 
-    expect(PlayerStatistics::AverageMissesStatistic.new(player).compute).to equal(0.0)
+    expect(PlayerStatistics::AverageAccuracyStatistic.new(player).compute).to equal(0)
   end
 end

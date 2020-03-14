@@ -1,7 +1,5 @@
 module PlayerStatistics
   class BestAccuracyStatistic < PlayerStatistic
-    include AccuracyHelper
-
     def compute
       q = MatchScore
         .joins(:match)
@@ -9,7 +7,7 @@ module PlayerStatistics
 
       acc = apply_filter(q)
         .all
-        .map(&:calculate_accuracy)
+        .map { |s| AccuracyHelper.calculate_accuracy(s) }
         .max
         &.round(4)
 

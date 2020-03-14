@@ -1,5 +1,5 @@
 module AccuracyHelper
-  def calculate_accuracy(score)
+  def self.calculate_accuracy(score)
     # https://osu.ppy.sh/help/wiki/Accuracy
     d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 

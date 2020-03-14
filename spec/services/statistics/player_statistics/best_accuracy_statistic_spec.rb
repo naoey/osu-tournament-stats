@@ -3,12 +3,11 @@ require 'rails_helper'
 require_relative '../../../../app/services/statistics/player_statistics.rb'
 
 describe 'BestAccuracyStatisticTest' do
-  it 'counts average misses correctly' do
+  it 'counts best accuracy correctly' do
     player = create(:player)
     scores = create_list(:match_score, 5, player: player, count_miss: 7)
 
-    calc = AccuracyCalculator.new
-    expected_acc = scores.map { |s| calc.calculate_accuracy(s) }.max.round(4)
+    expected_acc = scores.map { |s| AccuracyHelper.calculate_accuracy(s) }.max.round(4)
 
     expect(PlayerStatistics::BestAccuracyStatistic.new(player).compute).to equal(expected_acc)
   end
@@ -17,13 +16,5 @@ describe 'BestAccuracyStatisticTest' do
     player = create(:player)
 
     expect(PlayerStatistics::BestAccuracyStatistic.new(player).compute).to equal(0)
-  end
-
-  private
-
-  class AccuracyCalculator
-    include AccuracyHelper
-
-    attr_reader :calculate_accuracy
   end
 end

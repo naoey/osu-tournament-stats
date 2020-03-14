@@ -14,7 +14,7 @@ describe 'AccuracyHelperTest' do
       count_geki: 0,
     )
 
-    expect(AccuracyHelperTester.new.calculate_accuracy(score)).to equal(0)
+    expect(AccuracyHelper.calculate_accuracy(score)).to equal(0)
   end
 
   it 'returns expected accuracy for a valid scores' do
@@ -28,23 +28,19 @@ describe 'AccuracyHelperTest' do
       count_geki: 0,
     )
 
-    expect(AccuracyHelperTester.new.calculate_accuracy(score)).to equal(1.0)
+    expect(AccuracyHelper.calculate_accuracy(score)).to equal(1.0)
 
     score.count_300 = 7
     score.count_100 = 3
     score.save!
 
-    expect(AccuracyHelperTester.new.calculate_accuracy(score)).to equal(0.8)
+    expect(AccuracyHelper.calculate_accuracy(score)).to equal(0.8)
 
     score.count_300 = 4
     score.count_100 = 4
     score.count_50 = 3
     score.save!
 
-    expect(AccuracyHelperTester.new.calculate_accuracy(score)).to be_within(0.01).of(0.5303)
-  end
-
-  class AccuracyHelperTester
-    include AccuracyHelper
+    expect(AccuracyHelper.calculate_accuracy(score)).to be_within(0.01).of(0.5303)
   end
 end
