@@ -83,7 +83,13 @@ export default function PlayerStatsListTable({
       sortDirections: ["ascend", "descend"],
       sorter: (a, b) => sorter(a, b, item => item[key]),
       title: titleTooltip ?
-        () => <Tooltip title={titleTooltip}>{title || v.titleCase(key.split("_").join(" "))}</Tooltip>
+        () => (
+          <Tooltip title={titleTooltip}>
+            <span>
+              {title || v.titleCase(key.split("_").join(" "))}
+            </span>
+          </Tooltip>
+        )
         : title || v.titleCase(key.split("_").join(" ")),
     };
 
