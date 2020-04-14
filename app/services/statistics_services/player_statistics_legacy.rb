@@ -114,7 +114,7 @@ module StatisticsServices
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
         .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.*, matches.*')
+        .select('match_scores.beatmap_id')
         .where(player: player)
         .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
 
@@ -122,7 +122,7 @@ module StatisticsServices
       q = q.where('matches.id = ?', match_id) unless match_id.nil?
       q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
 
-      q.count(:all)
+      q.all
     end
 
     def maps_won?(player, tournament_id: nil, match_id: nil, round_name: nil)
@@ -210,7 +210,7 @@ module StatisticsServices
         total_misses: player_scores.sum(:count_miss),
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
-        maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
+        maps_failed: player_scores.where(player_id: player.id, pass: false).collect(&:beatmap_id),
         full_combos: full_combos?(player, tournament_id: tournament_id, round_name: round_name_search),
       }
     end
