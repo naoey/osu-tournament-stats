@@ -16,5 +16,5 @@ export interface IPlayerStatistic {
   average_accuracy: number;
   maps_failed: number;
   online_id: number;
-  full_combos: number;
+  full_combos: number[];
 }

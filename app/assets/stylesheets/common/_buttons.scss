@@ -1,0 +1,10 @@
+button.link {
+  background: transparent;
+  border: none;
+  color: royalblue;
+  text-decoration: underline;
+
+  &:hover, &:active, &:focus {
+    @extend button.link;
+  }
+}

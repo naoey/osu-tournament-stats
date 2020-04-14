@@ -1,4 +1,4 @@
-import { message, Table, Tooltip } from "antd";
+import { Button, message, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
 import * as React from "react";
@@ -6,6 +6,8 @@ import * as v from "voca";
 import Api from "../../api/Api";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
+import BeatmapRequests from "../../api/requests/BeatmapRequests";
+import { IBeatmap } from "../../entities/IBeatmap";
 
 export interface IPlayerStatsListTableProps {
   tournamentId?: number;
@@ -19,6 +21,20 @@ interface IPlayerListTableColumnDefinition {
   title?: string;
   render?: (text: string, record: IPlayerStatistic) => React.ReactNode;
   titleTooltip?: string;
+}
+
+enum DetailModal {
+  MapsWon = 'Maps won',
+  MapsLost = 'Maps lost',
+  FullCombos = 'Full combos',
+  BestAccuracy = 'Best accuracy',
+};
+
+interface DetailModalState {
+  type: DetailModal;
+  statistic: IPlayerStatistic;
+  isLoading: boolean;
+  data?: any;
 }
 
 function sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
@@ -41,6 +57,7 @@ export default function PlayerStatsListTable({
 }: IPlayerStatsListTableProps) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [detailModal, setDetailModal] = React.useState<null | DetailModalState>(null);
 
   const loadData = async () => {
     if (!matchId && !tournamentId) {
@@ -108,6 +125,57 @@ export default function PlayerStatsListTable({
     return column;
   };
 
+  const showDetailModal = async (detail: DetailModal, record: IPlayerStatistic) => {
+    setDetailModal({
+      isLoading: true,
+      type: detail,
+      statistic: record,
+    });
+
+    let request;
+
+    switch (detail) {
+      case DetailModal.FullCombos:
+        request = BeatmapRequests.getBeatmaps({ ids: record.full_combos });
+        break
+
+      default:
+        break;
+    }
+
+    try {
+      const response = await Api.performRequest(request);
+
+      setDetailModal({ ...detailModal, data: response });
+    } catch (e) {
+      message.error(e.message || 'An error occured!');
+      setDetailModal(null);
+    }
+  };
+
+  const renderDetailModal = () => {
+    if (detailModal === null)
+      return null;
+
+    switch (detailModal.type) {
+      case DetailModal.FullCombos:
+        return (
+          <ul>
+            {
+              detailModal.data.map(d => (
+                <li key={d.id}>
+                  {d.name}
+                </li>
+              ))
+            }
+          </ul>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const augmentedData = data.map(d => ({
     ...d,
     maps_won_percent: Math.round(d.maps_won / d.maps_played * 100 * 100) / 100,
@@ -160,21 +228,34 @@ export default function PlayerStatsListTable({
     }, {
       key: "full_combos",
       titleTooltip: "Approximated FC. Doesn't count maps that have been deleted from osu servers.",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.FullCombos, record)}>
+          {record.full_combos.length}
+        </Button>
+      )
     },
   ];
 
   return (
-    <Table
-      loading={isLoading}
-      dataSource={augmentedData}
-      columns={columns.filter(c => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
-      rowKey={keyExtractor}
-      sortDirections={["ascend", "descend"]}
-      pagination={{
-        pageSize: 10,
-        position: "top",
-      }}
-      scroll={{ x: "100%" }}
-    />
+    <React.Fragment>
+      <Table
+        loading={isLoading}
+        dataSource={augmentedData}
+        columns={columns.filter(c => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
+        rowKey={keyExtractor}
+        sortDirections={["ascend", "descend"]}
+        pagination={{
+          pageSize: 10,
+          position: "top",
+        }}
+        scroll={{ x: "100%" }}
+      />
+      <Modal
+        visible={detailModal !== null}
+        title={detailModal?.type}
+      >
+        {renderDetailModal()}
+      </Modal>
+    </React.Fragment>
   );
 }
