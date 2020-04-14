@@ -101,7 +101,7 @@ export default function PlayerStatsListTable({
         _.uniqBy(data.map(p => ({ text: p.player.name, value: p.player.name.toLowerCase() })), i => i.text),
         p => p.value,
       );
-      column.onFilter = (value, record) => record.player.name.toLowerCase().indexOf(value) > -1;
+      column.onFilter = (value, record) => record.player.name.toLowerCase().indexOf(value.toString()) > -1;
       column.width = 175;
     }
 
