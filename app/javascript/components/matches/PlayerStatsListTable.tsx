@@ -77,7 +77,7 @@ export default function PlayerStatsListTable({
     index: number,
   ): ColumnProps<IPlayerStatistic> => {
     const column: ColumnProps<IPlayerStatistic> = {
-      dataIndex: key,
+      dataIndex: key.split("."),
       defaultSortOrder: "ascend",
       key,
       sortDirections: ["ascend", "descend"],
