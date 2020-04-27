@@ -251,10 +251,19 @@ module ApiServices
         total_score_count += red_team_scores.length
         total_score_count += blue_team_scores.length
 
-        get_or_load_beatmap game['beatmap_id'].to_i
+        beatmap = get_or_load_beatmap game['beatmap_id'].to_i
+
+        red_team_total_score = red_team_scores.map { |s| s['score'].to_i }.reduce(0, :+)
+        blue_team_total_score = blue_team_scores.map { |s| s['score'].to_i }.reduce(0, :+)
 
         red_team_scores.each do |score|
-          s = MatchScore.new(create_match_score(match, game, score))
+          s = MatchScore.new(create_match_score(
+            match,
+            game,
+            score,
+            red_team_total_score > blue_team_total_score,
+            (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+          ))
           s.save!
 
           match.match_scores.push(s)
@@ -269,7 +278,13 @@ module ApiServices
         Rails.logger.tagged(self.class.name) { Rails.logger.debug 'Red player scores saved' }
 
         blue_team_scores.each do |score|
-          s = MatchScore.new(create_match_score(match, game, score))
+          s = MatchScore.new(create_match_score(
+            match,
+            game,
+            score,
+            blue_team_total_score > red_team_total_score,
+            (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+          ))
           s.save!
 
           match.match_scores.push(s)
@@ -291,7 +306,7 @@ module ApiServices
       raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{scores_in_db} scores parsed, expected #{total_score_count}"
     end
 
-    def create_match_score(match, game, player_score)
+    def create_match_score(match, game, player_score, is_fc, is_win)
       {
         match: match,
         beatmap: get_or_load_beatmap(game['beatmap_id'].to_i),
@@ -307,6 +322,8 @@ module ApiServices
         count_miss: player_score['countmiss'].to_i,
         perfect: player_score['perfect'] == '1',
         pass: player_score['pass'] == '1',
+        is_full_combo: is_fc,
+        is_win: is_win,
       }
     end
 

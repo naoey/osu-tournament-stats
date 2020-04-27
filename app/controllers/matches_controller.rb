@@ -11,13 +11,7 @@ class MatchesController < ApplicationController
   end
 
   def show_match
-    begin
-      @data = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(params[:id])
-    rescue GenericExceptions::NotFoundError
-      respond_to do |format|
-        format.html { render status: :not_found }
-      end
-    end
+    @data = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(params[:id])
 
     respond_to do |format|
       format.html
@@ -31,7 +25,7 @@ class MatchesController < ApplicationController
         red_captain: add_match_params[:red_captain],
         blue_captain: add_match_params[:blue_captain],
         referees: add_match_params[:referees],
-        discard_list: add_match_params[:discard_list].map(&:to_i),
+        discard_list: add_match_params[:discard_list]&.map(&:to_i),
         round_name: add_match_params[:round_name],
         tournament_id: add_match_params[:tournament_id],
       )
