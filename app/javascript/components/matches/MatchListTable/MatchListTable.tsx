@@ -108,16 +108,6 @@ export default function MatchListTable({
       title: tournamentId ? "Round" : "Name",
     }, {
       className: "team-cell",
-      dataIndex: "red_team",
-      key: "3",
-      render: (text, record) => renderTeam(
-        record.red_team,
-        record.winning_team.id === record.red_team.id,
-        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
-      ),
-      title: "Red Player",
-    }, {
-      className: "team-cell",
       dataIndex: "blue_team",
       key: "2",
       render: (text, record) => renderTeam(
@@ -127,8 +117,17 @@ export default function MatchListTable({
       ),
       title: "Blue Team",
     }, {
+      className: "team-cell",
+      dataIndex: "red_team",
+      key: "3",
+      render: (text, record) => renderTeam(
+        record.red_team,
+        record.winning_team.id === record.red_team.id,
+        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+      ),
+      title: "Red Team",
+    }, {
       dataIndex: "match_timestamp",
-      defaultSortOrder: "ascend",
       key: "4",
       render: text => moment(text).format("LLL"),
       sortDirections: ["ascend", "descend"],
