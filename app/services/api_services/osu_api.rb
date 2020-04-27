@@ -262,7 +262,7 @@ module ApiServices
             game,
             score,
             red_team_total_score > blue_team_total_score,
-            (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
           s.save!
 
@@ -283,7 +283,7 @@ module ApiServices
             game,
             score,
             blue_team_total_score > red_team_total_score,
-            (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
           s.save!
 
