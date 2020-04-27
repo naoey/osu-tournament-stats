@@ -153,7 +153,7 @@ module StatisticsServices
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
         maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
-        full_combos: full_combos?(player),
+        full_combos: full_combos?(player, match_id: match_id),
       }
     end
 
