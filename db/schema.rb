@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_21_115719) do
+ActiveRecord::Schema.define(version: 2020_04_27_050110) do
 
   create_table "beatmaps", force: :cascade do |t|
     t.string "name"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 2019_10_21_115719) do
     t.boolean "pass"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_full_combo"
+    t.boolean "is_win"
     t.index ["player_id"], name: "index_match_scores_on_player"
   end
 

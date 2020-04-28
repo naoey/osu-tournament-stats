@@ -26,7 +26,7 @@ export default class TournamentListTable extends React.Component<ITournamentList
       render: (_: string, record: ITournament) => <a href={`/tournaments/${record.id}`}>{record.name}</a>,
       title: "Name",
     }, {
-      dataIndex: "host_player.name",
+      dataIndex: ["host_player", "name"],
       key: "host",
       title: "Host",
     }, {

@@ -112,11 +112,9 @@ module StatisticsServices
       # from slider end misses from the scores alone
       q = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.beatmap_id')
-        .where(player: player)
-        .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
+        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.id')
+        .select('match_scores.*, matches.*')
+        .where("player_id = #{player.id} AND is_full_combo = 1")
 
       q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
       q = q.where('matches.id = ?', match_id) unless match_id.nil?
@@ -126,52 +124,17 @@ module StatisticsServices
     end
 
     def maps_won?(player, tournament_id: nil, match_id: nil, round_name: nil)
-      # FIXME: this monstrosity has to go away aaaaaaa
+      q = MatchScore
+        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
+        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.id')
+        .select('match_scores.*, matches.*')
+        .where("player_id = #{player.id} AND is_win = 1")
 
-      player_tournament_fragment = Match.sanitize_sql_for_conditions([
-        "match_teams_players.player_id = ? #{!tournament_id.nil? ? "AND matches.tournament_id = ?" : ''}",
-        player.id,
-        *(tournament_id unless tournament_id.nil?),
-      ])
+      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
+      q = q.where('matches.id = ?', match_id) unless match_id.nil?
+      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
 
-      player_team_fragment = Match.sanitize_sql_for_conditions([
-        "player_id = ?",
-        player.id,
-      ])
-
-      player_match_fragment = Match.sanitize_sql_for_conditions([
-        "match_scores.match_id = ?",
-        match_id
-      ])
-
-      sql = "SELECT COUNT(*) as maps_won FROM (
-              SELECT MAX(team_total_score), team_id FROM (
-                -- Get all players in a given set of teams
-                SELECT SUM(match_scores.score) as team_total_score, match_scores.beatmap_id, team_players.match_id, match_teams_players.player_id, team_players.team_id FROM match_teams_players
-                JOIN (
-                  -- Get all teams in given set of matches
-                  SELECT * FROM (
-                    SELECT id as match_id, red_team_id AS team_id FROM matches
-                    UNION ALL
-                    SELECT id, blue_team_id AS team_id FROM matches
-                  ) AS teams_in_matches
-                  WHERE teams_in_matches.match_id IN (
-                    -- Get all matches that a player participated in
-                    SELECT matches.id FROM matches
-                    JOIN match_teams_players ON match_team_id IN (matches.red_team_id, matches.blue_team_id)
-                    WHERE #{player_tournament_fragment}
-                  )
-                ) AS team_players ON team_players.team_id = match_teams_players.match_team_id
-                -- Get scores for these players
-                JOIN match_scores ON match_scores.player_id = match_teams_players.player_id AND match_scores.match_id = team_players.match_id
-                #{match_id.nil? ? '' : "WHERE #{player_match_fragment}"}
-                GROUP BY team_players.team_id, match_scores.beatmap_id
-              )
-              GROUP BY beatmap_id
-            )
-            WHERE team_id IN (SELECT match_team_id FROM match_teams_players WHERE #{player_team_fragment})"
-
-      ActiveRecord::Base.connection.execute(sql)[0]['maps_won']
+      q.count(:all)
     end
 
     # TODO: dedupe all this crap
@@ -190,7 +153,7 @@ module StatisticsServices
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
         maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
-        full_combos: full_combos?(player),
+        full_combos: full_combos?(player, match_id: match_id),
       }
     end
 
