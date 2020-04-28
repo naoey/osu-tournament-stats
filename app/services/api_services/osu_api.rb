@@ -242,10 +242,10 @@ module ApiServices
 
       games.each do |game|
         red_team_scores = game['scores'].select { |score|
-          score['team'] == '1' && !referees.include?(score['user_id'].to_i)
+          score['team'] == '2' && !referees.include?(score['user_id'].to_i)
         }
         blue_team_scores = game['scores'].select { |score|
-          score['team'] == '2' && !referees.include?(score['user_id'].to_i)
+          score['team'] == '1' && !referees.include?(score['user_id'].to_i)
         }
 
         total_score_count += red_team_scores.length
@@ -306,7 +306,7 @@ module ApiServices
       raise OsuApiParserExceptions::MatchParseFailedError, "Match parse failed. Found #{scores_in_db} scores parsed, expected #{total_score_count}"
     end
 
-    def create_match_score(match, game, player_score, is_fc, is_win)
+    def create_match_score(match, game, player_score, is_win, is_fc)
       {
         match: match,
         beatmap: get_or_load_beatmap(game['beatmap_id'].to_i),
