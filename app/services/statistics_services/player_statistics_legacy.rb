@@ -112,7 +112,6 @@ module StatisticsServices
       # from slider end misses from the scores alone
       q = MatchScore
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.id')
         .select('match_scores.*, matches.*')
         .where("player_id = #{player.id} AND is_full_combo = 1")
 
@@ -120,7 +119,7 @@ module StatisticsServices
       q = q.where('matches.id = ?', match_id) unless match_id.nil?
       q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
 
-      q.all
+      q.all.map(&:beatmap_id)
     end
 
     def maps_won?(player, tournament_id: nil, match_id: nil, round_name: nil)

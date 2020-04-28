@@ -1,5 +1,5 @@
 const getBeatmaps = ({ ids }: { ids: number[] }) => ({
-  url: `/beatmaps?${$.param({ ids })}`
+  url: `/beatmaps?${ids.map(i => `ids[]=${i}`).join('&')}`
 });
 
 export default {

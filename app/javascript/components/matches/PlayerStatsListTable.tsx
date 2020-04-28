@@ -126,18 +126,20 @@ export default function PlayerStatsListTable({
   };
 
   const showDetailModal = async (detail: DetailModal, record: IPlayerStatistic) => {
-    setDetailModal({
+    const details = {
       isLoading: true,
       type: detail,
       statistic: record,
-    });
+    };
+
+    setDetailModal(details);
 
     let request;
 
     switch (detail) {
       case DetailModal.FullCombos:
         request = BeatmapRequests.getBeatmaps({ ids: record.full_combos });
-        break
+        break;
 
       default:
         break;
@@ -146,7 +148,7 @@ export default function PlayerStatsListTable({
     try {
       const response = await Api.performRequest(request);
 
-      setDetailModal({ ...detailModal, data: response });
+      setDetailModal({ ...details, data: response });
     } catch (e) {
       message.error(e.message || 'An error occured!');
       setDetailModal(null);
@@ -162,7 +164,7 @@ export default function PlayerStatsListTable({
         return (
           <ul>
             {
-              detailModal.data.map(d => (
+              detailModal.data?.map(d => (
                 <li key={d.id}>
                   {d.name}
                 </li>
@@ -253,6 +255,8 @@ export default function PlayerStatsListTable({
       <Modal
         visible={detailModal !== null}
         title={detailModal?.type}
+        onOk={() => setDetailModal(null)}
+        onCancel={() => setDetailModal(null)}
       >
         {renderDetailModal()}
       </Modal>
