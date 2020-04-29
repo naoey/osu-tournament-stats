@@ -29,7 +29,7 @@ export default function LoadingView({
   };
 
   const renderMessage = () => {
-    if (message === undefined || typeof message !== string)
+    if (message === undefined || typeof message !== 'string')
       return <h4>Loading...</h4>;
 
     if (message === null)
