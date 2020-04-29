@@ -1,5 +1,6 @@
 require 'discordrb'
 require 'singleton'
+require 'markdown-tables'
 
 module Discord
   class OsuDiscordBot
@@ -12,7 +13,7 @@ module Discord
 
       @client.command :setuser, &method(:set_user)
       @client.command %i[match_performance p], &method(:match_performance)
-      @client.command %i[:match_lb, mlb], &method(:match_leaderboard)
+      @client.command %i[:score_leaderboard, slb], &method(:score_leaderboard)
 
       @client.run true
 
@@ -80,9 +81,24 @@ module Discord
       end
     end
 
-    def match_leaderboard
+    def score_leaderboard(event, *args)
       begin
+        scores = MatchScore
+          .joins(:player)
+          .select('players.name as player_name, AVG(match_scores.score) AS score, ROUND(AVG(match_scores.accuracy) * 100, 2) AS average_acc, COUNT(*) as maps_played')
+          .group('match_scores.player_id')
+          .order('AVG(match_scores.score) DESC')
+          .limit(10)
 
+        labels = ['Player', 'Average score ▼', 'Average accuracy', 'Maps played']
+        data = scores.map do |s|
+          [s['player_name'], s['score'], "#{s['average_acc']}%", s['maps_played']]
+        end
+
+        "```#{MarkdownTables.plain_text(MarkdownTables.make_table(labels, data, is_rows: true))}```"
+      rescue StandardError => e
+        Rails.logger.tagged(self.class.name) { Rails.logger.error e }
+        'Error retrieving stats'
       end
     end
 
