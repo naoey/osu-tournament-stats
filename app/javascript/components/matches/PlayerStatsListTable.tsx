@@ -1,4 +1,4 @@
-import { message, Table, Tooltip } from "antd";
+import { Button, message, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
 import * as React from "react";
@@ -6,6 +6,9 @@ import * as v from "voca";
 import Api from "../../api/Api";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
+import BeatmapRequests from "../../api/requests/BeatmapRequests";
+import { IBeatmap } from "../../entities/IBeatmap";
+import LoadingView from "../common/LoadingView";
 
 export interface IPlayerStatsListTableProps {
   tournamentId?: number;
@@ -19,6 +22,22 @@ interface IPlayerListTableColumnDefinition {
   title?: string;
   render?: (text: string, record: IPlayerStatistic) => React.ReactNode;
   titleTooltip?: string;
+}
+
+enum DetailModal {
+  MapsWon = 'Maps won',
+  MapsPlayed = 'Maps played',
+  FullCombos = 'Full combos',
+  BestAccuracy = 'Best accuracy',
+  PerfectMaps = 'Perfect maps',
+  MapsFailed = 'Maps failed',
+};
+
+interface DetailModalState {
+  type: DetailModal;
+  statistic: IPlayerStatistic;
+  isLoading: boolean;
+  data?: any;
 }
 
 function sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
@@ -41,6 +60,7 @@ export default function PlayerStatsListTable({
 }: IPlayerStatsListTableProps) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [detailModal, setDetailModal] = React.useState<null | DetailModalState>(null);
 
   const loadData = async () => {
     if (!matchId && !tournamentId) {
@@ -108,9 +128,91 @@ export default function PlayerStatsListTable({
     return column;
   };
 
+  const showDetailModal = async (detail: DetailModal, record: IPlayerStatistic) => {
+    let request;
+
+    switch (detail) {
+      case DetailModal.FullCombos:
+        request = record.full_combos.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.full_combos }) : null;
+        break;
+
+      case DetailModal.BestAccuracy:
+        request = BeatmapRequests.getBeatmaps({ ids: [record.best_accuracy.beatmap_id] });
+        break;
+
+      case DetailModal.MapsFailed:
+        request = record.maps_failed.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_failed }) : null;
+        break;
+
+      case DetailModal.MapsPlayed:
+        request = record.maps_played.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_played }) : null;
+        break;
+
+      case DetailModal.MapsWon:
+        request = record.maps_won.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_won }) : null;
+        break;
+
+      case DetailModal.PerfectMaps:
+        request = record.perfect_maps.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.perfect_maps }) : null;
+        break;
+
+      default:
+        break;
+    }
+
+    if (request === null) {
+      message.info('No details for record!');
+      return;
+    }
+
+    const details = {
+      isLoading: true,
+      type: detail,
+      statistic: record,
+    };
+
+    setDetailModal(details);
+
+    try {
+      const response = await Api.performRequest(request);
+
+      setDetailModal({ ...details, isLoading: false, data: response });
+    } catch (e) {
+      message.error(e.message || 'An error occured!');
+      setDetailModal(null);
+    }
+  };
+
+  const renderDetailModal = () => {
+    if (detailModal === null)
+      return null;
+
+    if (detailModal.isLoading)
+      return <LoadingView />;
+
+    switch (detailModal.type) {
+      case DetailModal.FullCombos:
+      case DetailModal.PerfectMaps:
+      case DetailModal.MapsWon:
+      case DetailModal.MapsPlayed:
+      case DetailModal.MapsFailed:
+      case DetailModal.BestAccuracy:
+        return (
+          <ul>
+            {
+              detailModal.data?.map(d => <li key={d.id}>{d.name}</li>) ?? null
+            }
+          </ul>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const augmentedData = data.map(d => ({
     ...d,
-    maps_won_percent: Math.round(d.maps_won / d.maps_played * 100 * 100) / 100,
+    maps_won_percent: Math.round(d.maps_won.length / d.maps_played.length * 100 * 100) / 100,
     matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
   }));
 
@@ -132,21 +234,40 @@ export default function PlayerStatsListTable({
       title: "Match win %",
     }, {
       key: "maps_played",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsPlayed, record)}>
+          {record.maps_played.length}
+        </Button>
+      ),
     }, {
       key: "maps_won",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsWon, record)}>
+          {record.maps_won.length}
+        </Button>
+      ),
     }, {
       key: "maps_won_percent",
       render: text => <span>{text}%</span>,
       title: "Maps win %",
     }, {
       key: "best_accuracy",
-      render: (text, record) => <span>{record.best_accuracy}%</span>,
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.BestAccuracy, record)}>
+          {record.best_accuracy.accuracy}%
+        </Button>
+      ),
     }, {
       key: "average_accuracy",
       render: (text, record) => <span>{record.average_accuracy}%</span>,
     }, {
       key: "perfect_count",
       title: "Perfect maps",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.PerfectMaps, record)}>
+          {record.perfect_maps.length}
+        </Button>
+      ),
     }, {
       key: "total_misses",
     }, {
@@ -157,24 +278,45 @@ export default function PlayerStatsListTable({
       key: "average_score",
     }, {
       key: "maps_failed",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsFailed, record)}>
+          {record.maps_failed.length}
+        </Button>
+      ),
     }, {
       key: "full_combos",
       titleTooltip: "Approximated FC. Doesn't count maps that have been deleted from osu servers.",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.FullCombos, record)}>
+          {record.full_combos.length}
+        </Button>
+      ),
     },
   ];
 
   return (
-    <Table
-      loading={isLoading}
-      dataSource={augmentedData}
-      columns={columns.filter(c => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
-      rowKey={keyExtractor}
-      sortDirections={["ascend", "descend"]}
-      pagination={{
-        pageSize: 10,
-        position: "top",
-      }}
-      scroll={{ x: "100%" }}
-    />
+    <React.Fragment>
+      <Table
+        loading={isLoading}
+        dataSource={augmentedData}
+        columns={columns.filter(c => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
+        rowKey={keyExtractor}
+        sortDirections={["ascend", "descend"]}
+        pagination={{
+          pageSize: 10,
+          position: "top",
+        }}
+        scroll={{ x: "100%" }}
+      />
+      <Modal
+        visible={detailModal !== null}
+        title={detailModal?.type}
+        onOk={() => setDetailModal(null)}
+        onCancel={() => setDetailModal(null)}
+        footer={null}
+      >
+        {renderDetailModal()}
+      </Modal>
+    </React.Fragment>
   );
 }
