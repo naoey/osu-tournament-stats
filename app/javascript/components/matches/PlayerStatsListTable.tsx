@@ -128,19 +128,11 @@ export default function PlayerStatsListTable({
   };
 
   const showDetailModal = async (detail: DetailModal, record: IPlayerStatistic) => {
-    const details = {
-      isLoading: true,
-      type: detail,
-      statistic: record,
-    };
-
-    setDetailModal(details);
-
     let request;
 
     switch (detail) {
       case DetailModal.FullCombos:
-        request = BeatmapRequests.getBeatmaps({ ids: record.full_combos });
+        request = record.full_combos.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.full_combos }) : null;
         break;
 
       case DetailModal.BestAccuracy:
@@ -148,24 +140,37 @@ export default function PlayerStatsListTable({
         break;
 
       case DetailModal.MapsFailed:
-        request = BeatmapRequests.getBeatmaps({ ids: record.maps_failed });
+        request = record.maps_failed.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_failed }) : null;
         break;
 
       case DetailModal.MapsPlayed:
-        request = BeatmapRequests.getBeatmaps({ ids: record.maps_played });
+        request = record.maps_played.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_played }) : null;
         break;
 
       case DetailModal.MapsWon:
-        request = BeatmapRequests.getBeatmaps({ ids: record.maps_won });
+        request = record.maps_won.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.maps_won }) : null;
         break;
 
       case DetailModal.PerfectMaps:
-        request = BeatmapRequests.getBeatmaps({ ids: record.perfect_maps });
+        request = record.perfect_maps.length > 0 ? BeatmapRequests.getBeatmaps({ ids: record.perfect_maps }) : null;
         break;
 
       default:
         break;
     }
+
+    if (request === null) {
+      message.info('No details for record!');
+      return;
+    }
+
+    const details = {
+      isLoading: true,
+      type: detail,
+      statistic: record,
+    };
+
+    setDetailModal(details);
 
     try {
       const response = await Api.performRequest(request);
@@ -233,7 +238,7 @@ export default function PlayerStatsListTable({
     }, {
       key: "maps_won",
       render: (text, record) => (
-        <Button className="link" onClick={() => showDetailModal(DetailModal.PerfectMaps, record)}>
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsWon, record)}>
           {record.maps_won.length}
         </Button>
       ),
