@@ -8,6 +8,7 @@ import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
 import BeatmapRequests from "../../api/requests/BeatmapRequests";
 import { IBeatmap } from "../../entities/IBeatmap";
+import LoadingView from "../common/LoadingView";
 
 export interface IPlayerStatsListTableProps {
   tournamentId?: number;
@@ -175,7 +176,7 @@ export default function PlayerStatsListTable({
     try {
       const response = await Api.performRequest(request);
 
-      setDetailModal({ ...details, data: response });
+      setDetailModal({ ...details, isLoading: false, data: response });
     } catch (e) {
       message.error(e.message || 'An error occured!');
       setDetailModal(null);
@@ -185,6 +186,9 @@ export default function PlayerStatsListTable({
   const renderDetailModal = () => {
     if (detailModal === null)
       return null;
+
+    if (detailModal.isLoading)
+      return <LoadingView />;
 
     switch (detailModal.type) {
       case DetailModal.FullCombos:
@@ -309,6 +313,7 @@ export default function PlayerStatsListTable({
         title={detailModal?.type}
         onOk={() => setDetailModal(null)}
         onCancel={() => setDetailModal(null)}
+        footer={null}
       >
         {renderDetailModal()}
       </Modal>
