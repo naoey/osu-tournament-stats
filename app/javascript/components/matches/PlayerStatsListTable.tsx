@@ -25,9 +25,11 @@ interface IPlayerListTableColumnDefinition {
 
 enum DetailModal {
   MapsWon = 'Maps won',
-  MapsLost = 'Maps lost',
+  MapsPlayed = 'Maps played',
   FullCombos = 'Full combos',
   BestAccuracy = 'Best accuracy',
+  PerfectMaps = 'Perfect maps',
+  MapsFailed = 'Maps failed',
 };
 
 interface DetailModalState {
@@ -141,6 +143,26 @@ export default function PlayerStatsListTable({
         request = BeatmapRequests.getBeatmaps({ ids: record.full_combos });
         break;
 
+      case DetailModal.BestAccuracy:
+        request = BeatmapRequests.getBeatmaps({ ids: [record.best_accuracy.beatmap_id] });
+        break;
+
+      case DetailModal.MapsFailed:
+        request = BeatmapRequests.getBeatmaps({ ids: record.maps_failed });
+        break;
+
+      case DetailModal.MapsPlayed:
+        request = BeatmapRequests.getBeatmaps({ ids: record.maps_played });
+        break;
+
+      case DetailModal.MapsWon:
+        request = BeatmapRequests.getBeatmaps({ ids: record.maps_won });
+        break;
+
+      case DetailModal.PerfectMaps:
+        request = BeatmapRequests.getBeatmaps({ ids: record.perfect_maps });
+        break;
+
       default:
         break;
     }
@@ -161,14 +183,15 @@ export default function PlayerStatsListTable({
 
     switch (detailModal.type) {
       case DetailModal.FullCombos:
+      case DetailModal.PerfectMaps:
+      case DetailModal.MapsWon:
+      case DetailModal.MapsPlayed:
+      case DetailModal.MapsFailed:
+      case DetailModal.BestAccuracy:
         return (
           <ul>
             {
-              detailModal.data?.map(d => (
-                <li key={d.id}>
-                  {d.name}
-                </li>
-              ))
+              detailModal.data?.map(d => <li key={d.id}>{d.name}</li>) ?? null
             }
           </ul>
         );
@@ -180,7 +203,7 @@ export default function PlayerStatsListTable({
 
   const augmentedData = data.map(d => ({
     ...d,
-    maps_won_percent: Math.round(d.maps_won / d.maps_played * 100 * 100) / 100,
+    maps_won_percent: Math.round(d.maps_won.length / d.maps_played.length * 100 * 100) / 100,
     matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
   }));
 
@@ -202,21 +225,40 @@ export default function PlayerStatsListTable({
       title: "Match win %",
     }, {
       key: "maps_played",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsPlayed, record)}>
+          {record.maps_played.length}
+        </Button>
+      ),
     }, {
       key: "maps_won",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.PerfectMaps, record)}>
+          {record.maps_won.length}
+        </Button>
+      ),
     }, {
       key: "maps_won_percent",
       render: text => <span>{text}%</span>,
       title: "Maps win %",
     }, {
       key: "best_accuracy",
-      render: (text, record) => <span>{record.best_accuracy}%</span>,
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.BestAccuracy, record)}>
+          {record.best_accuracy.accuracy}%
+        </Button>
+      ),
     }, {
       key: "average_accuracy",
       render: (text, record) => <span>{record.average_accuracy}%</span>,
     }, {
       key: "perfect_count",
       title: "Perfect maps",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.PerfectMaps, record)}>
+          {record.perfect_maps.length}
+        </Button>
+      ),
     }, {
       key: "total_misses",
     }, {
@@ -227,6 +269,11 @@ export default function PlayerStatsListTable({
       key: "average_score",
     }, {
       key: "maps_failed",
+      render: (text, record) => (
+        <Button className="link" onClick={() => showDetailModal(DetailModal.MapsFailed, record)}>
+          {record.maps_failed.length}
+        </Button>
+      ),
     }, {
       key: "full_combos",
       titleTooltip: "Approximated FC. Doesn't count maps that have been deleted from osu servers.",
@@ -234,7 +281,7 @@ export default function PlayerStatsListTable({
         <Button className="link" onClick={() => showDetailModal(DetailModal.FullCombos, record)}>
           {record.full_combos.length}
         </Button>
-      )
+      ),
     },
   ];
 
