@@ -133,46 +133,48 @@ module StatisticsServices
       q = q.where('matches.id = ?', match_id) unless match_id.nil?
       q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
 
-      q.count(:all)
+      q.all.map(&:beatmap_id)
+    end
+
+    def best_accuracy?(scores)
+      best = scores.max_by(&:accuracy)
+
+      { accuracy: (best.accuracy * 100).round(2), beatmap_id: best.beatmap.id }
     end
 
     # TODO: dedupe all this crap
-    def create_player_match_statistic(player, player_scores, round_name_search, match_id)
-      player_accuracies = player_scores.map(&method(:calculate_score_accuracy))
-
+    def create_player_match_statistic(player, player_scores, _round_name_search, match_id)
       {
         player: player,
-        maps_played: player_scores.count(:all),
+        maps_played: player_scores.all.map(&:beatmap_id).uniq,
         maps_won: maps_won?(player, match_id: match_id),
-        best_accuracy: (player_accuracies.max * 100.0).round(2),
-        average_accuracy: (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
-        perfect_count: player_scores.where(perfect: true).count(:all),
+        best_accuracy: best_accuracy?(player_scores),
+        average_accuracy: (player_scores.sum(:accuracy) / player_scores.count(:accuracy).to_f * 100.0).round(2),
+        perfect_maps: player_scores.where(perfect: true).all.map(&:beatmap_id).uniq,
         average_misses: player_scores.average(:count_miss).round(2),
         total_misses: player_scores.sum(:count_miss),
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
-        maps_failed: player_scores.where(player_id: player.id, pass: false).count(:all),
+        maps_failed: player_scores.where(player_id: player.id, pass: false).all.map(&:beatmap_id).uniq,
         full_combos: full_combos?(player, match_id: match_id),
       }
     end
 
     def create_player_tournament_statistic(player, player_scores, round_name_search, tournament_id)
-      player_accuracies = player_scores.map(&method(:calculate_score_accuracy))
-
       {
         player: player,
         matches_played: matches_played?(player, tournament_id: tournament_id, round_name: round_name_search),
         matches_won: matches_won?(player, tournament_id: tournament_id, round_name: round_name_search),
-        maps_played: player_scores.count(:all),
+        maps_played: player_scores.all.map(&:beatmap_id).uniq,
         maps_won: maps_won?(player, tournament_id: tournament_id, round_name: round_name_search),
-        best_accuracy: (player_accuracies.max * 100.0).round(2),
-        average_accuracy: (player_accuracies.reduce(0, :+) / player_accuracies.count.to_f * 100.0).round(2),
-        perfect_count: player_scores.where(perfect: true).count(:all),
+        best_accuracy: best_accuracy?(player_scores),
+        average_accuracy: (player_scores.sum(:accuracy) / player_scores.count(:accuracy).to_f * 100.0).round(2),
+        perfect_maps: player_scores.where(perfect: true).all.map(&:beatmap_id).uniq,
         average_misses: player_scores.average(:count_miss).round(2),
         total_misses: player_scores.sum(:count_miss),
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
-        maps_failed: player_scores.where(player_id: player.id, pass: false).collect(&:beatmap_id),
+        maps_failed: player_scores.where(player_id: player.id, pass: false).all.map(&:beatmap_id).uniq,
         full_combos: full_combos?(player, tournament_id: tournament_id, round_name: round_name_search),
       }
     end

@@ -15,6 +15,7 @@ class MatchesController < ApplicationController
 
     respond_to do |format|
       format.html
+      format.json { render json: @data, status: :ok }
     end
   end
 
