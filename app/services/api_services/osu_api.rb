@@ -264,6 +264,9 @@ module ApiServices
             red_team_total_score > blue_team_total_score,
             score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
+
+          s.accuracy = AccuracyHelper.calculate_accuracy(s)
+
           s.save!
 
           match.match_scores.push(s)
@@ -285,6 +288,9 @@ module ApiServices
             blue_team_total_score > red_team_total_score,
             score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
+
+          s.accuracy = AccuracyHelper.calculate_accuracy(s)
+
           s.save!
 
           match.match_scores.push(s)

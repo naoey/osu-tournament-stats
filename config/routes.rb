@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'beatmaps/get'
   get 'matches', to: 'matches#show'
   get 'matches/:id', to: 'matches#show_match'
   post 'matches', to: 'matches#add'
@@ -14,6 +15,9 @@ Rails.application.routes.draw do
   get 'statistics/players', to: 'statistics#show_all_players'
   get 'statistics/tournaments/:id', to: 'statistics#show_tournament'
   get 'statistics/matches/:id', to: 'statistics#show_match'
+
+  get 'beatmaps', to: 'beatmaps#search'
+  get 'beatmaps/:id', to: 'beatmaps#show'
 
   devise_for :players, path: '', path_names: {
     sign_in: 'login',

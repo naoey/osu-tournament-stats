@@ -16,6 +16,7 @@ FactoryBot.define do
     count_geki { rand(count_300) }
     count_katu { rand(count_100) }
     perfect { max_combo == beatmap.max_combo }
+    accuracy { 0 }
     # only fail if misses are greater than 0 AND the random boolean says true
     pass { count_miss > 0 && [true, false].sample }
   end

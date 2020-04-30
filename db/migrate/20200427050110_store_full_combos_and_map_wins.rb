@@ -33,6 +33,6 @@ class StoreFullCombosAndMapWins < ActiveRecord::Migration[6.0]
 
   def down
     remove_column :match_scores, :is_win
-    remove_column :match_scores, :is_win
+    remove_column :match_scores, :is_full_combo
   end
 end
