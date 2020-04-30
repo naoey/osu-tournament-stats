@@ -18,7 +18,6 @@ module Discord
 
       @client.command :setuser, &method(:set_user)
       @client.command %i[match_performance p], &method(:match_performance)
-      # @client.command %i[score_leaderboard slb], &method(:score_leaderboard)
 
       @client.include! LeaderboardCommands
 
