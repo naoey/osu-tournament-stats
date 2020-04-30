@@ -9,6 +9,8 @@ module Discord
   class OsuDiscordBot
     include Singleton
 
+    attr_reader :client
+
     def initialize!
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
 
