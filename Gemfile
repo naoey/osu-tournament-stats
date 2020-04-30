@@ -21,6 +21,8 @@ gem 'webpacker'
 gem 'devise'
 gem 'devise_invitable', '~> 2.0.0'
 
+gem 'markdown-tables'
+
 gem 'react-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby

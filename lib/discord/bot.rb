@@ -1,9 +1,15 @@
 require 'discordrb'
 require 'singleton'
+require 'markdown-tables'
+require 'optparse';
+
+require_relative './modules/leaderboard_commands'
 
 module Discord
   class OsuDiscordBot
     include Singleton
+
+    attr_reader :client
 
     def initialize!
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
@@ -12,7 +18,8 @@ module Discord
 
       @client.command :setuser, &method(:set_user)
       @client.command %i[match_performance p], &method(:match_performance)
-      @client.command %i[:match_lb, mlb], &method(:match_leaderboard)
+
+      @client.include! LeaderboardCommands
 
       @client.run true
 
@@ -65,7 +72,7 @@ module Discord
           title: "Stats for #{player.name}",
           color: 0x4287f5,
           type: 'rich',
-          url: 'https://oiwt19.naoey.pw/',
+          url: 'https://osu.naoey.pw/',
           fields: stats
             .except(:player)
             .map { |k, v| { name: "**#{k.to_s.humanize}**", value: "#{v}#{k.to_s.include?('accuracy') ? '%' : ''}", inline: true } },
@@ -77,12 +84,6 @@ module Discord
       rescue StandardError => e
         Rails.logger.tagged(self.class.name) { Rails.logger.error e }
         'Error retrieving stats'
-      end
-    end
-
-    def match_leaderboard
-      begin
-
       end
     end
 
