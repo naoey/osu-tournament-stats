@@ -304,7 +304,7 @@ export default function PlayerStatsListTable({
         sortDirections={["ascend", "descend"]}
         pagination={{
           pageSize: 10,
-          position: "top",
+          position: ["topRight"],
         }}
         scroll={{ x: "100%" }}
       />

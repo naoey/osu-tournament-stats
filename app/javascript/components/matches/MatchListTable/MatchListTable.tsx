@@ -145,7 +145,7 @@ export default function MatchListTable({
         rowKey={keyExtractor}
         pagination={{
           pageSize: 10,
-          position: "top",
+          position: ["topRight"],
         }}
       />
     </div>
