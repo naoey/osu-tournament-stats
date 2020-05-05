@@ -3,18 +3,18 @@ import { Modal, Form, DatePicker, Button, Input, message } from "antd";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import Api from "../../api/Api";
 import ITournament from "../../entities/ITournament";
+import { authenticated } from "../../helpers/AuthenticationHOC";
 
-interface IAddButtonState {
-  isModalOpen: boolean;
-  isWorking: boolean;
-}
-
-// TODO: implement with antd 4.0 forms
-export default function AddTournamentButton() {
+function AddTournamentButton() {
   const [isFormVisible, setFormVisible] = React.useState(false);
   const [isWorking, setWorking] = React.useState(false);
 
   const [form] = Form.useForm();
+
+  React.useEffect(() => {
+    if (!isFormVisible)
+      form.resetFields();
+  }, [isFormVisible]);
 
   const showModal = () => setFormVisible(true);
   const hideModal = () => setFormVisible(false);
@@ -65,3 +65,5 @@ export default function AddTournamentButton() {
     </React.Fragment>
   );
 }
+
+export default authenticated(AddTournamentButton);
