@@ -23,13 +23,11 @@ function AddTournamentButton() {
     setWorking(true);
 
     try {
-      const payload = {
+      const request = TournamentRequests.createTournament({
         name: values.name,
         startDate: values.dates[0]?.toISOString() ?? null,
         endDate: values.dates[0]?.toISOString() ?? null,
-      };
-
-      const request = TournamentRequests.createTournament(payload);
+      });
       const response = await Api.performRequest<ITournament>(request);
 
       message.success(`${response.name} created`);
