@@ -191,6 +191,9 @@ build-iPhoneSimulator/
 .idea/**/shelf
 .idea/.generators
 .idea/osu-tournament-stats.iml
+.idea/.rakeTasks
+.idea/dataSources.xml
+.idea/encodings.xml
 
 # Generated files
 .idea/**/contentModel.xml
