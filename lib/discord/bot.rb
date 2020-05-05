@@ -75,7 +75,19 @@ module Discord
           url: 'https://osu.naoey.pw/',
           fields: stats
             .except(:player)
-            .map { |k, v| { name: "**#{k.to_s.humanize}**", value: "#{v}#{k.to_s.include?('accuracy') ? '%' : ''}", inline: true } },
+            .map do |k, v|
+            {
+              name: "**#{k.to_s.humanize}**",
+              inline: true,
+              value: if k == :best_accuracy
+                v[:accuracy]
+              elsif v.is_a?(Array)
+                v.length
+              else
+                v
+              end.to_s,
+            }
+          end,
         }
 
         event.respond('', false, embed)
