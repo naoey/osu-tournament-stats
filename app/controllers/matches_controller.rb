@@ -33,11 +33,11 @@ class MatchesController < ApplicationController
 
       render json: match, status: :ok
     rescue OsuApiParserExceptions::MatchExistsError
-      render json: { error: "Match with osu! multiplayer ID #{add_match_params[:online_id]} already exists", status: :conflict }
+      render json: { error: "Match with osu! multiplayer ID #{add_match_params[:online_id]} already exists" }, status: :conflict
     rescue OsuApiParserExceptions::MatchLoadFailedError
-      render json: { error: 'Failed to retrieve match from osu! API', status: :not_found }
+      render json: { error: 'Failed to retrieve match from osu! API' }, status: :not_found
     rescue OsuApiParserExceptions::MatchParseFailedError
-      render json: { error: 'An error occurred while parsing the match', status: :server_error }
+      render json: { error: 'An error occurred while parsing the match' }, status: :internal_server_error
     end
   end
 

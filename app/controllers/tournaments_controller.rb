@@ -16,7 +16,8 @@ class TournamentsController < ApplicationController
   end
 
   def show_tournament
-    @tournament = create_tournament_json(Tournament.find_by_id(params[:id]))
+    (@tournament = Tournament.find_by_id(params[:id])) || raise(ActionController::RoutingError, 'Tournament not found')
+    @tournament = create_tournament_json(@tournament)
 
     respond_to do |format|
       format.html
