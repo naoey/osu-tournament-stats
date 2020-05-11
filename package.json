@@ -33,6 +33,6 @@
     "postcss-cssnext": "^3.1.0",
     "tslint": "^6.1.2",
     "tslint-react": "^5.0.0",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.0"
   }
 }
