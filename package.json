@@ -9,7 +9,7 @@
     "@rails/webpacker": "^5.0.1",
     "@types/jquery": "^3.3.38",
     "@types/lodash": "^4.14.150",
-    "@types/react": "^16.9.34",
+    "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/voca": "^1.4.0",
     "antd": "^4.2.0",
