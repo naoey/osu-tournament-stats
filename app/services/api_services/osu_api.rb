@@ -260,10 +260,10 @@ module ApiServices
 
       games.each do |game|
         red_team_scores = game['scores'].select { |score|
-          score['team'] == '2' && !referees.include?(score['user_id'].to_i) && score['pass'] == '1'
+          score['team'] == '2' && !referees.include?(score['user_id'].to_i)
         }
         blue_team_scores = game['scores'].select { |score|
-          score['team'] == '1' && !referees.include?(score['user_id'].to_i) && score['pass'] == '1'
+          score['team'] == '1' && !referees.include?(score['user_id'].to_i)
         }
 
         total_score_count += red_team_scores.length
@@ -271,8 +271,12 @@ module ApiServices
 
         beatmap = get_or_load_beatmap game['beatmap_id'].to_i
 
-        red_team_total_score = red_team_scores.map { |s| s['score'].to_i }.reduce(0, :+)
-        blue_team_total_score = blue_team_scores.map { |s| s['score'].to_i }.reduce(0, :+)
+        red_team_total_score = red_team_scores
+          .select { |s| s['pass'] == '1' }
+          .map { |s| s['score'].to_i }.reduce(0, :+)
+        blue_team_total_score = blue_team_scores
+          .select { |s| s['pass'] == '1' }
+          .map { |s| s['score'].to_i }.reduce(0, :+)
 
         red_team_scores.each do |score|
           s = MatchScore.new(create_match_score(
@@ -280,7 +284,7 @@ module ApiServices
             game,
             score,
             red_team_total_score > blue_team_total_score,
-            score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            !score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
 
           s.accuracy = StatCalculationHelper.calculate_accuracy(s)
@@ -304,7 +308,7 @@ module ApiServices
             game,
             score,
             blue_team_total_score > red_team_total_score,
-            score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            !score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
 
           s.accuracy = StatCalculationHelper.calculate_accuracy(s)

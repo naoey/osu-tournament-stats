@@ -38,6 +38,7 @@ interface DetailModalState {
   statistic: IPlayerStatistic;
   isLoading: boolean;
   data?: any;
+  title: string;
 }
 
 function sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
@@ -174,6 +175,7 @@ export default function PlayerStatsListTable({
     const details = {
       isLoading: true,
       type: detail,
+      title: `${detail} for ${record.player.name}`,
       statistic: record,
     };
 
@@ -316,7 +318,7 @@ export default function PlayerStatsListTable({
       />
       <Modal
         visible={detailModal !== null}
-        title={detailModal?.type}
+        title={detailModal?.title}
         onOk={() => setDetailModal(null)}
         onCancel={() => setDetailModal(null)}
         footer={null}

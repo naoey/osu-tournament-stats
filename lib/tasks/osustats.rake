@@ -67,11 +67,11 @@ namespace :osustats do
 
       # find both teams total scores
       player_team_score = MatchScore
-        .where({ player: player_team.players, match: score.match, beatmap: score.beatmap })
+        .where({ player: player_team.players, match: score.match, beatmap: score.beatmap, pass: true })
         .sum(:score)
 
       other_team_score = MatchScore
-        .where({ player: other_team.players, match: score.match, beatmap: score.beatmap })
+        .where({ player: other_team.players, match: score.match, beatmap: score.beatmap, pass: true })
         .sum(:score)
 
       score.update(
