@@ -54,7 +54,7 @@ namespace :osustats do
   end
 
   desc 'Re-calculate scores'
-  task :recalc do
+  task :recalc => :environment do
     MatchScore.all.each do |score|
       # find this player's team id
       if score.match.red_team.players.include?(score.player)
