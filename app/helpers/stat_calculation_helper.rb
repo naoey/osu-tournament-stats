@@ -1,4 +1,4 @@
-module AccuracyHelper
+module StatCalculationHelper
   def self.calculate_accuracy(score)
     # https://osu.ppy.sh/help/wiki/Accuracy
     d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
@@ -11,5 +11,9 @@ module AccuracyHelper
     n = ((50 * score.count_50) + (100 * score.count_100) + (300 * score.count_300))
 
     n / d.to_f
+  end
+
+  def self.fc?(score, beatmap)
+    score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo
   end
 end
