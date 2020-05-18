@@ -35,7 +35,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         roundName: values.name,
         blueCaptain: values.blueCaptain,
         redCaptain: values.redCaptain,
-        discardList: values.discardList?.split('|').map(parseInt) ?? [],
+        discardList: values.discardList?.split('|').map(d => parseInt(d, 10)) ?? [],
         referees: values.referees?.split('|') ?? [],
       });
       const response = await Api.performRequest<IMatch>(request);
@@ -51,8 +51,9 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
 
   return (
     <React.Fragment>
-      <Button onClick={showModal} type="primary">
+      <Button onClick={showModal} type="primary" className="ot-btn">
         <i className="material-icons">add</i>
+        <span>Add match</span>
       </Button>
       <Modal
         visible={isFormVisible}

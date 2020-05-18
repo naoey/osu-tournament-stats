@@ -38,6 +38,7 @@ interface DetailModalState {
   statistic: IPlayerStatistic;
   isLoading: boolean;
   data?: any;
+  title: string;
 }
 
 function sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
@@ -101,7 +102,6 @@ export default function PlayerStatsListTable({
       defaultSortOrder: "ascend",
       key,
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => sorter(a, b, item => item[key]),
       title: titleTooltip ?
         () => (
           <Tooltip title={titleTooltip}>
@@ -112,6 +112,13 @@ export default function PlayerStatsListTable({
         )
         : title || v.titleCase(key.split("_").join(" ")),
     };
+
+    if (key === 'best_accuracy')
+      column.sorter = (a, b) => sorter(a, b, item => item.best_accuracy.accuracy);
+    else if (['maps_won', 'maps_played', 'maps_failed', 'full_combos'].includes(key))
+      column.sorter = (a, b) => sorter(a, b, item => item[key].length);
+    else
+      column.sorter = (a, b) => sorter(a, b, item => item[key]);
 
     if (render !== null) column.render = render;
 
@@ -168,6 +175,7 @@ export default function PlayerStatsListTable({
     const details = {
       isLoading: true,
       type: detail,
+      title: `${detail} for ${record.player.name}`,
       statistic: record,
     };
 
@@ -310,7 +318,7 @@ export default function PlayerStatsListTable({
       />
       <Modal
         visible={detailModal !== null}
-        title={detailModal?.type}
+        title={detailModal?.title}
         onOk={() => setDetailModal(null)}
         onCancel={() => setDetailModal(null)}
         footer={null}

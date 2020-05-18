@@ -41,7 +41,7 @@ function AddTournamentButton() {
 
   return (
     <React.Fragment>
-      <Button onClick={showModal} type="primary">
+      <Button onClick={showModal} type="primary" className="ot-btn">
         <i className="material-icons">add</i>
       </Button>
       <Modal

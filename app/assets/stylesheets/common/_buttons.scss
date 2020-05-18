@@ -8,3 +8,10 @@ button.link {
     @extend button.link;
   }
 }
+
+button.ot-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}

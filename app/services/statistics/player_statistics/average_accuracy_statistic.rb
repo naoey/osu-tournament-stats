@@ -11,7 +11,7 @@ module PlayerStatistics
       return 0 if scores.count(:all).zero?
 
       acc = scores
-        .map { |s| AccuracyHelper.calculate_accuracy(s) }
+        .map { |s| StatCalculationHelper.calculate_accuracy(s) }
         &.reduce(:+)
 
       (acc / scores.count(:all).to_f).round(4)

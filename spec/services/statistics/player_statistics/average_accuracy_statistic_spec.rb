@@ -8,7 +8,7 @@ describe 'AverageAccuracyStatisticTest' do
     scores = create_list(:match_score, 5, player: player, count_miss: 7)
 
     expected_acc = scores
-      .map { |s| AccuracyHelper.calculate_accuracy(s) }
+      .map { |s| StatCalculationHelper.calculate_accuracy(s) }
       .reduce(:+)
 
     expected_acc /= scores.size.to_f

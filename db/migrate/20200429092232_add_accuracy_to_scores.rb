@@ -6,7 +6,7 @@ class AddAccuracyToScores < ActiveRecord::Migration[6.0]
 
     # calculate accuracies for all existing scores
     MatchScore.where(accuracy: nil).all.each do |score|
-      acc = AccuracyHelper.calculate_accuracy(score)
+      acc = StatCalculationHelper.calculate_accuracy(score)
 
       raise ArgumentError, "Accuracy for score with ID #{score.id} is null, migration failed" if acc.nil?
 

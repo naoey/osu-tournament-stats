@@ -7,7 +7,7 @@ module PlayerStatistics
 
       acc = apply_filter(q)
         .all
-        .map { |s| AccuracyHelper.calculate_accuracy(s) }
+        .map { |s| StatCalculationHelper.calculate_accuracy(s) }
         .max
         &.round(4)
 

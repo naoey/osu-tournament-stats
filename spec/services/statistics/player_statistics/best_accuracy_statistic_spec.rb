@@ -7,7 +7,7 @@ describe 'BestAccuracyStatisticTest' do
     player = create(:player)
     scores = create_list(:match_score, 5, player: player, count_miss: 7)
 
-    expected_acc = scores.map { |s| AccuracyHelper.calculate_accuracy(s) }.max.round(4)
+    expected_acc = scores.map { |s| StatCalculationHelper.calculate_accuracy(s) }.max.round(4)
 
     expect(PlayerStatistics::BestAccuracyStatistic.new(player).compute).to equal(expected_acc)
   end
