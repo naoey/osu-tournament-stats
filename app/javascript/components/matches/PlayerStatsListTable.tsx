@@ -101,7 +101,6 @@ export default function PlayerStatsListTable({
       defaultSortOrder: "ascend",
       key,
       sortDirections: ["ascend", "descend"],
-      sorter: (a, b) => sorter(a, b, item => item[key]),
       title: titleTooltip ?
         () => (
           <Tooltip title={titleTooltip}>
@@ -112,6 +111,13 @@ export default function PlayerStatsListTable({
         )
         : title || v.titleCase(key.split("_").join(" ")),
     };
+
+    if (key === 'best_accuracy')
+      column.sorter = (a, b) => sorter(a, b, item => item.best_accuracy.accuracy);
+    else if (['maps_won', 'maps_played', 'maps_failed', 'full_combos'].includes(key))
+      column.sorter = (a, b) => sorter(a, b, item => item[key].length);
+    else
+      column.sorter = (a, b) => sorter(a, b, item => item[key]);
 
     if (render !== null) column.render = render;
 
