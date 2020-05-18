@@ -51,8 +51,9 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
 
   return (
     <React.Fragment>
-      <Button onClick={showModal} type="primary">
+      <Button onClick={showModal} type="primary" className="ot-btn">
         <i className="material-icons">add</i>
+        <span>Add match</span>
       </Button>
       <Modal
         visible={isFormVisible}
