@@ -35,7 +35,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         roundName: values.name,
         blueCaptain: values.blueCaptain,
         redCaptain: values.redCaptain,
-        discardList: values.discardList?.split('|').map(parseInt) ?? [],
+        discardList: values.discardList?.split('|').map(d => parseInt(d, 10)) ?? [],
         referees: values.referees?.split('|') ?? [],
       });
       const response = await Api.performRequest<IMatch>(request);
