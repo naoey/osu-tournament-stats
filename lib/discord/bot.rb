@@ -4,6 +4,7 @@ require 'markdown-tables'
 require 'optparse';
 
 require_relative './modules/leaderboard_commands'
+require_relative './modules/match_commands'
 
 module Discord
   class OsuDiscordBot
@@ -20,6 +21,7 @@ module Discord
       @client.command %i[match_performance p], &method(:match_performance)
 
       @client.include! LeaderboardCommands
+      @client.include! MatchCommands
 
       @client.run true
 
