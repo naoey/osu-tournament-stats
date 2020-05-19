@@ -22,6 +22,10 @@ class MatchStats < CommandBase
       id = @options[:id]
     end
 
+    match = Match.find(id)
+
+    return @event.respond('Match does not exist') if match.nil?
+
     stats = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(id)
       .sort_by { |s| s[:average_score]}
       .reverse
@@ -43,8 +47,8 @@ class MatchStats < CommandBase
 
     web_url = "https://osu.naoey.pw/matches/#{id}"
 
-    text = "Stats for **#{Match.find(id).round_name}**"\
-      "#{Match.find(id).tournament.nil? ? '' : " (#{Match.find(id).tournament.name})"}"\
+    text = "Stats for **#{match.round_name}**"\
+      "#{match.tournament.nil? ? '' : " (#{match.tournament.name})"}"\
       "\n```"\
       "#{MarkdownTables.plain_text(
         MarkdownTables.make_table(headers, stats, is_rows: true)
