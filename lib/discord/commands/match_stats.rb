@@ -22,9 +22,11 @@ class MatchStats < CommandBase
       id = @options[:id]
     end
 
-    match = Match.find(id)
-
-    return @event.respond('Match does not exist') if match.nil?
+    begin
+      match = Match.find(id)
+    rescue ActiveRecord::RecordNotFound
+      return @event.respond('Match does not exist')
+    end
 
     stats = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(id)
       .sort_by { |s| s[:average_score]}
