@@ -1,6 +1,8 @@
 ##
 # Handles all match related operations in the application.
 class MatchesController < ApplicationController
+  before_action :authenticate_player!, except: %i[show show_match]
+
   def show
     @data = Match.all.where(tournament_id: params[:tournament_id])
 
