@@ -112,8 +112,9 @@ module ApiServices
           games_after_discard = []
 
           # first remove maps that were aborted since they are not shown on the website. discard list needs to be evaluated only
-          # after that since index counting will be done from what appears on osu website
-          json['games'] = json['games'].reject { |g| g['end_time'].nil? || g['scores'].nil? }
+          # after that since index counting will be done from what appears on osu website. then also remove all scores that were not
+          # played as team vs.
+          json['games'] = json['games'].reject { |g| g['end_time'].nil? || g['scores'].nil? || g['team_type'] != '2' }
 
           # then from the remaining games, discard maps being given in discard list
           if discard_list
@@ -284,7 +285,7 @@ module ApiServices
             game,
             score,
             red_team_total_score > blue_team_total_score,
-            !score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            score['countmiss'].to_i.zero? && (beatmap.max_combo - score['maxcombo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
 
           s.accuracy = StatCalculationHelper.calculate_accuracy(s)
@@ -308,7 +309,7 @@ module ApiServices
             game,
             score,
             blue_team_total_score > red_team_total_score,
-            !score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo,
+            score['countmiss'].to_i.zero? && (beatmap.max_combo - score['maxcombo'].to_i) <= 0.01 * beatmap.max_combo,
           ))
 
           s.accuracy = StatCalculationHelper.calculate_accuracy(s)
