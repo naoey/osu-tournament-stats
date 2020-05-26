@@ -5,6 +5,7 @@ export default class NavigationBar extends React.Component {
   public render() {
     return (
       <Menu
+        className="ot-navbar"
         mode="horizontal"
         selectedKeys={[window.location.pathname.split("/").splice(1, 1)[0]]}
         theme="dark"
