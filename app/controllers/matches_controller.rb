@@ -13,11 +13,19 @@ class MatchesController < ApplicationController
   end
 
   def show_match
-    @data = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(params[:id])
 
     respond_to do |format|
-      format.html
-      format.json { render json: @data, status: :ok }
+      format.html do
+        @match = Match.find(params[:id])
+
+        return render status: :not_found if @match.nil?
+
+        render status: :ok
+      end
+      format.json do
+        @data = StatisticsServices::PlayerStatistics_Legacy.new.get_all_player_stats_for_match(params[:id])
+        render json: @data, status: :ok
+      end
     end
   end
 
