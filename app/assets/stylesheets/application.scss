@@ -17,3 +17,8 @@
 @import "./common/layout";
 @import "./common/typography";
 @import "./common/buttons";
+
+.ot-body-wrap {
+  height: calc(100% - 40px);
+  padding: 15px;
+}
