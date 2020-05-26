@@ -1,5 +1,6 @@
 import { IBeatmapPool } from "./IBeatmapPool";
 import IMatchTeam from "./IMatchTeam";
+import ITournament from "./ITournament";
 
 export interface IMatch {
   id: number;
@@ -8,7 +9,7 @@ export interface IMatch {
   red_team: IMatchTeam;
   blue_team: IMatchTeam;
   winning_team?: IMatchTeam;
-  tournament_id?: number;
+  tournament?: ITournament;
   online_id: number;
   beatmap_pool?: IBeatmapPool;
 }
