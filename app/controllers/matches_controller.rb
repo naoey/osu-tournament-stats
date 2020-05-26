@@ -33,6 +33,10 @@ class MatchesController < ApplicationController
         tournament_id: add_match_params[:tournament_id],
       )
 
+      if match.nil?
+        return render json: { message: 'An error occurred', code: 'E_UNKNOWN_ERROR' }, status: :internal_server_error
+      end
+
       render json: match, status: :ok
     rescue OsuApiParserExceptions::MatchExistsError
       render json: { error: "Match with osu! multiplayer ID #{add_match_params[:online_id]} already exists" }, status: :conflict
