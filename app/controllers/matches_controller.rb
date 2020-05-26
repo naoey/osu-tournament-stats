@@ -30,6 +30,17 @@ class MatchesController < ApplicationController
   end
 
   def add
+    unless params[:tournament_id].nil?
+      t = Tournament.find(params[:tournament_id])
+
+      unless t.host_player == current_player
+        return render(
+          json: { message: 'Only the tournament creator can add matches!', code: 'E_NOT_TOURNAMENT_OWNER' },
+          status: :forbidden,
+        )
+      end
+    end
+
     begin
       match = osu_api_service.load_match(
         osu_match_id: add_match_params[:osu_match_id],
