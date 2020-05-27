@@ -35,7 +35,7 @@ class MatchesController < ApplicationController
 
       unless t.host_player == current_player
         return render(
-          json: { message: 'Only the tournament creator can add matches!', code: 'E_NOT_TOURNAMENT_OWNER' },
+          json: { error: 'Only the tournament creator can add matches!', code: 'E_NOT_TOURNAMENT_OWNER' },
           status: :forbidden,
         )
       end
