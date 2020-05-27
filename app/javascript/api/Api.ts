@@ -2,7 +2,6 @@ import { ContentType, HttpStatus } from "./Constants";
 import { IRequest } from "./IRequest";
 import RequestError from "./RequestError";
 import { UserEvents } from "../events/UserEvents";
-import { message } from "antd";
 
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: IRequest): Promise<P> {
@@ -45,7 +44,8 @@ export default class Api {
       }
 
       if (response.status >= 400) {
-        throw new RequestError((json && json.error) || "An error occurred!", response.status, (json && json.code) || null);
+        console.log('Response status greater than 400, json is', json);
+        throw new RequestError(json?.error ?? "An error occurred!", response.status, (json && json.code) || null);
       }
 
       if (response.status >= 300) {
@@ -59,14 +59,10 @@ export default class Api {
       console.error(`Request to ${url} failed!`, e.code, e.status);
 
       if (e.code === "AbortError") {
-        throw new RequestError("Request cancelled!", 0, e.code);
+        throw new RequestError("Request cancelled!", 0, 'E_REQUEST_CANCELLED');
       }
 
-      if (e instanceof RequestError) {
-        throw e;
-      }
-
-      throw new RequestError("An error occurred!");
+      throw e;
     }
   }
 
