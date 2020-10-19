@@ -21,7 +21,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.13.6",
     "react": "^16.14.0",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
     "react_ujs": "^2.6.1",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
