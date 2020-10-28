@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+  rails_base:
+    &rails_base
+    build:
+      context: .
+
+  rails_ots:
+    <<: *rails_base
+    container_name: rails
+    ports:
+      - ${APPLICATION_PORT}:3000
+    working_dir: /opt/app
+    depends_on:
+      - db
+    command: "./docker/rails/boot.sh"
+    env_file: .env
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=rails_js
+    volumes:
+    - ./:/opt/app
+
+  rails_js:
+    <<: *rails_base
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - RAILS_ENV=${RAILS_ENV}
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    command: "./bin/webpack-dev-server"
+    ports:
+      - '127.0.0.1:3035:3035'
+    container_name: webpacker
+    working_dir: /opt/app
+    volumes:
+      - ./:/opt/app
+    depends_on:
+      - rails_ots
+
+  db:
+    container_name: db
+    image: mysql:8.0
+    volumes:
+      - database:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+
+volumes:
+  database:

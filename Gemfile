@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.5'
+ruby '2.7.2'
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
@@ -9,13 +9,13 @@ gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 gem 'rails', '~> 6.0.3'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
-# Use Puma as the app server
+# Use Puma as the rails server
 gem 'puma', '~> 5.0.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
+# Transpile rails-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker'
 
 gem 'devise'
