@@ -16,8 +16,6 @@ services:
       - ots_db
     command: "./docker/rails/boot.sh"
     env_file: .env
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=ots_webpacker
     volumes:
     - ./:/opt/app
 
