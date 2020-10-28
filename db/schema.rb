@@ -12,29 +12,29 @@
 
 ActiveRecord::Schema.define(version: 2020_04_29_092232) do
 
-  create_table "beatmaps", force: :cascade do |t|
+  create_table "beatmaps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "online_id"
+    t.bigint "online_id"
     t.float "star_difficulty"
     t.string "difficulty_name"
-    t.integer "max_combo"
+    t.bigint "max_combo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "match_scores", force: :cascade do |t|
-    t.integer "match_id"
-    t.integer "player_id"
-    t.integer "beatmap_id"
-    t.integer "online_game_id"
-    t.integer "score"
-    t.integer "max_combo"
-    t.integer "count_50"
-    t.integer "count_100"
-    t.integer "count_300"
-    t.integer "count_miss"
-    t.integer "count_katu"
-    t.integer "count_geki"
+  create_table "match_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "match_id"
+    t.bigint "player_id"
+    t.bigint "beatmap_id"
+    t.bigint "online_game_id"
+    t.bigint "score"
+    t.bigint "max_combo"
+    t.bigint "count_50"
+    t.bigint "count_100"
+    t.bigint "count_300"
+    t.bigint "count_miss"
+    t.bigint "count_katu"
+    t.bigint "count_geki"
     t.boolean "perfect"
     t.boolean "pass"
     t.datetime "created_at", null: false
@@ -45,34 +45,37 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["player_id"], name: "index_match_scores_on_player"
   end
 
-  create_table "match_teams", force: :cascade do |t|
+  create_table "match_teams", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "captain_id", null: false
-    t.integer "match_id"
+    t.bigint "captain_id", null: false
+    t.bigint "match_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["captain_id"], name: "fk_rails_838189758e"
     t.index ["match_id"], name: "index_match_teams_on_match_id"
   end
 
-  create_table "match_teams_players", force: :cascade do |t|
-    t.integer "match_team_id", null: false
-    t.integer "player_id", null: false
+  create_table "match_teams_players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "match_team_id", null: false
+    t.bigint "player_id", null: false
     t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
   end
 
-  create_table "matches", force: :cascade do |t|
-    t.integer "online_id"
+  create_table "matches", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "online_id"
     t.string "round_name"
     t.datetime "match_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "tournament_id"
-    t.integer "winner_id"
-    t.integer "red_team_id"
-    t.integer "blue_team_id"
+    t.bigint "tournament_id"
+    t.bigint "winner_id"
+    t.bigint "red_team_id"
+    t.bigint "blue_team_id"
+    t.index ["tournament_id"], name: "fk_rails_700eaa2935"
+    t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "players", force: :cascade do |t|
+  create_table "players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -81,7 +84,7 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
+    t.bigint "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
@@ -90,18 +93,18 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.integer "failed_attempts", default: 0, null: false
+    t.bigint "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
     t.string "invitation_token"
     t.datetime "invitation_created_at"
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
-    t.integer "invitation_limit"
+    t.bigint "invitation_limit"
     t.string "invited_by_type"
-    t.integer "invited_by_id"
-    t.integer "invitations_count", default: 0
-    t.integer "osu_id"
+    t.bigint "invited_by_id"
+    t.bigint "invitations_count", default: 0
+    t.bigint "osu_id"
     t.string "discord_id"
     t.datetime "discord_last_spoke"
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
@@ -115,17 +118,19 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
 
-  create_table "tournaments", force: :cascade do |t|
+  create_table "tournaments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "host_player_id", null: false
+    t.bigint "host_player_id"
     t.datetime "start_date"
     t.datetime "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["host_player_id"], name: "fk_rails_978fcfdc7f"
   end
 
+  add_foreign_key "match_teams", "matches"
   add_foreign_key "match_teams", "players", column: "captain_id"
-  add_foreign_key "matches", "match_teams", column: "winner_id", on_delete: :restrict
+  add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end

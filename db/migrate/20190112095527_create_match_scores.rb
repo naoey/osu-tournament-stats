@@ -1,18 +1,18 @@
 class CreateMatchScores < ActiveRecord::Migration[5.2]
   def change
     create_table :match_scores do |t|
-      t.integer :match_id
-      t.integer :player_id
-      t.integer :beatmap_id
-      t.integer :online_game_id
-      t.integer :score
-      t.integer :max_combo
-      t.integer :count_50
-      t.integer :count_100
-      t.integer :count_300
-      t.integer :count_miss
-      t.integer :count_katu
-      t.integer :count_geki
+      t.bigint :match_id
+      t.bigint :player_id
+      t.bigint :beatmap_id
+      t.bigint :online_game_id
+      t.bigint :score
+      t.bigint :max_combo
+      t.bigint :count_50
+      t.bigint :count_100
+      t.bigint :count_300
+      t.bigint :count_miss
+      t.bigint :count_katu
+      t.bigint :count_geki
       t.boolean :perfect
       t.boolean :pass
 

@@ -1,10 +1,10 @@
 class CreateMatches < ActiveRecord::Migration[5.2]
   def change
     create_table :matches do |t|
-      t.integer :online_id
-      t.integer :player_red
-      t.integer :player_blue
-      t.integer :winner
+      t.bigint :online_id
+      t.bigint :player_red
+      t.bigint :player_blue
+      t.bigint :winner
       t.string :round_name
       t.text :api_json
       t.datetime :match_timestamp
