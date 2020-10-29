@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-buster
+FROM ruby:2.6.5-buster
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash \
  && apt-get update && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/* \
@@ -9,4 +9,5 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash \
 # Copy Gemfile and lock so that ruby dependencies can be shared between JS and app containers through base image
 COPY Gemfile* ./
 
+RUN gem install bundler
 RUN bundle install

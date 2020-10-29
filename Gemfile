@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.2'
+ruby '2.6.5'
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
