@@ -27,9 +27,9 @@ module PlayerStatistics
                 -- Get scores for these players
                 JOIN match_scores ON match_scores.player_id = match_teams_players.player_id AND match_scores.match_id = team_players.match_id
                 GROUP BY team_players.team_id, match_scores.beatmap_id
-              )
+              ) AS total_scores
               GROUP BY beatmap_id
-            )
+            ) AS total_team_scores
             WHERE team_id IN (SELECT match_team_id FROM match_teams_players WHERE #{player_team_fragment})"
 
       ActiveRecord::Base.connection.execute(sql)[0]['maps_won']

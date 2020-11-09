@@ -5,8 +5,7 @@ module PlayerStatistics
         .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
         .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.online_id')
         .select('match_scores.*, matches.*')
-        .where(player: @player)
-        .where('count_miss = 0 and (beatmaps.max_combo - match_scores.max_combo) <= (0.01 * beatmaps.max_combo)')
+        .where(player: @player, is_full_combo: true)
 
       apply_filters(q).count(:all)
     end
