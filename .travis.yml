@@ -2,6 +2,7 @@ branches:
   only:
     - master
 language: ruby
+node_js: lts/*
 cache:
   bundler: true
   yarn: true
