@@ -65,7 +65,7 @@ GEM
       execjs (~> 2.0)
     bcrypt (3.1.16)
     bindex (0.8.1)
-    bootsnap (1.5.0)
+    bootsnap (1.5.1)
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.3)
@@ -79,7 +79,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.2)
+    devise_invitable (2.0.3)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.3)
@@ -95,7 +95,7 @@ GEM
     docile (1.3.2)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    erubi (1.9.0)
+    erubi (1.10.0)
     event_emitter (0.2.6)
     execjs (2.7.0)
     factory_bot (6.1.0)
@@ -147,7 +147,7 @@ GEM
     opus-ruby (1.0.1)
       ffi
     orm_adapter (0.5.0)
-    parallel (1.19.2)
+    parallel (1.20.1)
     parser (2.7.2.0)
       ast (~> 2.4.1)
     public_suffix (4.0.6)
@@ -197,7 +197,7 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
-    regexp_parser (1.8.2)
+    regexp_parser (2.0.0)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -230,16 +230,16 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
-    rubocop (1.2.0)
+    rubocop (1.4.2)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8)
       rexml
-      rubocop-ast (>= 1.0.1)
+      rubocop-ast (>= 1.1.1)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.1.1)
+    rubocop-ast (1.2.0)
       parser (>= 2.7.1.5)
     ruby-progressbar (1.10.1)
     sass-rails (6.0.0)
@@ -275,7 +275,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.7)
+    tzinfo (1.2.8)
       thread_safe (~> 0.1)
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
@@ -292,7 +292,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webmock (3.9.4)
+    webmock (3.10.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -318,7 +318,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   devise
-  devise_invitable (~> 2.0.2)
+  devise_invitable (~> 2.0.3)
   discordrb
   factory_bot_rails
   jbuilder (~> 2.10)
@@ -328,7 +328,7 @@ DEPENDENCIES
   rails (~> 6.0.3)
   react-rails
   rspec-rails
-  rubocop (~> 1.2.0)
+  rubocop (~> 1.4.2)
   sass-rails (~> 6.0)
   simplecov
   spring
