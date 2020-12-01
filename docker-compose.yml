@@ -1,37 +1,30 @@
 version: '3.4'
 
-services:
-  ots_base:
-    &rails_base
-    build:
-      context: .
+x-app: &x-app
+  build:
+    context: .
+  volumes:
+    - .:/app
+  env_file: .env
 
+services:
   ots_rails:
-    <<: *rails_base
+    <<: *x-app
     container_name: ots_rails
     ports:
       - ${APPLICATION_PORT}:3000
-    working_dir: /opt/app
     depends_on:
       - ots_db
-    command: "./docker/rails/boot.sh"
-    env_file: .env
-    volumes:
-    - ./:/opt/app
+    command: "serve"
 
-  ots_webpacker:
-    <<: *rails_base
-    container_name: ots_webpacker
+  ots_webpack:
+    <<: *x-app
+    container_name: ots_webpack
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - RAILS_ENV=${RAILS_ENV}
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-    command: "./bin/webpack-dev-server"
+    command: "wds"
     ports:
       - '127.0.0.1:3035:3035'
-    working_dir: /opt/app
-    volumes:
-      - ./:/opt/app
 
   ots_db:
     container_name: ots_db
