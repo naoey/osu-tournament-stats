@@ -6,8 +6,16 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash \
  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
  && apt-get update && apt-get install -y yarn && rm -rf /var/lib/apt/lists/*
 
+RUN gem install bundler
+
 WORKDIR /app
+
+COPY ./Gemfile ./
+COPY ./Gemfile.lock ./
+
+RUN bundle install
 
 RUN groupadd ots && useradd -g ots ots
 
-ENTRYPOINT ["/opt/app/docker/development/boot.sh"]
+ENTRYPOINT ["/app/docker/development/boot.sh"]
+CMD ["serve"]

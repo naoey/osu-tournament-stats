@@ -17,6 +17,8 @@ then
   rm ./tmp/pids/server.pid
 fi
 
+yarn install
+
 command=serve
 
 if [ "$#" -gt 0 ]; then
