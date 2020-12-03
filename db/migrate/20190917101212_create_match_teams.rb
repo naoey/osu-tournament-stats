@@ -9,7 +9,9 @@ class CreateMatchTeams < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_join_table :match_teams, :players
+    create_join_table :match_teams, :players do |t|
+      t.primary_key :id
+    end
 
     add_foreign_key :match_teams, :players, column: :captain_id, type: :bigint
 
