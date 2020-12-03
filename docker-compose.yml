@@ -1,0 +1,42 @@
+version: '3.4'
+
+x-app: &x-app
+  build:
+    context: .
+  volumes:
+    - .:/app
+  env_file: .env
+
+services:
+  ots_rails:
+    <<: *x-app
+    container_name: ots_rails
+    ports:
+      - ${APPLICATION_PORT}:3000
+    depends_on:
+      - ots_db
+    command: "serve"
+
+  ots_webpack:
+    <<: *x-app
+    container_name: ots_webpack
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    command: "wds"
+    ports:
+      - '127.0.0.1:3035:3035'
+
+  ots_db:
+    container_name: ots_db
+    image: mysql:8.0
+    volumes:
+      - ots_database:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    ports:
+      - ${MYSQL_PORT}:3306
+
+volumes:
+  ots_database:

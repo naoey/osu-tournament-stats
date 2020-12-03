@@ -1,6 +1,6 @@
 class AddDiscordIdToPlayer < ActiveRecord::Migration[6.0]
   def up
-    add_column Player, 'osu_id', 'integer'
+    add_column Player, 'osu_id', 'bigint'
     add_column Player, 'discord_id', 'string'
     add_column Player, 'discord_last_spoke', 'datetime'
 

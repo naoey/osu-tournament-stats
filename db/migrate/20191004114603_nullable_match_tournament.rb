@@ -1,5 +1,5 @@
 class NullableMatchTournament < ActiveRecord::Migration[6.0]
   def change
-    change_column :matches, :tournament_id, :integer, null: true
+    change_column :matches, :tournament_id, :bigint, null: true
   end
 end

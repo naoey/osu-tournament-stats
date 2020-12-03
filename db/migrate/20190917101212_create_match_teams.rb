@@ -2,20 +2,20 @@ class CreateMatchTeams < ActiveRecord::Migration[6.0]
   def up
     create_table :match_teams do |t|
       t.string :name
-      t.integer :captain_id, null: false
+      t.bigint :captain_id, null: false
 
-      t.references :match
+      t.references :match, foreign_key: true, type: :bigint
 
       t.timestamps
     end
 
     create_join_table :match_teams, :players
 
-    add_foreign_key :match_teams, :players, column: :captain_id
+    add_foreign_key :match_teams, :players, column: :captain_id, type: :bigint
 
-    add_column :matches, :winner_id, :integer
-    add_column :matches, :red_team_id, :integer
-    add_column :matches, :blue_team_id, :integer
+    add_column :matches, :winner_id, :bigint
+    add_column :matches, :red_team_id, :bigint
+    add_column :matches, :blue_team_id, :bigint
 
     rename_column :matches, :winner, :awinner
 
