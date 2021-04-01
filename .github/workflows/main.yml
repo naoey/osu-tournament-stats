@@ -69,7 +69,7 @@ jobs:
           RAILS_ENV=production SECRET_KEY_BASE=dummy ./bin/rails assets:precompile
           
       - name: Run rspec
-        run: RAILS_ENV=test MYSQL_USER=root MYSQL_DATABASE=${{ job.services.mysql.env[MYSQL_DATABASE] }} MYSQL_HOST="127.0.0.1" MYSQL_PORT=${{ job.services.mysql.ports[3306] }} bundle exec rspec
+        run: RAILS_ENV=test MYSQL_USER=root MYSQL_DATABASE="osu_tournament_stats_test" MYSQL_HOST="127.0.0.1" MYSQL_PORT=${{ job.services.mysql.ports[3306] }} bundle exec rspec
         
       - name: Complete
         run: echo "Build complete!"
