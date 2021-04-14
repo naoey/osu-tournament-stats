@@ -80,7 +80,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.3)
+    devise_invitable (2.0.4)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.4.4)
@@ -118,7 +118,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.9.0)
+    loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -133,7 +133,7 @@ GEM
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
-    mini_mime (1.0.2)
+    mini_mime (1.1.0)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
     msgpack (1.4.2)
@@ -141,10 +141,10 @@ GEM
     mysql2 (0.5.3-x64-mingw32)
     netrc (0.11.0)
     nio4r (2.5.7)
-    nokogiri (1.11.2)
+    nokogiri (1.11.3)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogiri (1.11.2-x64-mingw32)
+    nokogiri (1.11.3-x64-mingw32)
       racc (~> 1.4)
     opus-ruby (1.0.1)
       ffi
@@ -322,7 +322,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   devise
-  devise_invitable (~> 2.0.3)
+  devise_invitable (~> 2.0.4)
   discordrb
   factory_bot_rails
   jbuilder (~> 2.11)

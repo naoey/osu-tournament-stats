@@ -19,7 +19,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
 
 gem 'devise'
-gem 'devise_invitable', '~> 2.0.3'
+gem 'devise_invitable', '~> 2.0.4'
 
 gem 'markdown-tables'
 
