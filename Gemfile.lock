@@ -80,7 +80,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.4)
+    devise_invitable (2.0.5)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.4.4)
@@ -322,7 +322,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   devise
-  devise_invitable (~> 2.0.4)
+  devise_invitable (~> 2.0.5)
   discordrb
   factory_bot_rails
   jbuilder (~> 2.11)
