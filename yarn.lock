@@ -1058,10 +1058,10 @@
   resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.2.tgz#a811b8c18e2babab7d542b3365887ae2e4d9de47"
   integrity sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==
 
-"@types/voca@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/voca/-/voca-1.4.0.tgz#59d93132e411f13fbaacb166a2047464c463535a"
-  integrity sha512-LdffYbNO8Mg06oPouDq13XwarZbYEvLHMCeV04B/LYl2o6miyg4qBa3YduIZcNhK8/r3Soq0a1tCDeprkBXTIQ==
+"@types/voca@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@types/voca/-/voca-1.4.1.tgz#953bbccabc1b6d199f591cf9b18b531d8b7000ce"
+  integrity sha512-Qi8c/YSUCH54J9HoIi2QfUTcCUr4l7qdUtQb8P85MOLdRXQgR87N7K3p1Dvw9aNrRFmiQnOHl0q7GFebBhmEXA==
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
