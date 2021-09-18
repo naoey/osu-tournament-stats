@@ -1,4 +1,4 @@
-require 'optparse';
+require 'optparse'
 
 class CommandBase
   def initialize(event, *args)
@@ -21,10 +21,28 @@ class CommandBase
   def response
     return "```#{@help_message}```" if @options[:help]
 
+    return 'Can only be invoked by adminstrators!' if requires_admin && !invoker_admin?
+
     make_response
   end
 
   protected
+
+  def mention_invoker
+    @event.message.author.mention
+  end
+
+  def requires_admin
+    false
+  end
+
+  def invoker_admin?
+    @event.message.author.defined_permission?(:administrator) || invoker_owner?
+  end
+
+  def invoker_owner?
+    @event.message.author.owner?
+  end
 
   def make_response
     nil
