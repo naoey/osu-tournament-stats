@@ -24,6 +24,32 @@ class Player < ApplicationRecord
     false
   end
 
+  def osu_verified?
+    !osu_id.nil?
+  end
+
+  def begin_osu_discord_verification(discord_server)
+    OsuAuth(self, discord_server).authorisation_link
+  end
+
+  def complete_osu_verification(nonce, osu_api_response)
+    auth_request = OsuAuthRequest.find_by(player: self, nonce: nonce)
+
+    if auth_request.nil?
+      raise ArgumentError("No pending authorisation requests found for #{self} with request ID #{nonce}")
+    end
+
+    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with bot account!') if osu_api_response['is_bot']
+    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with deleted osu! account!') if osu_api_response['is_deleted']
+
+    self.osu_id = osu_api_response.id
+    self.name = osu_api_response.username
+
+    save!
+
+    ActiveSupport::Notifications.instrument 'user.osu_verified', auth_request
+  end
+
   def as_json(*)
     super.slice('id', 'name', 'osu_id')
   end

@@ -1,4 +1,4 @@
-require 'discordrb';
+require 'discordrb'
 
 require_relative './command_base'
 require_relative '../../../app/services/leaderboards/player_leaderboard'

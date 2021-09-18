@@ -1,0 +1,2 @@
+class DiscordServer < ApplicationRecord
+end

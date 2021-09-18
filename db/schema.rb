@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_29_092232) do
+ActiveRecord::Schema.define(version: 2021_09_18_112413) do
 
-  create_table "beatmaps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "beatmaps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.bigint "online_id"
     t.float "star_difficulty"
@@ -22,7 +22,16 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "match_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "discord_servers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "discord_id", null: false
+    t.bigint "registration_channel_id"
+    t.bigint "verified_role_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
+  end
+
+  create_table "match_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "match_id"
     t.bigint "player_id"
     t.bigint "beatmap_id"
@@ -45,7 +54,7 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["player_id"], name: "index_match_scores_on_player"
   end
 
-  create_table "match_teams", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "match_teams", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.bigint "captain_id", null: false
     t.bigint "match_id"
@@ -55,13 +64,13 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["match_id"], name: "index_match_teams_on_match_id"
   end
 
-  create_table "match_teams_players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "match_teams_players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "match_team_id", null: false
     t.bigint "player_id", null: false
     t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
   end
 
-  create_table "matches", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "matches", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "online_id"
     t.string "round_name"
     t.datetime "match_timestamp"
@@ -75,7 +84,17 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "osu_auth_request", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "nonce", null: false
+    t.bigint "player_id", null: false
+    t.bigint "discord_server_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["discord_server_id"], name: "index_osu_auth_request_on_discord_server_id"
+    t.index ["player_id"], name: "index_osu_auth_request_on_player_id"
+  end
+
+  create_table "players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -118,7 +137,7 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
 
-  create_table "tournaments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "tournaments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "host_player_id"
     t.datetime "start_date"
@@ -132,5 +151,7 @@ ActiveRecord::Schema.define(version: 2020_04_29_092232) do
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "osu_auth_request", "discord_servers"
+  add_foreign_key "osu_auth_request", "players"
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end
