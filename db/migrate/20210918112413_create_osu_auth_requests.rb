@@ -2,7 +2,7 @@ class CreateOsuAuthRequests < ActiveRecord::Migration[6.0]
   def up
     enable_extension('uuid-ossp')
 
-    create_table :osu_auth_request do |t|
+    create_table :osu_auth_requests do |t|
       t.string :nonce, null: false
 
       t.references :player, { foreign_key: true, null: false }
@@ -10,11 +10,13 @@ class CreateOsuAuthRequests < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_column :players, :osu_verified, :boolean, default: false
   end
 
   def down
-    drop_table :osu_auth_request
+    drop_table :osu_auth_requests
 
-    disable_extension('uuid-ossp')
+    remove_column :players, :osu_verified
   end
 end

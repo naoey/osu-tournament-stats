@@ -84,14 +84,14 @@ ActiveRecord::Schema.define(version: 2021_09_18_112413) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "osu_auth_request", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "osu_auth_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "nonce", null: false
     t.bigint "player_id", null: false
     t.bigint "discord_server_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["discord_server_id"], name: "index_osu_auth_request_on_discord_server_id"
-    t.index ["player_id"], name: "index_osu_auth_request_on_player_id"
+    t.index ["discord_server_id"], name: "index_osu_auth_requests_on_discord_server_id"
+    t.index ["player_id"], name: "index_osu_auth_requests_on_player_id"
   end
 
   create_table "players", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 2021_09_18_112413) do
     t.bigint "osu_id"
     t.string "discord_id"
     t.datetime "discord_last_spoke"
+    t.boolean "osu_verified", default: false
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true
     t.index ["invitation_token"], name: "index_players_on_invitation_token", unique: true
@@ -151,7 +152,7 @@ ActiveRecord::Schema.define(version: 2021_09_18_112413) do
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "osu_auth_request", "discord_servers"
-  add_foreign_key "osu_auth_request", "players"
+  add_foreign_key "osu_auth_requests", "discord_servers"
+  add_foreign_key "osu_auth_requests", "players"
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end

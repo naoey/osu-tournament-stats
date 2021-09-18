@@ -11,6 +11,7 @@ class Player < ApplicationRecord
          :trackable) && :omniauthable
 
   has_many :match_scores, foreign_key: 'player_id'
+  has_one :osu_auth_request, foreign_key: 'player_id'
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
 
@@ -24,12 +25,8 @@ class Player < ApplicationRecord
     false
   end
 
-  def osu_verified?
-    !osu_id.nil?
-  end
-
   def begin_osu_discord_verification(discord_server)
-    OsuAuth(self, discord_server).authorisation_link
+    OsuAuthRequest.create(player: self, discord_server: discord_server).authorisation_link
   end
 
   def complete_osu_verification(nonce, osu_api_response)
@@ -41,13 +38,15 @@ class Player < ApplicationRecord
 
     raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with bot account!') if osu_api_response['is_bot']
     raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with deleted osu! account!') if osu_api_response['is_deleted']
+    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with deleted osu! account!') if osu_api_response['is_restricted']
 
     self.osu_id = osu_api_response.id
     self.name = osu_api_response.username
+    self.osu_verified = true
 
     save!
 
-    ActiveSupport::Notifications.instrument 'user.osu_verified', auth_request
+    ActiveSupport::Notifications.instrument 'player.osu_verified', auth_request
   end
 
   def as_json(*)
