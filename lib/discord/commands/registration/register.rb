@@ -9,20 +9,14 @@ class Register < CommandBase
     player = Player.find_or_create_by(discord_id: @event.message.author.id)
     server = DiscordServer.find_or_create_by(discord_id: @event.message.server.id)
 
+    return if server.registration_channel_id.nil? || server.registration_channel_id != @event.message.channel.id
+
     if player.osu_verified
       @event.message.author.add_role(server.verified_role_id)
       @event.respond("Verification completed #{mention_invoker}!")
 
       return
     end
-
-    if server.verified_role_id.nil? || server.registration_channel_id.nil?
-      return @event.respond(
-        'User registration is not configured on this server. Contact the administrators to set it up!'
-      )
-    end
-
-    return if server.registration_channel_id != @event.message.channel.id
 
     link = player.begin_osu_discord_verification(server)
 
