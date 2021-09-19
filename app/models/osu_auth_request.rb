@@ -1,5 +1,6 @@
 require 'net/https'
 require 'json'
+require 'rest-client'
 
 OSU_AUTH_URL = 'https://osu.ppy.sh/oauth/authorize'.freeze
 OSU_TOKEN_URL = 'https://osu.ppy.sh/oauth/token'.freeze
@@ -24,8 +25,8 @@ class OsuAuthRequest < ApplicationRecord
   end
 
   def process_code_response(code)
-    if created_at > 10.minutes.ago
-      raise OsuAuthErrors::TimeoutError("Auth request timed out. Please restart the registration process.")
+    if created_at < 10.minutes.ago
+      raise OsuAuthErrors::TimeoutError, 'Auth request timed out. Please restart the registration process.'
     end
 
     params = {
@@ -33,23 +34,32 @@ class OsuAuthRequest < ApplicationRecord
       'client_secret': ENV.fetch('OSU_CLIENT_SECRET'),
       'code': code,
       'grant_type': 'authorization_code',
+      'redirect_uri': ENV.fetch('OSU_CALLBACK_URL'),
     }
 
-    token_response = Net::HTTP.post(
-      URI(OSU_TOKEN_URL),
-      params.to_json,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    )
+    begin
+      token_response = RestClient.post(
+        OSU_TOKEN_URL,
+        params,
+        { accept: :json, content_type: :json }
+      )
+    rescue RestClient::ExceptionWithResponse => e
+      logger.error("Failed to exchange code for osu! API token for auth request #{id}. Got #{e.response.code} response #{e.response.body}")
+      raise OsuAuthErrors::UnauthorisedError, 'osu! authorisation failed!'
+    end
 
     token_json = JSON.parse(token_response.body)
 
-    Net::HTTP.post(
-      URI(OSU_SELF_REQUEST_URL),
-      {}.to_json,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': "Bearer #{token_json['access_token']}"
-    )
+    begin
+      user_response = RestClient.get(
+        OSU_SELF_REQUEST_URL,
+        { accept: :json, content_type: :json, authorization: "Bearer #{token_json['access_token']}" }
+      )
+    rescue RestClient::ExceptionWithResponse => e
+      logger.error("Failed to retrieve user details for auth request #{id}. Got #{e.response.code} response #{e.response.body}")
+      raise OsuAuthErrors::OsuAuthError, 'Failed to retrieve user from osu! API.'
+    end
+
+    JSON.parse(user_response.body)
   end
 end

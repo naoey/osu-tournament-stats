@@ -32,21 +32,24 @@ class Player < ApplicationRecord
   def complete_osu_verification(nonce, osu_api_response)
     auth_request = OsuAuthRequest.find_by(player: self, nonce: nonce)
 
-    if auth_request.nil?
-      raise ArgumentError("No pending authorisation requests found for #{self} with request ID #{nonce}")
+    if auth_request.nil? || auth_request.resolved
+      raise StandardError("No pending authorisation requests found for #{self} with request ID #{nonce}")
     end
 
-    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with bot account!') if osu_api_response['is_bot']
-    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with deleted osu! account!') if osu_api_response['is_deleted']
-    raise OsuAuthErrors::InvalidOsuUserError('Cannot verify user with deleted osu! account!') if osu_api_response['is_restricted']
+    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with bot account!' if osu_api_response['is_bot']
+    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_deleted']
+    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_restricted']
 
-    self.osu_id = osu_api_response.id
-    self.name = osu_api_response.username
+    self.osu_id = osu_api_response['id']
+    self.name = osu_api_response['username']
     self.osu_verified = true
 
     save!
 
-    ActiveSupport::Notifications.instrument 'player.osu_verified', auth_request
+    auth_request.resolved = true
+    auth_request.save!
+
+    ActiveSupport::Notifications.instrument 'player.osu_verified', { auth_request: auth_request }
   end
 
   def as_json(*)

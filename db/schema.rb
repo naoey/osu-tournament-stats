@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 2021_09_18_112413) do
 
   create_table "osu_auth_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "nonce", null: false
+    t.boolean "resolved", default: false, null: false
     t.bigint "player_id", null: false
     t.bigint "discord_server_id"
     t.datetime "created_at", precision: 6, null: false
