@@ -7,6 +7,9 @@ require_relative './modules/leaderboard_commands'
 require_relative './modules/match_commands'
 require_relative './modules/registration_commands'
 
+EMBED_GREEN = 3_066_993
+EMBED_RED = 15_158_332
+
 module Discord
   class OsuDiscordBot
     include Singleton
@@ -29,6 +32,10 @@ module Discord
 
       ActiveSupport::Notifications.subscribe('player.osu_verified') do |_name, _started, _finished, _unique_id, data|
         osu_verification_completed(data[:auth_request])
+      end
+
+      ActiveSupport::Notifications.subscribe('player.alt_discord_verify') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_alt(data[:auth_request], data[:player])
       end
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
@@ -111,6 +118,22 @@ module Discord
       StatisticsServices::PlayerStatistics_Legacy.new
     end
 
+    def osu_verification_alt(auth_request, original_player)
+      server = @client.server(auth_request.discord_server.discord_id)
+
+      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
+        embed.title = original_player.name
+        embed.url = "https://osu.ppy.sh/users/#{original_player.osu_id}"
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{original_player.osu_id}")
+        embed.color = EMBED_RED
+        embed.description = 'Alt verification attempt'
+        embed.fields = [
+          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
+          Discordrb::Webhooks::EmbedField.new(name: 'Original user', value: "<@#{original_player.discord_id}>")
+        ]
+      end
+    end
+
     def osu_verification_completed(auth_request)
       Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{auth_request.player}.") }
 
@@ -140,45 +163,22 @@ module Discord
 
       member.add_role(auth_request.discord_server.verified_role_id, 'osu! verification completed')
 
-      send_log_channel_message(
-        auth_request.discord_server,
-        'Verification completed',
-        auth_request.player,
-        member.mention || '<No user>'
-      )
-    end
-
-    def send_log_channel_message(server, message, player, user_mention)
-      if server.verification_log_channel_id.nil?
-        Rails.logger.tagged(self.class.name) do
-          Rails.logger.info("Failed to log message #{message}. Server does not have a configured log channel.")
-        end
-      end
-
-      discordrb_server = @client.server(server.discord_id)
-
-      if discordrb_server.nil?
-        Rails.logger.tagged(self.class.name) do
-          Rails.logger.error(
-            "Error logging message '#{message}'. Server #{server} not found."
-          )
-        end
-
-        return
-      end
-
-      channel = @client.channel(server.verification_log_channel_id, discordrb_server)
-
-      channel.send_embed do |embed|
-        embed.title = player.name
-        embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
-        embed.color = 3_066_993
-        embed.description = message
+      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
+        embed.title = auth_request.player.name
+        embed.url = "https://osu.ppy.sh/users/#{auth_request.player.osu_id}"
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{auth_request.player.osu_id}")
+        embed.color = EMBED_GREEN
+        embed.description = 'Verification completed'
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: user_mention)
+          Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: member.mention || '<No user>')
         ]
       end
+    end
+
+    def get_server_log_channel(server, discordrb_server)
+      return nil if server.verification_log_channel_id.nil?
+
+      @client.channel(server.verification_log_channel_id, discordrb_server)
     end
   end
 end
