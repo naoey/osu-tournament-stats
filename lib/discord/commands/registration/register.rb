@@ -31,7 +31,7 @@ class Register < CommandBase
         "Login with your osu! account using this link to complete verifying your Discord account in #{@event.message.server.name}\n\n<#{link}>"
       )
 
-      @event.respond("Verification begun for #{@event.message.author.name}. Please check your DMs to complete the verification process.")
+      @event.respond("Verification started for #{@event.message.author.name}. Please check your DMs to complete the verification process.")
     rescue Discordrb::Errors::NoPermission
       @event.respond(
         "#{mention_invoker} KelaBot doesn't have permission to DM you. Please check that server members have permission to send you DMs in your privacy settings."
