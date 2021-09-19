@@ -7,10 +7,14 @@ class Register < CommandBase
 
   def make_response
     player = Player.find_or_create_by(discord_id: @event.message.author.id)
-
-    return @event.respond("Verification successful #{mention_invoker}!") if player.osu_verified
-
     server = DiscordServer.find_or_create_by(discord_id: @event.message.server.id)
+
+    if player.osu_verified
+      @event.message.author.add_role(server.verified_role_id)
+      @event.respond("Verification completed #{mention_invoker}!")
+
+      return
+    end
 
     if server.verified_role_id.nil? || server.registration_channel_id.nil?
       return @event.respond(
@@ -31,6 +35,12 @@ class Register < CommandBase
     rescue Discordrb::Errors::NoPermission
       @event.respond(
         "#{mention_invoker} KelaBot doesn't have permission to DM you. Please check that server members have permission to send you DMs in your privacy settings."
+      )
+    rescue StandardError => e
+      Rails.logger.tagged(self.class.name) { Rails.logger.error("Failed to execute register command\n#{e.backtrace}")}
+
+      @event.respond(
+        "#{mention_invoker} something went wrong, contact the administrators to complete your verification."
       )
     end
   end
