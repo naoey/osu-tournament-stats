@@ -139,6 +139,35 @@ module Discord
       end
 
       member.add_role(auth_request.discord_server.verified_role_id, 'osu! verification completed')
+
+      send_log_channel_message(
+        auth_request.discord_server,
+        "Completed verification for #{member.mention || '<No user>'} with osu! account <https://osu.ppy.sh/users/#{auth_request.player.osu_id}>"
+      )
+    end
+
+    def send_log_channel_message(server, message)
+      if server.verification_log_channel_id.nil?
+        Rails.logger.tagged(self.class.name) do
+          Rails.logger.info("Failed to log message #{message}. Server does not have a configured log channel.")
+        end
+      end
+
+      discordrb_server = @client.server(server.discord_id)
+
+      if discordrb_server.nil?
+        Rails.logger.tagged(self.class.name) do
+          Rails.logger.error(
+            "Error logging message '#{message}'. Server #{server} not found."
+          )
+        end
+
+        return
+      end
+
+      channel = @client.channel(server.verification_log_channel_id, discordrb_server)
+
+      channel.send_message(message)
     end
   end
 end

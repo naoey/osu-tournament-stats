@@ -25,7 +25,8 @@ class AuthController < ApplicationController
 
       auth_request.player.complete_osu_verification(params[:state], osu_user)
 
-      render json: { message: 'Verification successful' }, status: :ok
+      render json: { message: 'Verification successful. Contact the Discord server administrators if you still do not have access.' },
+             status: :ok
     rescue OsuAuthErrors::TimeoutError => e
       render json: { message: e.message }, status: :bad_request
     rescue OsuAuthErrors::OsuAuthError => e

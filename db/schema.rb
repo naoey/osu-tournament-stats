@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_18_112413) do
+ActiveRecord::Schema.define(version: 2021_09_19_102754) do
 
   create_table "beatmaps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2021_09_18_112413) do
     t.bigint "verified_role_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "verification_log_channel_id"
     t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
   end
 

@@ -7,15 +7,20 @@ class CommandBase
 
     @options = {}
 
-    OptionParser.new do |opts|
-      required_options.each do |opt|
-        opts.on(*opt)
-      end
+    begin
+      OptionParser.new do |opts|
+        required_options.each do |opt|
+          opts.on(*opt)
+        end
 
-      opts.on('-h', '--help', 'Prints this help message') do
-        @help_message = opts
-      end
-    end.parse!(event.message.content.split(' '), into: @options)
+        opts.on('-h', '--help', 'Prints this help message') do
+          @help_message = opts
+        end
+      end.parse!(event.message.content.split(' '), into: @options)
+    rescue OptionParser::MissingArgument
+      @event.respond("Missing arguments")
+      raise
+    end
   end
 
   def response
