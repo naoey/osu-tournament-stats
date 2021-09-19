@@ -142,11 +142,13 @@ module Discord
 
       send_log_channel_message(
         auth_request.discord_server,
-        "Completed verification for #{member.mention || '<No user>'} with osu! account <https://osu.ppy.sh/users/#{auth_request.player.osu_id}>"
+        'Verification completed',
+        auth_request.player,
+        member.mention || '<No user>'
       )
     end
 
-    def send_log_channel_message(server, message)
+    def send_log_channel_message(server, message, player, user_mention)
       if server.verification_log_channel_id.nil?
         Rails.logger.tagged(self.class.name) do
           Rails.logger.info("Failed to log message #{message}. Server does not have a configured log channel.")
@@ -167,7 +169,16 @@ module Discord
 
       channel = @client.channel(server.verification_log_channel_id, discordrb_server)
 
-      channel.send_message(message)
+      channel.send_embed do |embed|
+        embed.title = player.name
+        embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
+        embed.color = 3_066_993
+        embed.description = message
+        embed.fields = [
+          Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: user_mention)
+        ]
+      end
     end
   end
 end
