@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   get 'beatmaps', to: 'beatmaps#search'
   get 'beatmaps/:id', to: 'beatmaps#show'
 
+  get 'authorise/osu', to: 'auth#osu'
+
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',

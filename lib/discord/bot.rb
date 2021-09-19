@@ -1,10 +1,11 @@
 require 'discordrb'
 require 'singleton'
 require 'markdown-tables'
-require 'optparse';
+require 'optparse'
 
 require_relative './modules/leaderboard_commands'
 require_relative './modules/match_commands'
+require_relative './modules/registration_commands'
 
 module Discord
   class OsuDiscordBot
@@ -22,10 +23,15 @@ module Discord
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
+      @client.include! RegistrationCommands
 
       @client.run true
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running'}
+      ActiveSupport::Notifications.subscribe('player.osu_verified') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_completed(data[:auth_request])
+      end
+
+      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
     end
 
     def close!
@@ -78,18 +84,18 @@ module Discord
           fields: stats
             .except(:player)
             .map do |k, v|
-            {
-              name: "**#{k.to_s.humanize}**",
-              inline: true,
-              value: if k == :best_accuracy
-                v[:accuracy]
-              elsif v.is_a?(Array)
-                v.length
-              else
-                v
-              end.to_s,
-            }
-          end,
+                    {
+                      name: "**#{k.to_s.humanize}**",
+                      inline: true,
+                      value: if k == :best_accuracy
+                               v[:accuracy]
+                             elsif v.is_a?(Array)
+                               v.length
+                             else
+                               v
+                             end.to_s,
+                    }
+                  end,
         }
 
         event.respond('', false, embed)
@@ -103,6 +109,36 @@ module Discord
 
     def player_statistics_service
       StatisticsServices::PlayerStatistics_Legacy.new
+    end
+
+    def osu_verification_completed(auth_request)
+      Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{auth_request.player}.") }
+
+      server = @client.server(auth_request.discord_server.discord_id)
+
+      if server.nil?
+        Rails.logger.tagged(self.class.name) do
+          Rails.logger.error(
+            "Error completing verification for #{auth_request.player}. Server #{auth_request.discord_server} not found."
+          )
+        end
+
+        return
+      end
+
+      member = @client.member(server.id, auth_request.player.discord_id)
+
+      if member.nil?
+        Rails.logger.tagged(self.class.name) do
+          Rails.logger.error(
+            "Error completing verification for #{auth_request.player}. Member #{auth_request.player} not found."
+          )
+        end
+
+        return
+      end
+
+      member.add_role(auth_request.discord_server.verified_role_id, 'osu! verification completed')
     end
   end
 end
