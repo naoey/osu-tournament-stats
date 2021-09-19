@@ -27,7 +27,9 @@ module Discord
 
       @client.run true
 
-      ActiveSupport::Notifications.subscribe 'player.osu_verified', &method(:osu_verification_completed)
+      ActiveSupport::Notifications.subscribe('player.osu_verified') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_completed(data[:auth_request])
+      end
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
     end
@@ -112,7 +114,7 @@ module Discord
     def osu_verification_completed(auth_request)
       Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{auth_request.player}.") }
 
-      server = @client.server(auth_request.discord_server.id)
+      server = @client.server(auth_request.discord_server.discord_id)
 
       if server.nil?
         Rails.logger.tagged(self.class.name) do
@@ -124,19 +126,19 @@ module Discord
         return
       end
 
-      member = server.members.find { |m| m.id == auth_request.player.discord_id }
+      member = @client.member(server.id, auth_request.player.discord_id)
 
-      if server.nil?
+      if member.nil?
         Rails.logger.tagged(self.class.name) do
           Rails.logger.error(
-            "Error completing verification for #{auth_request.player}. Member not found."
+            "Error completing verification for #{auth_request.player}. Member #{auth_request.player} not found."
           )
         end
 
         return
       end
 
-      member.add_role(server.verified_role_id, 'osu! verification completed')
+      member.add_role(auth_request.discord_server.verified_role_id, 'osu! verification completed')
     end
   end
 end
