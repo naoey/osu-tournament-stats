@@ -4,6 +4,7 @@ require_relative '../commands/registration/set_channel'
 require_relative '../commands/registration/set_verification_log_channel'
 require_relative '../commands/registration/set_verified_role'
 require_relative '../commands/registration/register'
+require_relative '../commands/registration/unregister'
 
 module RegistrationCommands
   extend Discordrb::Commands::CommandContainer
@@ -22,5 +23,9 @@ module RegistrationCommands
 
   command(:register, aliases: [], description: 'Begin registration for a user') do |event, *args|
     Register.new(event, *args).response
+  end
+
+  command(:unregister, aliases: [], description: 'Unlinks Discord user from osu! user. Admin only.') do |event, *args|
+    Unregister.new(event, *args).response
   end
 end
