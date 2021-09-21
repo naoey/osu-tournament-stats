@@ -28,7 +28,10 @@ class CommandBase
 
     return 'Can only be invoked by adminstrators!' if requires_admin && !invoker_admin?
 
-    make_response
+    begin
+      make_response
+    rescue Discordrb::Errors::NoPermission
+    end
   end
 
   protected
