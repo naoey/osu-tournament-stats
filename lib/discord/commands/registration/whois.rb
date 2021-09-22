@@ -23,7 +23,7 @@ class Whois < CommandBase
         Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu_id, inline: true),
         Discordrb::Webhooks::EmbedField.new(
           name: 'Verified on',
-          value: player.osu_auth_request&.updated_at.change(offset: "+05:30").to_formatted_s(:long) || 'Never'
+          value: 'TBA'
         )
       ]
     end
