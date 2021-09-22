@@ -21,7 +21,6 @@ module Discord
 
       @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: ENV['DISCORD_BOT_PREFIX']
 
-      @client.command :setuser, &method(:set_user)
       @client.command %i[match_performance p], &method(:match_performance)
 
       @client.include! LeaderboardCommands
