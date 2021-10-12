@@ -11,7 +11,7 @@ class Player < ApplicationRecord
          :trackable) && :omniauthable
 
   has_many :match_scores, foreign_key: 'player_id'
-  has_one :osu_auth_request, foreign_key: 'player_id'
+  has_many :osu_auth_requests, foreign_key: 'player_id'
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
 
