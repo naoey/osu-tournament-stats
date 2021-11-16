@@ -32,7 +32,7 @@ class Player < ApplicationRecord
   def complete_osu_verification(nonce, osu_api_response)
     auth_request = OsuAuthRequest.find_by(player: self, nonce: nonce)
 
-    logger.debug("Completing auth requestt #{auth_request.inspect}")
+    logger.debug("Completing auth request #{auth_request.inspect}")
 
     if auth_request.nil? || auth_request.resolved
       raise StandardError, "No pending authorisation requests found for #{self} with request ID #{nonce}"
@@ -45,6 +45,7 @@ class Player < ApplicationRecord
     self.osu_id = osu_api_response['id']
     self.name = osu_api_response['username']
     self.osu_verified = true
+    self.osu_verified_on = DateTime.now
 
     save!
 

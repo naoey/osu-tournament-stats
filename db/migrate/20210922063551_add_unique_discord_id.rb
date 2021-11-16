@@ -1,7 +1,7 @@
 class AddUniqueDiscordId < ActiveRecord::Migration[6.0]
   def up
     # There may have been many dummy users created before they were linked to osu! IDs that failed to get cleaned up. Delete them all
-    # before attempting to add the unique constraint or constraint will fail as these will have duplicate discord IDs.
+    # before attempting to add the unique constraint or constraint will fail as these can have duplicate discord IDs.
     dummy_players = Player.where(name: nil)
 
     dummy_players.each do |p|
@@ -10,14 +10,13 @@ class AddUniqueDiscordId < ActiveRecord::Migration[6.0]
     end
 
     add_column :players, :osu_verified_on, :datetime
+    add_index :players, :discord_id, unique: true, name: 'index_unique_discord_ids'
 
     Player.all.each do |p|
-      if p.osu_verified
-        p.osu_verified_on = p.osu_auth_requests.order(:updated_on).last.updated_on
-      end
+      p.osu_verified_on = p.osu_auth_requests.where(resolved: true).order(:updated_at).first&.updated_at
+      p.osu_verified_on_will_change!
+      p.save!
     end
-
-    add_index :players, :discord_id, unique: true, name: 'index_unique_discord_ids'
   end
 
   def down
