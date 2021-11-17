@@ -14,7 +14,7 @@ class AddUniqueDiscordId < ActiveRecord::Migration[6.0]
     add_index :players, :discord_id, unique: true, name: 'index_unique_discord_ids'
 
     Player.all.each do |p|
-      p.osu_verified_on = p.osu_auth_requests.where(resolved: true).order(:updated_at).first&.updated_at
+      p.osu_verified_on = p.osu_auth_requests.where(resolved: true).order(updated_at: :desc).first&.updated_at
 
       p.save!
     end
