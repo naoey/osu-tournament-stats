@@ -14,19 +14,6 @@ class Whois < CommandBase
     return @event.respond("User #{target.name} not found") if player.nil?
     return @event.respond("User #{target.name} not verified with osu") unless player.osu_verified
 
-    auth_requests = player
-      .osu_auth_requests
-      .where(resolved: true)
-      .order('updated_at DESC')
-
-    if auth_requests.empty?
-      Rails.logger.tagged(self.class.name) {
-        Rails.logger.warn("Reached osu info block for player #{player.id} but user does not have any resolved auth requests")
-      }
-    end
-
-    timestamp = auth_requests.first&.updated_at&.to_time&.to_i
-
     @event.message.channel.send_embed do |embed|
       embed.title = player.name
       embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
@@ -37,7 +24,7 @@ class Whois < CommandBase
         Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu_id, inline: true),
         Discordrb::Webhooks::EmbedField.new(
           name: 'Verified on',
-          value: timestamp.nil? ? 'Never' : "<t:#{timestamp}>"
+          value: player.osu_verified_on ? "<t:#{player.osu_verified_on.to_time.to_i}>" : 'N/A'
         )
       ]
     end
