@@ -19,8 +19,8 @@ class AuthController < ApplicationController
         auth_request.player = player
 
         auth_request.save!
-        player.save!
         dummy_player.destroy!
+        player.save!
       elsif !player.nil? && !player.discord_id.nil? && player.discord_id != auth_request.player.discord_id
         # If a player was found with this osu! ID but whose discord ID doens't match the existing discord ID, they are trying to verify
         # an alternate discord ID and should not be allowed.
