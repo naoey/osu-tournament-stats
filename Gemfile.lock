@@ -74,6 +74,9 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    debase (0.2.4.1)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.12)
     devise (4.8.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -104,16 +107,15 @@ GEM
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
     ffi (1.15.0)
-    ffi (1.15.0-x64-mingw32)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     hashdiff (1.0.1)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.8.11)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.11.3)
+    jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -138,13 +140,10 @@ GEM
     minitest (5.14.4)
     msgpack (1.4.2)
     mysql2 (0.5.3)
-    mysql2 (0.5.3-x64-mingw32)
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.12.5)
+    nokogiri (1.12.4)
       mini_portile2 (~> 2.6.1)
-      racc (~> 1.4)
-    nokogiri (1.12.5-x64-mingw32)
       racc (~> 1.4)
     opus-ruby (1.0.1)
       ffi
@@ -207,12 +206,6 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rest-client (2.1.0-x64-mingw32)
-      ffi (~> 1.9)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rexml (3.2.5)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
@@ -242,6 +235,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.13.0)
       parser (>= 3.0.1.1)
+    ruby-debug-ide (0.7.3)
+      rake (>= 0.8.1)
     ruby-progressbar (1.11.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -280,14 +275,11 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2021.1)
-      tzinfo (>= 1.0.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    unf_ext (0.0.7.7-x64-mingw32)
     unicode-display_width (2.1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -312,7 +304,7 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.5.1)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
@@ -321,6 +313,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
+  debase
   devise
   devise_invitable (~> 2.0.5)
   discordrb
@@ -334,6 +327,7 @@ DEPENDENCIES
   rest-client
   rspec-rails
   rubocop (~> 1.23.0)
+  ruby-debug-ide
   sass-rails (~> 6.0)
   simplecov
   spring
@@ -349,4 +343,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.2.16
+   2.2.27

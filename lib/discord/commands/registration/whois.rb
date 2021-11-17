@@ -12,6 +12,7 @@ class Whois < CommandBase
     player = Player.find_by(discord_id: target.id)
 
     return @event.respond("User #{target.name} not found") if player.nil?
+    return @event.respond("User #{target.name} not verified with osu") unless player.osu_verified
 
     @event.message.channel.send_embed do |embed|
       embed.title = player.name
@@ -23,7 +24,7 @@ class Whois < CommandBase
         Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu_id, inline: true),
         Discordrb::Webhooks::EmbedField.new(
           name: 'Verified on',
-          value: 'TBA'
+          value: player.osu_verified_on ? "<t:#{player.osu_verified_on.to_time.to_i}>" : 'N/A'
         )
       ]
     end

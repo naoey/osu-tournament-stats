@@ -51,23 +51,6 @@ module Discord
 
     private
 
-    def set_user(event, *args)
-      begin
-        name = args.join(' ')
-
-        player = ApiServices::OsuApi.new.get_or_load_player(args.join(' '))
-
-        return "Failed find player #{name}!" if player.nil?
-
-        player.discord_id = event.user.id
-        player.save!
-
-        "Registered #{event.user.mention} as #{player.name}"
-      rescue StandardError
-        'An error occurred!'
-      end
-    end
-
     def match_performance(event, *args)
       begin
         player = if args.empty?
@@ -160,7 +143,8 @@ module Discord
         return
       end
 
-      member.add_role(auth_request.discord_server.verified_role_id, 'osu! verification completed')
+      member.add_role(auth_request.discord_server.verified_role_id, "osu! verification completed with ID #{auth_request.player.osu_id}")
+      member.set_nick(auth_request.player.name, "osu! user #{auth_request.player.name} linked")
 
       get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
         embed.title = auth_request.player.name
