@@ -14,7 +14,8 @@ module RegistrationCommands
     SetChannel.new(event, *args).response
   end
 
-  command(:set_verification_log_channel, aliases: [], description: 'Set channel for logging successful verifications') do |event, *args|
+  command(:set_verification_log_channel, aliases: [],
+                                         description: 'Set channel for logging successful verifications') do |event, *args|
     SetVerificationLogChannel.new(event, *args).response
   end
 
@@ -32,5 +33,9 @@ module RegistrationCommands
 
   command(:whois, aliases: [:who], description: 'Display linked osu! profile') do |event, *args|
     Whois.new(event, *args).response
+  end
+
+  command(:ban, aliases: [], description: 'Ban a user') do |event, *args|
+    Ban.new(event, *args).response
   end
 end
