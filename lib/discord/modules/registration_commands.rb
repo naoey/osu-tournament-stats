@@ -7,6 +7,7 @@ require_relative '../commands/registration/register'
 require_relative '../commands/registration/unregister'
 require_relative '../commands/registration/whois'
 require_relative '../commands/registration/ban'
+require_relative '../commands/registration/unban'
 
 module RegistrationCommands
   extend Discordrb::Commands::CommandContainer
@@ -38,5 +39,9 @@ module RegistrationCommands
 
   command(:ban, aliases: [], description: 'Ban a user') do |event, *args|
     Ban.new(event, *args).response
+  end
+
+  command(:unban, aliases: [], description: 'Unban a user') do |event, *args|
+    Unban.new(event, *args).response
   end
 end
