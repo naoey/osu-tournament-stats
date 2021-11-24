@@ -15,6 +15,8 @@ class Player < ApplicationRecord
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
 
+  enum ban_statuses: { none: 0, soft: 1, hard: 2 }, _prefix: :ban_status
+
   def email_required?
     # new_record? ? false : super
     false

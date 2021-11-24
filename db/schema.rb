@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_063551) do
+ActiveRecord::Schema.define(version: 2021_11_24_050519) do
+
+  create_table "ban_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "player_id", null: false
+    t.bigint "banned_by_id"
+    t.integer "ban_type", default: 0, null: false
+    t.string "reason"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["banned_by_id"], name: "index_ban_histories_on_banned_by_id"
+    t.index ["player_id"], name: "index_ban_histories_on_player_id"
+  end
 
   create_table "beatmaps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name"
@@ -130,6 +141,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_063551) do
     t.datetime "discord_last_spoke"
     t.boolean "osu_verified", default: false
     t.datetime "osu_verified_on"
+    t.integer "ban_status", default: 0, null: false
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
     t.index ["discord_id"], name: "index_unique_discord_ids", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true
@@ -152,6 +164,8 @@ ActiveRecord::Schema.define(version: 2021_09_22_063551) do
     t.index ["host_player_id"], name: "fk_rails_978fcfdc7f"
   end
 
+  add_foreign_key "ban_histories", "players", column: "banned_by_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "ban_histories", "players", on_update: :cascade, on_delete: :cascade
   add_foreign_key "match_teams", "matches"
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"

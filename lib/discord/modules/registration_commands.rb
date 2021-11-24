@@ -6,6 +6,8 @@ require_relative '../commands/registration/set_verified_role'
 require_relative '../commands/registration/register'
 require_relative '../commands/registration/unregister'
 require_relative '../commands/registration/whois'
+require_relative '../commands/registration/ban'
+require_relative '../commands/registration/unban'
 
 module RegistrationCommands
   extend Discordrb::Commands::CommandContainer
@@ -14,7 +16,8 @@ module RegistrationCommands
     SetChannel.new(event, *args).response
   end
 
-  command(:set_verification_log_channel, aliases: [], description: 'Set channel for logging successful verifications') do |event, *args|
+  command(:set_verification_log_channel, aliases: [],
+                                         description: 'Set channel for logging successful verifications') do |event, *args|
     SetVerificationLogChannel.new(event, *args).response
   end
 
@@ -32,5 +35,13 @@ module RegistrationCommands
 
   command(:whois, aliases: [:who], description: 'Display linked osu! profile') do |event, *args|
     Whois.new(event, *args).response
+  end
+
+  command(:ban, aliases: [], description: 'Ban a user') do |event, *args|
+    Ban.new(event, *args).response
+  end
+
+  command(:unban, aliases: [], description: 'Unban a user') do |event, *args|
+    Unban.new(event, *args).response
   end
 end

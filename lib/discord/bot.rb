@@ -37,6 +37,10 @@ module Discord
         osu_verification_alt(data[:auth_request], data[:player])
       end
 
+      ActiveSupport::Notifications.subscribe('player.banned_discord_verify') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_banned(data[:auth_request])
+      end
+
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
     end
 
@@ -112,6 +116,21 @@ module Discord
         embed.fields = [
           Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
           Discordrb::Webhooks::EmbedField.new(name: 'Original user', value: "<@#{original_player.discord_id}>")
+        ]
+      end
+    end
+
+    def osu_verification_banned(auth_request)
+      server = @client.server(auth_request.discord_server.discord_id)
+
+      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
+        embed.title = auth_request.player.name
+        embed.url = "https://osu.ppy.sh/users/#{auth_request.player.osu_id}"
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{auth_request.player.osu_id}")
+        embed.color = EMBED_RED
+        embed.description = 'Banned account verification'
+        embed.fields = [
+          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
         ]
       end
     end

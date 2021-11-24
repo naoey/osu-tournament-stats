@@ -4,6 +4,14 @@ class CommandBase
   def initialize(event, *args)
     @event = event
     @bot_args = args
+    @server = {
+      db_server: DiscordServer.find_by_discord_id(event.message.server.id),
+      discordrb_server: event.message.server,
+    }
+    @invoker = {
+      db_player: Player.find_by_discord_id(event.message.author.id),
+      discordrb_user: event.message.author,
+    }
 
     @options = {}
 
