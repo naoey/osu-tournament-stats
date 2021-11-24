@@ -9,7 +9,7 @@
     "@rails/webpacker": "^5.0.1",
     "@types/jquery": "^3.5.8",
     "@types/lodash": "^4.14.177",
-    "@types/react": "^17.0.35",
+    "@types/react": "^17.0.36",
     "@types/react-dom": "^17.0.11",
     "@types/voca": "^1.4.1",
     "antd": "^4.16.13",
@@ -25,7 +25,7 @@
     "react_ujs": "^2.6.1",
     "sass-loader": "^10.1.1",
     "ts-loader": "^8.0.10",
-    "typescript": "^4.4.4",
+    "typescript": "^4.5.2",
     "uuid": "^8.3.2",
     "voca": "^1.4.0"
   },
