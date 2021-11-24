@@ -6,6 +6,7 @@ require_relative '../commands/registration/set_verified_role'
 require_relative '../commands/registration/register'
 require_relative '../commands/registration/unregister'
 require_relative '../commands/registration/whois'
+require_relative '../commands/registration/ban'
 
 module RegistrationCommands
   extend Discordrb::Commands::CommandContainer

@@ -20,26 +20,36 @@ class Ban < CommandBase
     mentioned_member = @server[:discordrb_server].member(@event.message.mentions.first&.id)
 
     return @event.respond("Unable to find user #{mentioned_member.name} in the server") if mentioned_member.nil?
-    return @event.respond("#{mentioned_member.name} is already banned") unless BannedUser.find_by_discord_id(mentioned_member.id).nil?
 
-    ban_type = @options[:type]&.to_sym || BannedUser.ban_types[:hard]
     target_db_player = Player.find_by_discord_id(mentioned_member.id)
+
+    return @event.respond("#{mentioned_member.name} is not registered") unless target_db_player.osu_verified
+    unless target_db_player.ban_status == Player.ban_statuses[:none]
+      return @event.respond("#{mentioned_member.name} is already banned")
+    end
+
+    ban_type = Player.ban_statuses[@options[:type]&.to_sym] || Player.ban_statuses[:hard]
     reason = @options[:reason] || "Banned by #{@event.message.author.name} (#{@event.message.author.id})"
 
     ActiveRecord::Base.transaction do
-      BannedUser.create(
-        discord_id: mentioned_member.id,
-        ban_type: ban_type,
-        osu_player: target_db_player,
-        created_by: @invoker[:db_player],
-        reason: reason
-      )
+      BanHistory.create(player: target_db_player, banned_by: @invoker[:db_player], reason: reason, ban_type: ban_type)
 
-      if ban_type == BannedUser.ban_types[:soft] && @server[:db_server].verified_role_id && mentioned_member.role?(server.verified_role_id)
-        mentioned_member.remove_role(@server[:db_server].verified_role_id)
-      elsif ban_type == BannedUser.ban_types[:hard]
-        @server[:discordrb_server].ban(mentioned_member, 0, reason)
-      end
+      target_db_player.ban_status = ban_type
+      target_db_player.save!
+
+      execute_discord_action(mentioned_member, ban_type, reason)
+    end
+  end
+
+  private
+
+  def execute_discord_action(member, ban_type, reason)
+    verified_role_id = @server[:db_server].verified_role_id
+
+    if ban_type == Player.ban_statuses[:soft] && verified_role_id && member.role?(verified_role_id)
+      member.remove_role(verified_role_id)
+    elsif ban_type == Player.ban_statuses[:hard]
+      @server[:discordrb_server].ban(member, 0, reason: reason)
     end
   end
 end
