@@ -11,9 +11,17 @@ class Register < CommandBase
 
     return if server.registration_channel_id.nil? || server.registration_channel_id != @event.message.channel.id
 
-    if player.osu_verified
+    if player.osu_verified && player.ban_status == Player.ban_statuses[:none]
       @event.message.author.add_role(server.verified_role_id)
       @event.respond("Verification completed #{mention_invoker}!")
+
+      return
+    end
+
+    if player.ban_status == Player.ban_statuses[:soft]
+      @event.message.author.pm(
+        "You are soft banned on #{@server[:discordrb_server].name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
+      )
 
       return
     end
@@ -31,7 +39,7 @@ class Register < CommandBase
         "#{mention_invoker} KelaBot doesn't have permission to DM you. Please check that server members have permission to send you DMs in your privacy settings."
       )
     rescue StandardError => e
-      Rails.logger.tagged(self.class.name) { Rails.logger.error("Failed to execute register command\n#{e.backtrace}")}
+      Rails.logger.tagged(self.class.name) { Rails.logger.error("Failed to execute register command\n#{e.backtrace}") }
 
       @event.respond(
         "#{mention_invoker} something went wrong, contact the administrators to complete your verification."

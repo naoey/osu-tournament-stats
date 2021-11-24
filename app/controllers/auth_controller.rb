@@ -24,6 +24,15 @@ class AuthController < ApplicationController
       elsif !player.nil? && !player.discord_id.nil? && player.discord_id != auth_request.player.discord_id
         # If a player was found with this osu! ID but whose discord ID doens't match the existing discord ID, they are trying to verify
         # an alternate discord ID and should not be allowed.
+        #
+        # Check if the original player was banned, and in the case of a hard ban trigger a separate event so the alt is banned too
+
+        if player.ban_status == Player.ban_statuses[:hard]
+          ActiveSupport::Notifications.instrument 'player.banned_discord_verify', { auth_request: auth_request, player: player }
+
+          return render plain: 'Verification failed. This osu! account is banned on the server.',
+                        status: :ok
+        end
 
         ActiveSupport::Notifications.instrument 'player.alt_discord_verify', { auth_request: auth_request, player: player }
 
