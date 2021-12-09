@@ -8,7 +8,7 @@
     "@babel/preset-react": "^7.16.0",
     "@rails/webpacker": "^5.0.1",
     "@types/jquery": "^3.5.9",
-    "@types/lodash": "^4.14.177",
+    "@types/lodash": "^4.14.178",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@types/voca": "^1.4.1",
