@@ -23,12 +23,12 @@ class Ban < CommandBase
 
     target_db_player = Player.find_by_discord_id(mentioned_member.id)
 
-    return @event.respond("#{mentioned_member.name} is not registered") unless target_db_player.osu_verified
+    return @event.respond("#{mentioned_member.name} is not registered") if target_db_player.nil? || !target_db_player.osu_verified
     unless target_db_player.ban_status == Player.ban_statuses[:none]
       return @event.respond("#{mentioned_member.name} is already banned")
     end
 
-    ban_type = Player.ban_statuses[@options[:type]&.to_sym] || Player.ban_statuses[:hard]
+    ban_type = Player.ban_statuses[@options[:type].to_sym] || Player.ban_statuses[:hard]
     reason = @options[:reason] || "Banned by #{@event.message.author.name} (#{@event.message.author.id})"
 
     ActiveRecord::Base.transaction do
