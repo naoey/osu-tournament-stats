@@ -2,10 +2,6 @@
 
 echo "Booting rails app..."
 
-ruby --version
-node --version
-yarn --version
-
 set -e
 set -u
 
@@ -25,10 +21,13 @@ if [ "$#" -gt 0 ]; then
 fi
 
 _serve() {
+  ruby --version
   ./bin/rails s -b 0.0.0.0
 }
 
 _wds() {
+  node --version
+  yarn --version
   yarn install
   ./bin/webpack-dev-server
 }
