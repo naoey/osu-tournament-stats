@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.5'
+ruby '2.7.5'
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
@@ -19,7 +19,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
 
 gem 'devise'
-gem 'devise_invitable', '~> 2.0.5'
+gem 'devise_invitable'
 
 gem 'markdown-tables'
 
