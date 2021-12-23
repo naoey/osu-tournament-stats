@@ -62,9 +62,12 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run JS tests and build
+      - name: Run JS tests
         run: |
           NODE_ENV=test yarn test
+
+      - name: Run asset compile
+        run: |
           RAILS_ENV=production SECRET_KEY_BASE=dummy ./bin/rails assets:precompile
 
       - name: Run rspec
