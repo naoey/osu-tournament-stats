@@ -28,6 +28,7 @@ _serve() {
 _wds() {
   node --version
   yarn --version
+  echo "Booting webpack dev server..."
   yarn install
   ./bin/webpack-dev-server
 }
