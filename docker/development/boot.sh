@@ -17,8 +17,6 @@ then
   rm ./tmp/pids/server.pid
 fi
 
-yarn install
-
 command=serve
 
 if [ "$#" -gt 0 ]; then
@@ -31,6 +29,7 @@ _serve() {
 }
 
 _wds() {
+  yarn install
   ./bin/webpack-dev-server
 }
 
