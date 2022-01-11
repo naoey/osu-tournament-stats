@@ -14,6 +14,7 @@ class Player < ApplicationRecord
   has_many :osu_auth_requests, foreign_key: 'player_id'
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
+  has_many :ban_history, foreign_key: 'player_id'
 
   enum ban_statuses: { none: 0, soft: 1, hard: 2 }, _prefix: :ban_status
 

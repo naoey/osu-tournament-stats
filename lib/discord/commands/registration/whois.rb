@@ -4,9 +4,7 @@ class Whois < CommandBase
   protected
 
   def make_response
-    if @event.message.mentions.length != 1
-      return @event.respond('Whois requires one mentioned user')
-    end
+    return @event.respond('Whois requires one mentioned user') if @event.message.mentions.length != 1
 
     target = @event.message.mentions.first
     player = Player.find_by(discord_id: target.id)
@@ -22,8 +20,15 @@ class Whois < CommandBase
       embed.fields = [
         Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: "<@#{player.discord_id}>", inline: true),
         Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu_id, inline: true),
+        Discordrb::Webhooks::EmbedField.new(name: 'Ban status', value: Player.ban_statuses.key(player.ban_status).capitalize,
+                                            inline: true),
+        Discordrb::Webhooks::EmbedField.new(name: 'Ban count', value: player.ban_history.count, inline: true),
         Discordrb::Webhooks::EmbedField.new(
-          name: 'Verified on',
+          name: 'Created on',
+          value: player.created_at ? "<t:#{player.created_at.to_time.to_i}>" : 'N/A'
+        ),
+        Discordrb::Webhooks::EmbedField.new(
+          name: 'osu! verified on',
           value: player.osu_verified_on ? "<t:#{player.osu_verified_on.to_time.to_i}>" : 'N/A'
         )
       ]
