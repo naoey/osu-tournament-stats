@@ -16,9 +16,10 @@ class AuthController < ApplicationController
         dummy_player = auth_request.player
 
         player.discord_id = dummy_player.discord_id
-        auth_request.player = player
 
-        auth_request.save!
+        # Find and update all auth requests by this dummy player to point to the actual user
+        OsuAuthRequest.where(player: dummy_player).update_all(player: player)
+
         dummy_player.destroy!
         player.save!
       elsif !player.nil? && !player.discord_id.nil? && player.discord_id != auth_request.player.discord_id
