@@ -19,6 +19,7 @@ class AuthController < ApplicationController
 
         # Find and update all auth requests by this dummy player to point to the actual user
         OsuAuthRequest.where(player: dummy_player).update_all(player: player)
+        auth_request.player = player
 
         dummy_player.destroy!
         player.save!
