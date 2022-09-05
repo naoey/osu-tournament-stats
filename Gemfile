@@ -15,8 +15,7 @@ gem 'puma', '~> 5.6.5'
 gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Transpile rails-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker'
+gem 'jsbundling-rails'
 
 gem 'devise'
 gem 'devise_invitable'
