@@ -30,7 +30,7 @@ _wds() {
   yarn --version
   echo "Booting webpack dev server..."
   yarn install
-  ./bin/webpack-dev-server
+  yarn run webpack serve
 }
 
 case "$command" in

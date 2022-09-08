@@ -6,11 +6,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // in this example, entry.custom will create a corresponding empty custom.js file
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
+let isDevelopment = process.env.NODE_ENV === "development";
+
 module.exports = {
-  mode: "production",
+  mode: isDevelopment ? "development" : "production",
   devtool: "source-map",
+  context: path.resolve("."),
   entry: {
-    application: "./app/javascript/application.js"
+    application: "./app/assets/javascripts/application.js"
+  },
+  devServer: {
+    compress: true,
+    port: 9000,
   },
   output: {
     filename: "[name].js",
@@ -45,5 +52,9 @@ module.exports = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     })
-  ]
+  ],
+  optimization: {
+    moduleIds: "deterministic",
+    splitChunks: false
+  }
 };

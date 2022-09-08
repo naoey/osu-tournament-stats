@@ -21,7 +21,7 @@ services:
     <<: *x-app
     container_name: ots_webpack
     environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+      - WEBPACK_DEV_SERVER_HOST=0.0.0.0
     command: "wds"
     ports:
       - '127.0.0.1:3035:3035'

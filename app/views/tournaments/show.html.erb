@@ -1,2 +1,2 @@
 <%= content_for :title, 'Tournaments' %>
-<%= react_component('tournaments/Home', {list: @data}) %>
+<%= react_component('tournaments/Home', {list: @data}, prerender: true) %>
