@@ -6,7 +6,7 @@ ruby '2.7.5'
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.0.3'
+gem 'rails', '~> 7.0.4'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
 # Use Puma as the app server
