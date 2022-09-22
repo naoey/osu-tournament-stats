@@ -5,9 +5,9 @@ import * as React from "react";
 import * as v from "voca";
 import Api from "../../api/Api";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
-import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
+import { PlayerStatistic } from "../../entities/PlayerStatistic";
 import BeatmapRequests from "../../api/requests/BeatmapRequests";
-import { IBeatmap } from "../../entities/IBeatmap";
+import { Beatmap } from "../../entities/Beatmap";
 import LoadingView from "../common/LoadingView";
 
 export interface IPlayerStatsListTableProps {
@@ -20,7 +20,7 @@ export interface IPlayerStatsListTableProps {
 interface IPlayerListTableColumnDefinition {
   key: string;
   title?: string;
-  render?: (text: string, record: IPlayerStatistic) => React.ReactNode;
+  render?: (text: string, record: PlayerStatistic) => React.ReactNode;
   titleTooltip?: string;
 }
 
@@ -35,13 +35,13 @@ enum DetailModal {
 
 interface DetailModalState {
   type: DetailModal;
-  statistic: IPlayerStatistic;
+  statistic: PlayerStatistic;
   isLoading: boolean;
   data?: any;
   title: string;
 }
 
-function sorter(a: IPlayerStatistic, b: IPlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
+function sorter(a: PlayerStatistic, b: PlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
   let aValue = valueExtractor(a);
   let bValue = valueExtractor(b);
 
@@ -77,7 +77,7 @@ export default function PlayerStatsListTable({
       if (matchId) request = StatisticsRequests.getMatchStatistics({ matchId });
       else if (tournamentId) request = StatisticsRequests.getTournamentStatistics({ tournamentId });
 
-      const response = await Api.performRequest<IPlayerStatistic[]>(request);
+      const response = await Api.performRequest<PlayerStatistic[]>(request);
 
       setData(response);
     } catch (e) {
@@ -91,13 +91,13 @@ export default function PlayerStatsListTable({
     if (isFocused) loadData();
   }, [isFocused]);
 
-  const keyExtractor = (record: IPlayerStatistic): string => record.player.id.toString();
+  const keyExtractor = (record: PlayerStatistic): string => record.player.id.toString();
 
   const createSortedColumn = (
     { key, title = null, render = null, titleTooltip = null }: IPlayerListTableColumnDefinition,
     index: number,
-  ): ColumnProps<IPlayerStatistic> => {
-    const column: ColumnProps<IPlayerStatistic> = {
+  ): ColumnProps<PlayerStatistic> => {
+    const column: ColumnProps<PlayerStatistic> = {
       dataIndex: key.split("."),
       defaultSortOrder: "ascend",
       key,
@@ -135,7 +135,7 @@ export default function PlayerStatsListTable({
     return column;
   };
 
-  const showDetailModal = async (detail: DetailModal, record: IPlayerStatistic) => {
+  const showDetailModal = async (detail: DetailModal, record: PlayerStatistic) => {
     let request;
 
     switch (detail) {

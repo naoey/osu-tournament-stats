@@ -1,10 +1,10 @@
 import { Table } from "antd";
 import moment from "moment";
 import * as React from "react";
-import ITournament from "../../entities/ITournament";
+import Tournament from "../../entities/Tournament";
 
 export interface ITournamentListTableProps {
-  data: ITournament[];
+  data: Tournament[];
   className?: string;
   style?: any;
   isLoading?: boolean;
@@ -23,7 +23,7 @@ export default class TournamentListTable extends React.Component<ITournamentList
     const columns = [{
       dataIndex: "name",
       key: "name",
-      render: (_: string, record: ITournament) => <a href={`/tournaments/${record.id}`}>{record.name}</a>,
+      render: (_: string, record: Tournament) => <a href={`/tournaments/${record.id}`}>{record.name}</a>,
       title: "Name",
     }, {
       dataIndex: ["host_player", "name"],
@@ -35,7 +35,7 @@ export default class TournamentListTable extends React.Component<ITournamentList
       title: "Matches",
     }, {
       key: "dates",
-      render: (_: string, record: ITournament) => `${moment(record.start_date).format(DATE_RANGE_FORMAT)} - ${moment(record.end_date).format(DATE_RANGE_FORMAT)}`,
+      render: (_: string, record: Tournament) => `${moment(record.start_date).format(DATE_RANGE_FORMAT)} - ${moment(record.end_date).format(DATE_RANGE_FORMAT)}`,
       title: "Dates",
     }];
 
@@ -54,5 +54,5 @@ export default class TournamentListTable extends React.Component<ITournamentList
     );
   }
 
-  private keyExtractor = (item: ITournament): string => item.id.toString();
+  private keyExtractor = (item: Tournament): string => item.id.toString();
 }

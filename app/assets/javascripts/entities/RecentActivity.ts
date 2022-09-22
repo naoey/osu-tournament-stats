@@ -6,7 +6,7 @@ export enum RecentActivityType {
   MatchPoolAdded,
 }
 
-export interface IRecentActivity {
+export type RecentActivity = {
   type: RecentActivityType;
   data: any[];
 }

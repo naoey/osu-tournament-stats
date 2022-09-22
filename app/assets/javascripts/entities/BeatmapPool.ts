@@ -1,5 +1,5 @@
-import { IBeatmap } from "./IBeatmap";
-import IPlayer from "./IPlayer";
+import { Beatmap } from "./Beatmap";
+import Player from "./Player";
 
 export enum PoolBeatmapCategory {
   Nomod = "nm",
@@ -13,17 +13,17 @@ export enum PoolBeatmapCategory {
 /**
  * Represents a beatmap that is part of a pool.
  */
-export interface IPoolBeatmap extends IBeatmap {
+export type PoolBeatmap = Beatmap & {
   category: PoolBeatmapCategory;
 }
 
 /**
  * Represents a pool of beatmaps that can be used in a match.
  */
-export interface IBeatmapPool {
+export type BeatmapPool = {
   name: string;
-  created_by: IPlayer;
+  created_by: Player;
   created_at: string;
   updated_at: string;
-  beatmaps: IPoolBeatmap[];
+  beatmaps: PoolBeatmap[];
 }

@@ -2,19 +2,19 @@ import { Radio, Tabs } from "antd";
 import { RadioChangeEvent } from "antd/lib/radio";
 import moment from "moment";
 import * as React from "react";
-import { IMatch } from "../../entities/IMatch";
-import { IPlayerStatistic } from "../../entities/IPlayerStatistic";
-import ITournament from "../../entities/ITournament";
-import { IUser } from "../../entities/IUser";
+import { Match } from "../../entities/Match";
+import { PlayerStatistic } from "../../entities/PlayerStatistic";
+import Tournament from "../../entities/Tournament";
+import { User } from "../../entities/User";
 import AddMatchButton from "./AddMatchButton";
 import MatchListTable from "../matches/MatchListTable";
 import PlayerStatsListTable from "../matches/PlayerStatsListTable";
 import TournamentContext from "./TournamentContext";
 
 export interface ITournamentDetailsProps {
-  tournament: ITournament;
-  matches: IMatch[];
-  players: IPlayerStatistic[];
+  tournament: Tournament;
+  matches: Match[];
+  players: PlayerStatistic[];
 }
 
 interface ITournamentDetailsState {
@@ -82,7 +82,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
     </div>
   )
 
-  private checkUserIsTournamentHost = (user: IUser): boolean => {
+  private checkUserIsTournamentHost = (user: User): boolean => {
     const { tournament } = this.props;
 
     return tournament.host_player.id === user.id;

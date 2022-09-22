@@ -2,10 +2,10 @@ import * as React from "react";
 import { Button, DatePicker, Form, Input, message, Modal } from "antd";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import Api from "../../api/Api";
-import ITournament from "../../entities/ITournament";
+import Tournament from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 import MatchRequests from "../../api/requests/MatchRequests";
-import { IMatch } from "../../entities/IMatch";
+import { Match } from "../../entities/Match";
 
 interface AddButtonProps {
   tournamentId?: number;
@@ -38,7 +38,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         discardList: values.discardList?.split('|').map(d => parseInt(d, 10)) ?? [],
         referees: values.referees?.split('|') ?? [],
       });
-      const response = await Api.performRequest<IMatch>(request);
+      const response = await Api.performRequest<Match>(request);
 
       message.success(`${response.round_name} created`);
 

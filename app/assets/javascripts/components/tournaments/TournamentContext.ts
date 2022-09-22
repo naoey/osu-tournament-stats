@@ -1,6 +1,6 @@
 import React from "react";
-import ITournament from "../../entities/ITournament";
+import Tournament from "../../entities/Tournament";
 
-const TournamentContext = React.createContext<ITournament>(null);
+const TournamentContext = React.createContext<Tournament>(null);
 
 export default TournamentContext;

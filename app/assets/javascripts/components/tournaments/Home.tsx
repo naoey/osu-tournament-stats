@@ -2,21 +2,21 @@ import { Col, message, Row } from "antd";
 import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
-import { IRecentActivity } from "../../entities/IRecentActivity";
-import ITournament from "../../entities/ITournament";
+import { RecentActivity } from "../../entities/RecentActivity";
+import Tournament from "../../entities/Tournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
 
 interface ITournamentHomeProps {
-  list: ITournament[];
-  recent_activity: IRecentActivity[];
+  list: Tournament[];
+  recent_activity: RecentActivity[];
 }
 
 interface ITournamentHomeState {
-  list: ITournament[];
-  recentActivity: IRecentActivity[];
+  list: Tournament[];
+  recentActivity: RecentActivity[];
   isLoading: boolean;
   searchQuery?: string;
 }
@@ -78,7 +78,7 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
     try {
       const request = TournamentRequests.getTournaments({ name: query });
 
-      const response = await Api.performRequest<ITournament[]>(request);
+      const response = await Api.performRequest<Tournament[]>(request);
 
       this.setState({ list: response });
     } catch (e) {

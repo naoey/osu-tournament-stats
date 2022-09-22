@@ -1,4 +1,4 @@
-import IPlayer from "./IPlayer";
+import Player from "./Player";
 
 export enum BeatmapAvailability {
   Official,
@@ -6,10 +6,10 @@ export enum BeatmapAvailability {
   Self,
 }
 
-export interface IBeatmap {
+export type Beatmap = {
   name: string;
   artist: string;
-  mapper: IPlayer;
+  mapper: Player;
   star_difficulty: number;
   difficulty_name: number;
   bpm?: number;

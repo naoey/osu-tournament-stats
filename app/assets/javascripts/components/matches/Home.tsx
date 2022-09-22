@@ -1,10 +1,10 @@
 import * as React from "react";
-import { IMatch } from "../../entities/IMatch";
+import { Match } from "../../entities/Match";
 import MatchListTable from "./MatchListTable";
 import AddMatchButton from "../tournaments/AddMatchButton";
 
 interface IHomeProps {
-  data: IMatch[];
+  data: Match[];
 }
 
 export default function Home(props: IHomeProps) {

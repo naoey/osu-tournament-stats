@@ -2,7 +2,7 @@ import * as React from "react";
 import { Modal, Form, DatePicker, Button, Input, message } from "antd";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import Api from "../../api/Api";
-import ITournament from "../../entities/ITournament";
+import Tournament from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 
 function AddTournamentButton() {
@@ -28,7 +28,7 @@ function AddTournamentButton() {
         startDate: values.dates[0]?.toISOString() ?? null,
         endDate: values.dates[0]?.toISOString() ?? null,
       });
-      const response = await Api.performRequest<ITournament>(request);
+      const response = await Api.performRequest<Tournament>(request);
 
       message.success(`${response.name} created`);
 

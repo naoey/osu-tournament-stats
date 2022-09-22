@@ -1,12 +1,12 @@
 import * as React from "react";
-import { IUser } from "../entities/IUser";
+import { User } from "../entities/User";
 
 interface IAuthenticatedComponent {
   /**
    * An optional function to perform additional checks over basic authentication to determine whether the wrapped component
    * should be rendered.
    */
-  checkAllowed?: (user: IUser) => boolean;
+  checkAllowed?: (user: User) => boolean;
 }
 
 export function authenticated<P extends object>(Component: React.ComponentType<P>) {

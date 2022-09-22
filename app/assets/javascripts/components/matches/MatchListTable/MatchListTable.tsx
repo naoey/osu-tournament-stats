@@ -1,12 +1,12 @@
 import { Avatar, List, Table } from "antd";
 import { ColumnProps } from "antd/lib/table";
-import * as moment from "moment";
+import moment from "moment";
 import * as React from "react";
 import Api from "../../../api/Api";
 import MatchRequests from "../../../api/requests/MatchRequests";
-import { IMatch } from "../../../entities/IMatch";
-import IMatchTeam from "../../../entities/IMatchTeam";
-import IPlayer from "../../../entities/IPlayer";
+import { Match } from "../../../entities/Match";
+import { MatchTeam } from "../../../entities/MatchTeam";
+import { Player } from "../../../entities/Player";
 
 import "./MatchListTable.scss";
 import { GeneralEvents } from "../../../events/GeneralEvents";
@@ -15,10 +15,10 @@ export interface IMatchListTableProps {
   tournamentId?: number;
   hiddenColumns?: string[];
   isFocused?: boolean;
-  initialData?: IMatch[];
+  initialData?: Match[];
 }
 
-function sortTimestamp(a: IMatch, b: IMatch) {
+function sortTimestamp(a: Match, b: Match) {
   if (moment(a.match_timestamp) > moment(b.match_timestamp)) return 1;
   if (moment(a.match_timestamp) < moment(b.match_timestamp)) return -1;
   return 0;
@@ -48,7 +48,7 @@ export default function MatchListTable({
 
     try {
       const request = MatchRequests.getMatches({ tournament_id: tournamentId });
-      const response = await Api.performRequest<IMatch[]>(request);
+      const response = await Api.performRequest<Match[]>(request);
 
       setData(response);
     } catch (e) {
@@ -76,7 +76,7 @@ export default function MatchListTable({
     if (isFocused) loadData();
   }, [isFocused]);
 
-  const renderTeam = (team: IMatchTeam, isWinner: boolean, showTeamNames: boolean = false) => (
+  const renderTeam = (team: MatchTeam, isWinner: boolean, showTeamNames: boolean = false) => (
     <List
       header={showTeamNames ? <b>{team.name || `Team ${team.captain.name}`}</b> : null}
       dataSource={team.players}
@@ -85,7 +85,7 @@ export default function MatchListTable({
     />
   );
 
-  const renderTeamPlayerItem = (player: IPlayer) => (
+  const renderTeamPlayerItem = (player: Player) => (
     <List.Item>
       <List.Item.Meta
         avatar={<Avatar src={`https://a.ppy.sh/${player.osu_id}`} />}
@@ -94,9 +94,9 @@ export default function MatchListTable({
     </List.Item>
   );
 
-  const keyExtractor = (record: IMatch): string => record.id.toString();
+  const keyExtractor = (record: Match): string => record.id.toString();
 
-  const columns: ColumnProps<IMatch>[] = [
+  const columns: ColumnProps<Match>[] = [
     {
       dataIndex: "round_name",
       key: "1",

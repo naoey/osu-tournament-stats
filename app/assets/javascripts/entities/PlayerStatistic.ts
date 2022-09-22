@@ -1,7 +1,7 @@
-import IPlayer from "./IPlayer";
+import Player from "./Player";
 
-export interface IPlayerStatistic {
-  player: IPlayer;
+export type PlayerStatistic = {
+  player: Player;
   matches_played: number;
   matches_won: number;
   maps_played: number[];

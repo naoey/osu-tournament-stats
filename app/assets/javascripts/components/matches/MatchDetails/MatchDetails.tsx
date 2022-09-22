@@ -1,11 +1,11 @@
 import React from 'react';
 
 import './MatchDetails.scss';
-import { IMatch } from "../../../entities/IMatch";
+import { Match } from "../../../entities/Match";
 import PlayerStatsListTable, { IPlayerStatsListTableProps } from "../PlayerStatsListTable";
 
 interface MatchDetailsProps {
-  match: IMatch;
+  match: Match;
   tableProps?: IPlayerStatsListTableProps;
 }
 

@@ -1,4 +1,4 @@
-export default interface IPlayer {
+export type Player = {
   id: number;
   name: string;
   created_at: string;
