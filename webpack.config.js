@@ -27,9 +27,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx|)$/,
+        test: /\.tsx?|.jsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
-        use: ['babel-loader'],
       },
       // Add CSS/SASS/SCSS rule with loaders
       {
@@ -44,7 +44,7 @@ module.exports = {
   },
   resolve: {
     // Add additional file types
-    extensions: ['.js', '.jsx', '.scss', '.css'],
+    extensions: ['.js', '.jsx', '.scss', '.css', '.ts', '.tsx'],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
