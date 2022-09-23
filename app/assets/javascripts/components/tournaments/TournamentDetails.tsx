@@ -4,10 +4,10 @@ import moment from "moment";
 import * as React from "react";
 import { Match } from "../../entities/Match";
 import { PlayerStatistic } from "../../entities/PlayerStatistic";
-import Tournament from "../../entities/Tournament";
+import { Tournament } from "../../entities/Tournament";
 import { User } from "../../entities/User";
 import AddMatchButton from "./AddMatchButton";
-import MatchListTable from "../matches/MatchListTable";
+import { MatchListTable } from "../matches/MatchListTable";
 import PlayerStatsListTable from "../matches/PlayerStatsListTable";
 import TournamentContext from "./TournamentContext";
 

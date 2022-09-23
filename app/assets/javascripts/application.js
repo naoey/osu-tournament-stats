@@ -13,14 +13,17 @@
 //= require rails-ujs
 //= require activestorage
 //= require turbolinks
+//= require react
+//= require react_ujs
+//= require components
 //= require_tree .
 
 import '../../../node_modules/antd/dist/antd.compact.css';
 import '../../assets/stylesheets/application.scss';
 
-var componentRequireContext = require.context("./components", true)
-var ReactRailsUJS = require("react_ujs")
-ReactRailsUJS.useContext(componentRequireContext)
+var componentRequireContext = require.context("./components", true);
+var ReactRailsUJS = require("react_ujs");
+ReactRailsUJS.useContext(componentRequireContext);
 
 $(document).on('user.session_expired', function() {
   window.location.href = "/login";

@@ -1,1 +1,1 @@
-export { default } from "./MatchListTable";
+export * from "./MatchListTable";

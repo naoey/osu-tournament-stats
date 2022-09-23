@@ -3,7 +3,7 @@ import * as React from "react";
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import { RecentActivity } from "../../entities/RecentActivity";
-import Tournament from "../../entities/Tournament";
+import { Tournament } from "../../entities/Tournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common";
 import AddButton from "./AddTournamentButton";
@@ -72,7 +72,7 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
 
   private onSearch = (query: string) => this.reloadTournaments(query)
 
-  private reloadTournaments = async (query: string = null) => {
+  private reloadTournaments = async (query: string | null = null) => {
     this.setState({ isLoading: true });
 
     try {
@@ -81,7 +81,7 @@ export default class Home extends React.Component<ITournamentHomeProps, ITournam
       const response = await Api.performRequest<Tournament[]>(request);
 
       this.setState({ list: response });
-    } catch (e) {
+    } catch (e: any) {
       message.error(e.message);
     } finally {
       this.setState({ isLoading: false });

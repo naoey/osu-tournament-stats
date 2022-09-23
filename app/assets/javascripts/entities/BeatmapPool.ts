@@ -1,5 +1,5 @@
 import { Beatmap } from "./Beatmap";
-import Player from "./Player";
+import { Player } from "./Player";
 
 export enum PoolBeatmapCategory {
   Nomod = "nm",

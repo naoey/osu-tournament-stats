@@ -11,7 +11,7 @@ import { Player } from "../../../entities/Player";
 import "./MatchListTable.scss";
 import { GeneralEvents } from "../../../events/GeneralEvents";
 
-export interface IMatchListTableProps {
+export type MatchListTableProps = {
   tournamentId?: number;
   hiddenColumns?: string[];
   isFocused?: boolean;
@@ -24,12 +24,12 @@ function sortTimestamp(a: Match, b: Match) {
   return 0;
 }
 
-export default function MatchListTable({
+export function MatchListTable({
   tournamentId,
   hiddenColumns = [],
   initialData = [],
   isFocused = true,
-}: IMatchListTableProps) {
+}: MatchListTableProps) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState(initialData);
 

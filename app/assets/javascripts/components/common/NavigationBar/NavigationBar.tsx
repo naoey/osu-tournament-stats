@@ -3,7 +3,7 @@ import * as React from "react";
 
 import './NavigationBar.scss';
 
-export default class NavigationBar extends React.Component {
+export class NavigationBar extends React.Component {
   public render() {
     return (
       <Menu

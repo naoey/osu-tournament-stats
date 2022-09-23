@@ -7,17 +7,16 @@ import Api from "../../api/Api";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { PlayerStatistic } from "../../entities/PlayerStatistic";
 import BeatmapRequests from "../../api/requests/BeatmapRequests";
-import { Beatmap } from "../../entities/Beatmap";
-import LoadingView from "../common/LoadingView";
+import { LoadingView } from "../common/LoadingView";
 
-export interface IPlayerStatsListTableProps {
+export type PlayerStatsListTableProps = {
   tournamentId?: number;
   matchId?: number;
   isFocused?: boolean;
   hiddenColumns?: string[];
 }
 
-interface IPlayerListTableColumnDefinition {
+type ColumnDefinition = {
   key: string;
   title?: string;
   render?: (text: string, record: PlayerStatistic) => React.ReactNode;
@@ -41,7 +40,7 @@ interface DetailModalState {
   title: string;
 }
 
-function sorter(a: PlayerStatistic, b: PlayerStatistic, valueExtractor: (IPlayerStatistic) => number | string): number {
+function sorter(a: PlayerStatistic, b: PlayerStatistic, valueExtractor: (p: PlayerStatistic) => number | string): number {
   let aValue = valueExtractor(a);
   let bValue = valueExtractor(b);
 
@@ -58,9 +57,9 @@ export default function PlayerStatsListTable({
   tournamentId,
   isFocused = true,
   hiddenColumns = [],
-}: IPlayerStatsListTableProps) {
+}: PlayerStatsListTableProps) {
   const [isLoading, setIsLoading] = React.useState(true);
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState<PlayerStatistic[]>([]);
   const [detailModal, setDetailModal] = React.useState<null | DetailModalState>(null);
 
   const loadData = async () => {
@@ -76,11 +75,12 @@ export default function PlayerStatsListTable({
 
       if (matchId) request = StatisticsRequests.getMatchStatistics({ matchId });
       else if (tournamentId) request = StatisticsRequests.getTournamentStatistics({ tournamentId });
+      else return;
 
       const response = await Api.performRequest<PlayerStatistic[]>(request);
 
       setData(response);
-    } catch (e) {
+    } catch (e: any) {
       message.error(e.message);
     } finally {
       setIsLoading(false);
@@ -94,7 +94,7 @@ export default function PlayerStatsListTable({
   const keyExtractor = (record: PlayerStatistic): string => record.player.id.toString();
 
   const createSortedColumn = (
-    { key, title = null, render = null, titleTooltip = null }: IPlayerListTableColumnDefinition,
+    { key, title, render, titleTooltip }: ColumnDefinition,
     index: number,
   ): ColumnProps<PlayerStatistic> => {
     const column: ColumnProps<PlayerStatistic> = {
@@ -116,9 +116,9 @@ export default function PlayerStatsListTable({
     if (key === 'best_accuracy')
       column.sorter = (a, b) => sorter(a, b, item => item.best_accuracy.accuracy);
     else if (['maps_won', 'maps_played', 'maps_failed', 'full_combos'].includes(key))
-      column.sorter = (a, b) => sorter(a, b, item => item[key].length);
+      column.sorter = (a, b) => sorter(a, b, (item) => item[key].length);
     else
-      column.sorter = (a, b) => sorter(a, b, item => item[key]);
+      column.sorter = (a, b) => sorter(a, b, (item) => item[key]);
 
     if (render !== null) column.render = render;
 
@@ -167,7 +167,7 @@ export default function PlayerStatsListTable({
         break;
     }
 
-    if (request === null) {
+    if (!request) {
       message.info('No details for record!');
       return;
     }
@@ -185,7 +185,7 @@ export default function PlayerStatsListTable({
       const response = await Api.performRequest(request);
 
       setDetailModal({ ...details, isLoading: false, data: response });
-    } catch (e) {
+    } catch (e: any) {
       message.error(e.message || 'An error occured!');
       setDetailModal(null);
     }
@@ -208,7 +208,7 @@ export default function PlayerStatsListTable({
         return (
           <ul>
             {
-              detailModal.data?.map(d => <li key={d.id}>{d.name}</li>) ?? null
+              detailModal.data?.map((d: any) => <li key={d.id}>{d.name}</li>) ?? null
             }
           </ul>
         );
@@ -224,7 +224,7 @@ export default function PlayerStatsListTable({
     matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
   }));
 
-  const columns: IPlayerListTableColumnDefinition[] = [
+  const columns: ColumnDefinition[] = [
     {
       key: "player.name",
       render: (text, record) => (

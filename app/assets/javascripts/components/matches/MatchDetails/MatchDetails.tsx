@@ -1,15 +1,15 @@
 import React from 'react';
 
-import './MatchDetails.scss';
 import { Match } from "../../../entities/Match";
-import PlayerStatsListTable, { IPlayerStatsListTableProps } from "../PlayerStatsListTable";
+import PlayerStatsListTable, { PlayerStatsListTableProps } from "../PlayerStatsListTable";
+import './MatchDetails.scss';
 
-interface MatchDetailsProps {
+export type MatchDetailsProps = {
   match: Match;
-  tableProps?: IPlayerStatsListTableProps;
+  tableProps?: PlayerStatsListTableProps;
 }
 
-export default function MatchDetails({
+export function MatchDetails({
   match,
   tableProps,
 }: MatchDetailsProps) {
@@ -19,8 +19,9 @@ export default function MatchDetails({
         <div>
           <h2>{match.round_name}</h2>
           {
-            match.tournament === null
+            match.tournament
               ? null
+              // @ts-ignore
               : <h4>{match.tournament.name}</h4>
           }
           <span>

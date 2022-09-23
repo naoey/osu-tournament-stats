@@ -1,14 +1,14 @@
-import { IRequest } from "../IRequest";
+import { RequestDescriptor } from "../RequestDescriptor";
 
-const getMatchStatistics = ({ matchId }): IRequest => ({
+const getMatchStatistics = ({ matchId }: { matchId: number }): RequestDescriptor => ({
   url: `/statistics/matches/${matchId}`,
 });
 
-const getTournamentStatistics = ({ tournamentId }): IRequest => ({
+const getTournamentStatistics = ({ tournamentId }: { tournamentId: number }): RequestDescriptor => ({
   url: `/statistics/tournaments/${tournamentId}`,
 });
 
-const getPlayerStatistics = ({ playerId = null }): IRequest => {
+const getPlayerStatistics = ({ playerId }: { playerId?: number }): RequestDescriptor => {
   const request = { url: "/statistics/players" };
 
   if (playerId) request.url += `/${playerId.toString()}`;

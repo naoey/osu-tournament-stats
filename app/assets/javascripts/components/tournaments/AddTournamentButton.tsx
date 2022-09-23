@@ -2,7 +2,7 @@ import * as React from "react";
 import { Modal, Form, DatePicker, Button, Input, message } from "antd";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import Api from "../../api/Api";
-import Tournament from "../../entities/Tournament";
+import { Tournament } from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 
 function AddTournamentButton() {
@@ -19,7 +19,7 @@ function AddTournamentButton() {
   const showModal = () => setFormVisible(true);
   const hideModal = () => setFormVisible(false);
 
-  const createTournament = async (values) => {
+  const createTournament = async (values: any) => {
     setWorking(true);
 
     try {
@@ -33,7 +33,7 @@ function AddTournamentButton() {
       message.success(`${response.name} created`);
 
       window.location.href = `/tournaments/${response.id}`;
-    } catch (e) {
+    } catch (e: any) {
       message.error(e.message);
       setWorking(false);
     }

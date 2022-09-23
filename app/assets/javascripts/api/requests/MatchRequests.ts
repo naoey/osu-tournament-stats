@@ -1,5 +1,5 @@
 import { HttpMethod } from "../Constants";
-import { IRequest } from "../IRequest";
+import { RequestDescriptor } from "../RequestDescriptor";
 
 const createMatch = ({
   roundName,
@@ -9,7 +9,7 @@ const createMatch = ({
   blueCaptain,
   discardList,
   tournamentId = null,
-}): IRequest => ({
+}: any): RequestDescriptor => ({
   options: {
     method: HttpMethod.Post,
   },
@@ -25,7 +25,7 @@ const createMatch = ({
   url: "/matches",
 });
 
-const getMatches = (params = {}): IRequest => ({
+const getMatches = (params = {}): RequestDescriptor => ({
   url: `/matches?${$.param(params)}`,
 });
 

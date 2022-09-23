@@ -1,4 +1,4 @@
-import Player from "./Player";
+import { Player } from "./Player";
 
 export type PlayerStatistic = {
   player: Player;
@@ -17,4 +17,6 @@ export type PlayerStatistic = {
   maps_failed: number[];
   online_id: number;
   full_combos: number[];
+
+  [key: string]: any;
 }

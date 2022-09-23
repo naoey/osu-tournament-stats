@@ -1,15 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import { Button, Spin } from "antd";
 
 import './LoadingView.scss';
 
-interface LoadingViewProps {
+export type LoadingViewProps = {
   message?: string;
   failed?: boolean;
   onRetry?: () => void;
 }
 
-export default function LoadingView({
+export function LoadingView({
   message,
   failed,
   onRetry,

@@ -1,17 +1,17 @@
 import { ContentType, HttpStatus } from "./Constants";
-import { IRequest } from "./IRequest";
+import { RequestDescriptor } from "./RequestDescriptor";
 import RequestError from "./RequestError";
 import { UserEvents } from "../events/UserEvents";
 
 export default class Api {
-  public static async performRequest<P>({ url, payload, options }: IRequest): Promise<P> {
+  public static async performRequest<P>({ url, payload, options }: RequestDescriptor): Promise<P> {
     const headers = {
       ...(options && options.headers) || {},
       "Accept": ContentType.Json,
       "Content-Type": ContentType.Json,
     };
 
-    let body: string = null;
+    let body: string | null = null;
 
     if (payload !== null) {
       body = JSON.stringify(payload);
@@ -55,7 +55,7 @@ export default class Api {
       console.debug(`Request to ${url} succcessfully completed!`);
 
       return json;
-    } catch (e) {
+    } catch (e: any) {
       console.error(`Request to ${url} failed!`, e.code, e.status);
 
       if (e.code === "AbortError") {

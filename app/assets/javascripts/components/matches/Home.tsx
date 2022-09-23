@@ -1,15 +1,13 @@
 import * as React from "react";
 import { Match } from "../../entities/Match";
-import MatchListTable from "./MatchListTable";
+import { MatchListTable } from "./MatchListTable";
 import AddMatchButton from "../tournaments/AddMatchButton";
 
-interface IHomeProps {
+type HomeProps = {
   data: Match[];
 }
 
-export default function Home(props: IHomeProps) {
-  const isAuthenticated = (window as any).isAuthenticated;
-
+export function Home(props: HomeProps) {
   return (
     <div className="h-100">
       <AddMatchButton />

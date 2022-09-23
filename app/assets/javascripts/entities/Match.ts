@@ -8,7 +8,7 @@ export type Match = {
   match_timestamp: string;
   red_team: MatchTeam;
   blue_team: MatchTeam;
-  winning_team?: MatchTeam;
+  winning_team: MatchTeam;
   tournament?: Tournament;
   online_id: number;
   beatmap_pool?: BeatmapPool;
