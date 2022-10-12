@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"JS tests not yet implemented\" && exit 0",
-    "build": "webpack --config webpack.config.js"
+    "build": "NODE_ENV=production webpack --config webpack.config.js"
   },
   "eslintConfig": {
     "extends": [
