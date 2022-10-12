@@ -10,6 +10,7 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 
+window.$ = window.jQuery = require("jquery");
 
 import '../../../node_modules/antd/dist/antd.compact.css';
 import '../../assets/stylesheets/application.scss';
@@ -18,7 +19,7 @@ var componentRequireContext = require.context("./components", true);
 var ReactRailsUJS = require("react_ujs");
 ReactRailsUJS.useContext(componentRequireContext);
 
-$(document).on('user.session_expired', function() {
+document.addEventListener('user.session_expired', function() {
   window.location.href = "/login";
 });
 

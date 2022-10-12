@@ -21,7 +21,7 @@ interface ITournamentHomeState {
   searchQuery?: string;
 }
 
-export default class Home extends React.Component<ITournamentHomeProps, ITournamentHomeState> {
+export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeState> {
   constructor(props: ITournamentHomeProps) {
     super(props);
 
