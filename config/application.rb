@@ -24,6 +24,8 @@ module OsuTournamentStats
 
     config.autoload_paths += %W[#{config.root}/services]
 
+    config.active_record.legacy_connection_handling = false
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

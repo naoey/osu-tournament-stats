@@ -23,6 +23,7 @@ fi
 _serve() {
   ruby --version
   ./bin/rails s -b 0.0.0.0
+  # ./bin/dev
 }
 
 _wds() {

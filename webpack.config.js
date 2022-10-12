@@ -18,6 +18,9 @@ module.exports = {
   devServer: {
     compress: true,
     port: 9000,
+    devMiddleware: {
+      writeToDisk: true,
+    },
   },
   output: {
     filename: "[name].js",
@@ -34,7 +37,12 @@ module.exports = {
       // Add CSS/SASS/SCSS rule with loaders
       {
         test: /\.(?:sa|sc|c)ss$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [
+          isDevelopment && "style-loader",
+          !isDevelopment && MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ].filter(Boolean),
       },
       {
         test: /\.(png|jpe?g|gif|eot|woff2|woff|ttf|svg)$/i,

@@ -9,11 +9,11 @@ interface IDebouncedSearchFieldProps {
   timeout?: number;
 }
 
-export default function DebouncedSearchField(props: IDebouncedSearchFieldProps) {
+export function DebouncedSearchField(props: IDebouncedSearchFieldProps) {
   const { onSearch, timeout, searchQueryKey, ...rest } = props;
   const [value, setValue] = useState<string | undefined>((qs.parse(window.location.search))[searchQueryKey] as string);
 
-  let timer: Timeout;
+  let timer: ReturnType<typeof setTimeout>;
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;

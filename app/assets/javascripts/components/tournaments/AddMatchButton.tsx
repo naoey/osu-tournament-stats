@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button, DatePicker, Form, Input, message, Modal } from "antd";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import Api from "../../api/Api";
-import Tournament from "../../entities/Tournament";
+import { Tournament } from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 import MatchRequests from "../../api/requests/MatchRequests";
 import { Match } from "../../entities/Match";
@@ -25,7 +25,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
   const showModal = () => setFormVisible(true);
   const hideModal = () => setFormVisible(false);
 
-  const createTournament = async (values) => {
+  const createTournament = async (values: any) => {
     setWorking(true);
 
     try {
@@ -35,7 +35,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         roundName: values.name,
         blueCaptain: values.blueCaptain,
         redCaptain: values.redCaptain,
-        discardList: values.discardList?.split('|').map(d => parseInt(d, 10)) ?? [],
+        discardList: values.discardList?.split('|').map((d: string) => parseInt(d, 10)) ?? [],
         referees: values.referees?.split('|') ?? [],
       });
       const response = await Api.performRequest<Match>(request);
@@ -43,7 +43,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
       message.success(`${response.round_name} created`);
 
       window.location.href = `/matches/${response.id}`;
-    } catch (e) {
+    } catch (e: any) {
       message.error(e.message);
       setWorking(false);
     }
