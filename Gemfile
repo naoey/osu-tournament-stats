@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.5'
+ruby '3.1.2'
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
@@ -54,7 +54,7 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'debase'
+  gem 'debase', '~> 0.2.5.beta2'
   gem 'rubocop', '~> 1.36.0', require: false
   gem 'ruby-debug-ide'
   gem 'web-console', '>= 3.3.0'
