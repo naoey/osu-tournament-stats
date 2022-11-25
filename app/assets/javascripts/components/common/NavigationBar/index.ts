@@ -1,1 +1,2 @@
-export * from "./NavigationBar";
+// @ts-ignore
+export * from "./NavigationBar.tsx";
