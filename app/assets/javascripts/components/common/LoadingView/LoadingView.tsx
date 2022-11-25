@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Spin } from "antd";
 
-import './LoadingView.scss';
+import './styles.scss';
 
 export type LoadingViewProps = {
   message?: string;

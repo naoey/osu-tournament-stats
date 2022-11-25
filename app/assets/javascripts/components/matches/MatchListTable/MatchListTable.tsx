@@ -7,9 +7,9 @@ import MatchRequests from "../../../api/requests/MatchRequests";
 import { Match } from "../../../entities/Match";
 import { MatchTeam } from "../../../entities/MatchTeam";
 import { Player } from "../../../entities/Player";
-
-import "./MatchListTable.scss";
 import { GeneralEvents } from "../../../events/GeneralEvents";
+
+import "./styles.scss";
 
 export type MatchListTableProps = {
   tournamentId?: number;

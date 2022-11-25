@@ -1,7 +1,7 @@
 import { Menu } from "antd";
 import * as React from "react";
 
-import './NavigationBar.scss';
+import './styles.scss';
 
 export function NavigationBar() {
   return (

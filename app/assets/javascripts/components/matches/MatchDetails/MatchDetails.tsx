@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Match } from "../../../entities/Match";
 import PlayerStatsListTable, { PlayerStatsListTableProps } from "../PlayerStatsListTable";
-import './MatchDetails.scss';
+import './styles.scss';
 
 export type MatchDetailsProps = {
   match: Match;
