@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
-  create_table "ban_histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2022_11_25_165306) do
+  create_table "ban_histories", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "player_id", null: false
     t.bigint "banned_by_id"
     t.integer "ban_type", default: 0, null: false
@@ -22,7 +22,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["player_id"], name: "index_ban_histories_on_player_id"
   end
 
-  create_table "beatmaps", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "beatmaps", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.bigint "online_id"
     t.float "star_difficulty"
@@ -32,7 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "discord_servers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "discord_servers", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "discord_id", null: false
     t.bigint "registration_channel_id"
     t.bigint "verified_role_id"
@@ -42,7 +42,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
   end
 
-  create_table "match_scores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "match_scores", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "match_id"
     t.bigint "player_id"
     t.bigint "beatmap_id"
@@ -65,7 +65,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["player_id"], name: "index_match_scores_on_player"
   end
 
-  create_table "match_teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "match_teams", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.bigint "captain_id", null: false
     t.bigint "match_id"
@@ -75,13 +75,13 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["match_id"], name: "index_match_teams_on_match_id"
   end
 
-  create_table "match_teams_players", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "match_teams_players", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "match_team_id", null: false
     t.bigint "player_id", null: false
     t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
   end
 
-  create_table "matches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "matches", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "online_id"
     t.string "round_name"
     t.datetime "match_timestamp", precision: nil
@@ -95,7 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "osu_auth_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "osu_auth_requests", charset: "utf8mb3", force: :cascade do |t|
     t.string "nonce", null: false
     t.boolean "resolved", default: false, null: false
     t.bigint "player_id", null: false
@@ -106,7 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["player_id"], name: "index_osu_auth_requests_on_player_id"
   end
 
-  create_table "players", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "players", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -153,7 +153,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_11_24_050519) do
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
 
-  create_table "tournaments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "tournaments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "host_player_id"
     t.datetime "start_date", precision: nil
