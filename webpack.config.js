@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // Removes exported JavaScript files from CSS-only entries
 // in this example, entry.custom will create a corresponding empty custom.js file
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 let isDevelopment = process.env.NODE_ENV === "development";
 
@@ -26,6 +27,7 @@ module.exports = {
     filename: "[name].js",
     sourceMapFilename: "[file].map",
     path: path.resolve(__dirname, "app/assets/builds"),
+    clean: true,
   },
   module: {
     rules: [
@@ -59,7 +61,8 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
-    })
+    }),
+    new CleanWebpackPlugin(),
   ],
   optimization: {
     moduleIds: "deterministic",

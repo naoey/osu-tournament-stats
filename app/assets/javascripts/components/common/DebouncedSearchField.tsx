@@ -5,13 +5,13 @@ import React, { useState } from "react";
 interface IDebouncedSearchFieldProps {
   onSearch: (query: string) => void;
   placeholder?: string;
-  searchQueryKey: string;
+  searchQueryKey?: string;
   timeout?: number;
 }
 
 export function DebouncedSearchField(props: IDebouncedSearchFieldProps) {
   const { onSearch, timeout, searchQueryKey, ...rest } = props;
-  const [value, setValue] = useState<string | undefined>((qs.parse(window.location.search))[searchQueryKey] as string);
+  const [value, setValue] = useState<string | undefined>((qs.parse(window.location.search))[searchQueryKey ?? ""] as string);
 
   let timer: ReturnType<typeof setTimeout>;
 
@@ -32,10 +32,4 @@ export function DebouncedSearchField(props: IDebouncedSearchFieldProps) {
       onChange={onSearchQueryChange}
     />
   );
-}
-
-DebouncedSearchField.defaultProps = {
-  placeholder: "Search...",
-  searchQueryKey: "name",
-  timeout: 800,
 }

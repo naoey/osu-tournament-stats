@@ -15,7 +15,7 @@ window.$ = window.jQuery = require("jquery");
 import '../../../node_modules/antd/dist/antd.compact.css';
 import '../../assets/stylesheets/application.scss';
 
-var componentRequireContext = require.context("./components", true);
+var componentRequireContext = require.context("./components", true, /^((?!\.(sc|sa|le|c)ss).)*$/);
 var ReactRailsUJS = require("react_ujs");
 ReactRailsUJS.useContext(componentRequireContext);
 

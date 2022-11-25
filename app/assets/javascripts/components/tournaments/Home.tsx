@@ -5,7 +5,7 @@ import TournamentRequests from "../../api/requests/TournamentRequests";
 import { RecentActivity } from "../../entities/RecentActivity";
 import { Tournament } from "../../entities/Tournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
-import { DebouncedSearchField } from "../common";
+import { DebouncedSearchField } from "../common/DebouncedSearchField";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
 
