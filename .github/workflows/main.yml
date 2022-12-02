@@ -23,12 +23,9 @@ jobs:
     services:
       mysql:
         image: mysql:8.0
-        env:
-            MYSQL_ALLOW_EMPTY_PASSWORD: yes
-            MYSQL_DATABASE: osu_tournament_stats_test
         ports:
-            - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=osu_tournament_stats_test --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -71,7 +68,8 @@ jobs:
           RAILS_ENV=production SECRET_KEY_BASE=dummy ./bin/rails assets:precompile
 
       - name: Run rspec
-        run: RAILS_ENV=test MYSQL_USER=root MYSQL_DATABASE="osu_tournament_stats_test" MYSQL_HOST="127.0.0.1" MYSQL_PORT=${{ job.services.mysql.ports[3306] }} bundle exec rspec
+        run: |
+          RAILS_ENV=test MYSQL_USER=root MYSQL_DATABASE="osu_tournament_stats_test" MYSQL_HOST="127.0.0.1" MYSQL_PORT=${{ job.services.mysql.ports[3306] }} bundle exec rspec
 
       - name: Complete
         run: echo "Build complete!"

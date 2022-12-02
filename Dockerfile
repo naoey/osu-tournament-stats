@@ -1,4 +1,4 @@
-FROM ruby:2.7.5-buster
+FROM ruby:3.1.2-buster
 
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
  && apt-get update && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/* \

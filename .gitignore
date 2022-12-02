@@ -415,3 +415,6 @@ yarn-debug.log*
 .yarn-integrity
 
 .idea/
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

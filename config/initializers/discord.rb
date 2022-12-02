@@ -1,7 +1,10 @@
-require_relative '../../lib/discord/bot'
+if ENV['DISCORD_ENABLED'] == '1'
+  require_relative '../../lib/discord/bot'
 
-Discord::OsuDiscordBot.instance.initialize! if ENV['DISCORD_ENABLED'] == '1'
+  Discord::OsuDiscordBot.instance.initialize!
 
-at_exit do
-  Discord::OsuDiscordBot.instance.close!
+  at_exit do
+    Discord::OsuDiscordBot.instance.close!
+  end
 end
+

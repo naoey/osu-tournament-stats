@@ -23,6 +23,7 @@ fi
 _serve() {
   ruby --version
   ./bin/rails s -b 0.0.0.0
+  # ./bin/dev
 }
 
 _wds() {
@@ -30,7 +31,7 @@ _wds() {
   yarn --version
   echo "Booting webpack dev server..."
   yarn install
-  ./bin/webpack-dev-server
+  yarn run webpack serve
 }
 
 case "$command" in
