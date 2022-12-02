@@ -72,7 +72,6 @@ jobs:
 
       - name: Run rspec
         run: |
-          RAILS_ENV=test ./bin/rails db:migrate
           RAILS_ENV=test MYSQL_USER=root MYSQL_DATABASE="osu_tournament_stats_test" MYSQL_HOST="127.0.0.1" MYSQL_PORT=${{ job.services.mysql.ports[3306] }} bundle exec rspec
 
       - name: Complete
