@@ -17,9 +17,6 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  username: "ots_test"
-  database: "osu_tournament_stats_test"
-  password: "test"
 
 production:
   <<: *default
