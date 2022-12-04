@@ -1,4 +1,4 @@
-require_relative '../helpers/exp_helper'
+require_relative '../helpers/discord_helper'
 
 class DiscordExp < ApplicationRecord
   belongs_to :player, optional: false

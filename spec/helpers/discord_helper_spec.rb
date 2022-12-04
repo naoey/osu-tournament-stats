@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-require_relative '../../app/helpers/exp_helper'
+require_relative '../../app/helpers/discord_helper'
 
 exp_table = [
   [0, 100],
@@ -109,7 +109,7 @@ describe 'ExpHelper tests' do
   it 'calculates exp for each level correctly' do
     exp_table.each do |e|
       puts("Testing level #{e[0]}")
-      expect(ExpHelper.exp_to_next_level?(e[0])).to equal(e[1])
+      expect(DiscordHelper.exp_to_next_level?(e[0])).to equal(e[1])
     end
   end
 end
