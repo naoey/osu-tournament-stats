@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.5'
+ruby '3.1.2'
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
@@ -15,8 +15,7 @@ gem 'puma', '~> 5.6.5'
 gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Transpile rails-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker'
+gem 'jsbundling-rails'
 
 gem 'devise'
 gem 'devise_invitable'
@@ -55,13 +54,12 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'debase'
+  gem 'debase', '~> 0.2.5.beta2'
   gem 'rubocop', '~> 1.36.0', require: false
   gem 'ruby-debug-ide'
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do
