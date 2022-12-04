@@ -24,7 +24,7 @@ namespace :exp do
         end
 
         db_server = DiscordServer.find_or_create_by(discord_id: player['guild_id'])
-        db_player_exp = DiscordExp.find_or_create_by(player: db_player, discord_server: db_server, detailed_exp: [])
+        db_player_exp = DiscordExp.find_or_create_by(player: db_player, discord_server: db_server, detailed_exp: [0, 100, 100])
 
         db_player_exp.update(
           exp: player['xp'],
