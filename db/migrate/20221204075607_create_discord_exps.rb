@@ -15,6 +15,7 @@ class CreateDiscordExps < ActiveRecord::Migration[7.0]
     end
 
     add_column :discord_servers, :exp_enabled, :boolean, default: false, null: false
+    add_column :discord_servers, :exp_roles_config, :json
   end
 
   def down
