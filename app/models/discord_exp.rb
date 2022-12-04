@@ -14,13 +14,17 @@ class DiscordExp < ApplicationRecord
 
     if current + exp > to_next_level
       self.detailed_exp[0] = 0
-      self.detailed_exp[1] = ExpHelper.exp_to_next_level?(self.level)
+      self.detailed_exp[1] = DiscordHelper.exp_to_next_level?(self.level)
       self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp
       self.level += 1
+
+      ActiveSupport::Notifications.instrument 'player.discord_level_up', { player: self.player }
     else
       self.detailed_exp[0] += exp
       self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp
     end
+
+    self.message_count += 1
 
     self.save!
   end
