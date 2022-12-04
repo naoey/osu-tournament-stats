@@ -14,9 +14,11 @@ class CreateDiscordExps < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
+    add_column :discord_servers, :exp_enabled, :boolean, default: false, null: false
   end
 
   def down
     drop_table :discord_exps
+    remove_column :discord_servers, :exp_enabled
   end
 end
