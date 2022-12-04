@@ -27,6 +27,20 @@ module OsuTournamentStats
 
     config.active_record.legacy_connection_handling = false
 
+    config.cache_store = :memory_store, { size: 64.megabytes }
+
+    config.after_initialize do
+      if ENV['DISCORD_ENABLED'] == '1'
+        require_relative '../lib/discord/bot'
+
+        Discord::OsuDiscordBot.instance.initialize!
+
+        at_exit do
+          Discord::OsuDiscordBot.instance.close!
+        end
+      end
+    end
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
