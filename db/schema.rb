@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_25_165306) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
   create_table "ban_histories", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "player_id", null: false
     t.bigint "banned_by_id"
@@ -32,6 +32,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_165306) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "discord_exps", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "player_id", null: false
+    t.bigint "discord_server_id", null: false
+    t.bigint "exp", default: 0, null: false
+    t.json "detailed_exp", null: false
+    t.integer "level", default: 0, null: false
+    t.integer "message_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discord_server_id"], name: "index_discord_exps_on_discord_server_id"
+    t.index ["player_id", "discord_server_id"], name: "uniq_player_exp_per_server", unique: true
+    t.index ["player_id"], name: "index_discord_exps_on_player_id"
+  end
+
   create_table "discord_servers", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "discord_id", null: false
     t.bigint "registration_channel_id"
@@ -39,6 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_165306) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "verification_log_channel_id"
+    t.boolean "exp_enabled", default: false, null: false
     t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
   end
 
@@ -165,6 +180,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_165306) do
 
   add_foreign_key "ban_histories", "players", column: "banned_by_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "ban_histories", "players", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "discord_exps", "discord_servers"
+  add_foreign_key "discord_exps", "players"
   add_foreign_key "match_teams", "matches"
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"

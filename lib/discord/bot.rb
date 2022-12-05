@@ -6,6 +6,7 @@ require 'optparse'
 require_relative './modules/leaderboard_commands'
 require_relative './modules/match_commands'
 require_relative './modules/registration_commands'
+require_relative '../../app/helpers/discord_helper'
 
 EMBED_GREEN = 3_066_993
 EMBED_RED = 15_158_332
@@ -22,6 +23,9 @@ module Discord
       @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: ENV['DISCORD_BOT_PREFIX']
 
       @client.command %i[match_performance p], &method(:match_performance)
+      @client.message &method(:message)
+      @client.member_join &method(:member_join)
+      @client.ready &method(:ready)
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
@@ -58,10 +62,10 @@ module Discord
     def match_performance(event, *args)
       begin
         player = if args.empty?
-                   Player.find_by_discord_id(event.user.id)
-                 else
-                   Player.find_by_name(args.join(' '))
-                 end
+          Player.find_by_discord_id(event.user.id)
+        else
+          Player.find_by_name(args.join(' '))
+        end
 
         return 'No such player found' if player.nil?
 
@@ -77,18 +81,18 @@ module Discord
           fields: stats
             .except(:player)
             .map do |k, v|
-                    {
-                      name: "**#{k.to_s.humanize}**",
-                      inline: true,
-                      value: if k == :best_accuracy
-                               v[:accuracy]
-                             elsif v.is_a?(Array)
-                               v.length
-                             else
-                               v
-                             end.to_s,
-                    }
-                  end,
+            {
+              name: "**#{k.to_s.humanize}**",
+              inline: true,
+              value: if k == :best_accuracy
+                v[:accuracy]
+              elsif v.is_a?(Array)
+                v.length
+              else
+                v
+              end.to_s,
+            }
+          end,
         }
 
         event.respond('', false, embed)
@@ -181,6 +185,51 @@ module Discord
       return nil if server.verification_log_channel_id.nil?
 
       @client.channel(server.verification_log_channel_id, discordrb_server)
+    end
+
+    # Event handling
+
+    def ready(event)
+      Rails.cache.write('discord_bot/servers', DiscordServer.all.as_json)
+    end
+
+    def message(event)
+      author_id = event.message.author.id
+      server_id = event.message.server.id
+      last_spoke_cache_key = "discord_bot/last_spoke/#{server_id}_#{author_id}"
+
+      server = Rails.cache.read('discord_bot/servers').find { |s| s['discord_id'] == server_id }
+
+
+      return if server.nil? || !server['exp_enabled']
+
+      last_spoke = Rails.cache.read(last_spoke_cache_key)
+
+      begin
+        if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
+          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+
+          return
+        end
+
+        Rails.cache.write(last_spoke_cache_key, Time.now)
+
+        player = Player.find_or_create_by(discord_id: author_id)
+        exp = player.discord_exp.find_or_create_by(discord_server_id: server['id'])
+
+        exp.add_exp()
+
+        Rails.cache.write(last_spoke_cache_key, exp.updated_at)
+      rescue RuntimeError
+        Rails.logger.debug("discord user exp for #{author_id} was updated in DB recently; skipping update")
+      end
+    end
+
+    def member_join(event)
+      player = Player.find_or_create_by(discord_id: event.user.id)
+
+      player.name = DiscordHelper.sanitise_username(event.user.username) if player.name.nil?
+      player.discord_exp.find_or_create_by(discord_server_id: event.message.server.id)
     end
   end
 end
