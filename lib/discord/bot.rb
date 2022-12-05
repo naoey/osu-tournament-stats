@@ -214,7 +214,7 @@ module Discord
 
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
-        player = Player.find_or_create_by(discord_id: event.message.author.id)
+        player = Player.find_or_create_by(discord_id: author_id)
         exp = player.discord_exp.find_or_create_by(discord_server_id: server['id'])
 
         exp.add_exp()
