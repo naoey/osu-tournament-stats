@@ -58,7 +58,7 @@ end
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'debase', '~> 0.2.5.beta2'
-  gem 'rubocop', '~> 1.41.0', require: false
+  gem 'rubocop', '~> 1.41.1', require: false
   gem 'ruby-debug-ide'
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
