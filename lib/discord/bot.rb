@@ -200,7 +200,6 @@ module Discord
 
       server = Rails.cache.read('discord_bot/servers').find { |s| s['discord_id'] == server_id }
 
-
       return if server.nil? || !server['exp_enabled']
 
       last_spoke = Rails.cache.read(last_spoke_cache_key)
@@ -215,7 +214,11 @@ module Discord
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
         player = Player.find_or_create_by(discord_id: author_id)
-        exp = player.discord_exp.find_or_create_by(discord_server_id: server['id'])
+        exp = player.discord_exp.find_by(discord_server_id: server['id'])
+
+        if exp.nil?
+          exp = DiscordExp.create(player: player, discord_server_id: server['id'], detailed_exp: DiscordHelper::INITIAL_EXP)
+        end
 
         exp.add_exp()
 
