@@ -208,7 +208,7 @@ module Discord
 
       begin
         if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+          Rails.logger.info("discord user #{author_id} has recently cached last spoke; skipping update")
 
           return
         end
@@ -243,7 +243,7 @@ module Discord
           event.message.author.add_role(r, "Exp threshold #{t} reached with #{exp.detailed_exp}")
         end
       rescue RuntimeError
-        Rails.logger.debug("discord user exp for #{author_id} was updated in DB recently; skipping update")
+        Rails.logger.info("discord user exp for #{author_id} was updated in DB recently; skipping update")
       end
     end
 
