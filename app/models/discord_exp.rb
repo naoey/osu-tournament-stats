@@ -13,7 +13,7 @@ class DiscordExp < ApplicationRecord
     to_next_level = self.detailed_exp[1]
 
     if current + exp > to_next_level
-      self.detailed_exp[0] = 0
+      self.detailed_exp[0] = (current + exp) - to_next_level
       self.detailed_exp[1] = DiscordHelper.exp_to_next_level?(self.level)
       self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp
       self.level += 1
