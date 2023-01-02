@@ -237,7 +237,7 @@ module Discord
         required_roles = roles.map { |r| r[1] }
 
         unless (required_roles - current_roles).empty?
-          event.message.author.set_roles(required_roles, "Exp thresholds reached #{roles}")
+          event.message.author.set_roles(required_roles, "Roles #{required_roles - current_roles} missing for #{exp.detailed_exp}")
           Rails.logger.info("added roles #{roles} to discord user #{author_id} for exp #{exp.detailed_exp}")
         end
       rescue RuntimeError
