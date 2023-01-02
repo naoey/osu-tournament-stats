@@ -63,11 +63,14 @@ module Discord
     private
 
     def show_discord_exp(event, *args)
+      user = event.message.mentions.first
+      user ||= event.message.author
+
       server = event.message.server
-      player = Player.find_by(discord_id: event.message.author.id)
+      player = Player.find_by(discord_id: user.id)
       exp = DiscordExp.find_by(player: player, discord_server: DiscordServer.find_by(discord_id: server.id))
 
-      return event.respond("Couldn't find #{event.message.author.mention}") if player.nil? || exp.nil?
+      return event.respond("Couldn't find #{user.mention}") if player.nil? || exp.nil?
 
       event.message.channel.send_embed do |embed|
         percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1].to_f) * 100
