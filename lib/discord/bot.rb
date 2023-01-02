@@ -194,6 +194,8 @@ module Discord
     end
 
     def message(event)
+      return if event.message.server.nil? || event.message.author.bot_account
+
       author_id = event.message.author.id
       server_id = event.message.server.id
       last_spoke_cache_key = "discord_bot/last_spoke/#{server_id}_#{author_id}"
@@ -213,7 +215,12 @@ module Discord
 
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
-        player = Player.find_or_create_by(discord_id: author_id)
+        player = Player.find_by(discord_id: author_id)
+
+        if player.nil?
+          player = Player.create(discord_id: author_id, name: event.message.author.display_name)
+        end
+
         exp = player.discord_exp.find_by(discord_server_id: server['id'])
 
         if exp.nil?
@@ -223,6 +230,16 @@ module Discord
         exp.add_exp()
 
         Rails.cache.write(last_spoke_cache_key, exp.updated_at)
+
+        roles = exp.get_role_ids()
+
+        current_roles = event.message.author.roles.map { |r| r.id }
+        required_roles = roles.map { |r| r[1] }
+
+        unless (required_roles - current_roles).empty?
+          event.message.author.set_roles(required_roles, "Roles #{required_roles - current_roles} missing for #{exp.detailed_exp}")
+          Rails.logger.info("added roles #{roles} to discord user #{author_id} for exp #{exp.detailed_exp}")
+        end
       rescue RuntimeError
         Rails.logger.debug("discord user exp for #{author_id} was updated in DB recently; skipping update")
       end
