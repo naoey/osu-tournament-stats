@@ -94,7 +94,7 @@ class ExpLeaderboard < CommandBase
 
   def make_text
     data = get_leaderboard.each_with_index.map { |d, i|
-      [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_s(:delimited), d.message_count.to_s(:delimited)]
+      [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_fs(:delimited), d.message_count.to_fs(:delimited)]
     }
 
     sort_indicator = @options[:ascending] ? ' ▲' : ' ▼'
