@@ -242,8 +242,9 @@ module Discord
           Rails.logger.info("adding role #{r} for user #{author_id} for threshold #{t}")
           event.message.author.add_role(r, "Exp threshold #{t} reached with #{exp.detailed_exp}")
         end
-      rescue RuntimeError
-        Rails.logger.info("discord user exp for #{author_id} was updated in DB recently; skipping update")
+      rescue RuntimeError => e
+        Rails.logger.error("failed to process message updates for #{author_id}")
+        Rails.logger.error(e.backtrace.join("\r\n"))
       end
     end
 
