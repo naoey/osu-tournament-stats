@@ -80,7 +80,7 @@ module Discord
           Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level , inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited) , inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited) , inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count , inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited) , inline: true),
         ]
       end
     end
