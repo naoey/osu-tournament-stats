@@ -35,11 +35,11 @@ class DiscordExp < ApplicationRecord
   def get_role_ids()
     server = Rails.cache.read('discord_bot/servers')&.find { |s| s['id'] == self.discord_server.id }
 
-    return if server.nil?
+    return [] if server.nil?
 
     roles_config = server['exp_roles_config']
 
-    return if roles_config.nil?
+    return [] if roles_config.nil?
 
     thresholds = roles_config.sort_by { |r| r[0] }
     acquired_roles = []
