@@ -67,9 +67,11 @@ module Discord
       player = Player.find_by(discord_id: event.message.author.id)
       exp = DiscordExp.find_by(player: player, discord_server: DiscordServer.find_by(discord_id: server.id))
 
-      return @event.respond("Couldn't find #{event.message.author.mention}") if player.nil? || exp.nil?
+      return event.respond("Couldn't find #{event.message.author.mention}") if player.nil? || exp.nil?
 
       event.message.channel.send_embed do |embed|
+        percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1].to_f) * 100
+
         embed.title = player.name
         embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
         embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
@@ -77,10 +79,14 @@ module Discord
         embed.description = "KelaBot level in #{server.name}"
         embed.fields = [
           Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord_id}>"),
-          Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level , inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited) , inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited) , inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited) , inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level, inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(
+            name: 'Progress',
+            value: (":green_square:" * (percentage / 10.0).round) + (":yellow_square:" * (10 - (percentage / 10.0).round)) + " *(#{percentage.round(2)}%)*",
+          ),
         ]
       end
     end
