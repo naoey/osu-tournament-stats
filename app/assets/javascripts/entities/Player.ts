@@ -3,4 +3,5 @@ export type Player = {
   name: string;
   created_at: string;
   osu_id?: number;
+  discord_id?: number;
 }

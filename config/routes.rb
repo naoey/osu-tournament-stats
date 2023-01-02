@@ -21,6 +21,11 @@ Rails.application.routes.draw do
 
   get 'authorise/osu', to: 'auth#osu'
 
+  get 'discord/servers', to: 'discord#show'
+  get 'discord/servers/:id', to: 'discord#show_server'
+  get 'discord/servers/:server_id/exp', to: 'discord#show_exp_leaderboard'
+  put 'discord/servers/:id', to: 'discord#update'
+
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
