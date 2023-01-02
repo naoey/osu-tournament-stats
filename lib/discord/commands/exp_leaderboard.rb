@@ -7,7 +7,7 @@ class ExpLeaderboard < CommandBase
   def initialize(*args)
     super
 
-    @current_page = 0
+    @current_page = 1
     @total_pages = get_leaderboard.total_pages
   end
 
@@ -45,7 +45,7 @@ class ExpLeaderboard < CommandBase
 
       return true if @explode
 
-      if @current_page == @total_pages - 1
+      if @current_page == @total_pages
         @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
         next
       end
@@ -69,7 +69,7 @@ class ExpLeaderboard < CommandBase
 
       return true if @explode
 
-      if @current_page.zero?
+      if @current_page == 1
         @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
         next
       end
@@ -94,7 +94,7 @@ class ExpLeaderboard < CommandBase
 
   def make_text
     data = get_leaderboard.each_with_index.map { |d, i|
-      [i + 1, d.player.name, d.level, d.exp, d.message_count]
+      [i + 1 + @current_page * 10, d.player.name, d.level, d.exp, d.message_count]
     }
 
     sort_indicator = @options[:ascending] ? ' ▲' : ' ▼'
