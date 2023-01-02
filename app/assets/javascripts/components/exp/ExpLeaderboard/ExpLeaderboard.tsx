@@ -50,6 +50,12 @@ export function ExpLeaderboard() {
     <div className="leaderboard-wrapper">
       <Table dataSource={data} pagination={false} rowKey={r => r.id} sticky>
         <Table.Column
+          width={60}
+          render={(t, r, i) => i + 1}
+          title="Rank"
+          key="rank"
+        />
+        <Table.Column
           title="Username"
           dataIndex={["player", "name"]}
           key="player_name"
