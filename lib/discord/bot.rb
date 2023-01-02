@@ -194,32 +194,52 @@ module Discord
     end
 
     def message(event)
+      return if event.message.server.nil?
+
       author_id = event.message.author.id
       server_id = event.message.server.id
       last_spoke_cache_key = "discord_bot/last_spoke/#{server_id}_#{author_id}"
 
       server = Rails.cache.read('discord_bot/servers').find { |s| s['discord_id'] == server_id }
 
-
       return if server.nil? || !server['exp_enabled']
 
       last_spoke = Rails.cache.read(last_spoke_cache_key)
 
       begin
-        if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
-
-          return
-        end
+        # if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
+        #   Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+        #
+        #   return
+        # end
 
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
-        player = Player.find_or_create_by(discord_id: author_id)
-        exp = player.discord_exp.find_or_create_by(discord_server_id: server['id'])
+        player = Player.find_by(discord_id: author_id)
+
+        if player.nil?
+          player = Player.create(discord_id: author_id, name: event.message.author.display_name)
+        end
+
+        exp = player.discord_exp.find_by(discord_server_id: server['id'])
+
+        if exp.nil?
+          exp = DiscordExp.create(player: player, discord_server_id: server['id'], detailed_exp: DiscordHelper::INITIAL_EXP)
+        end
 
         exp.add_exp()
 
         Rails.cache.write(last_spoke_cache_key, exp.updated_at)
+
+        roles = exp.get_role_ids()
+
+        current_roles = event.message.author.roles.map { |r| r.id }
+        required_roles = roles.map { |r| r[1] }
+
+        unless (required_roles - current_roles).empty?
+          event.message.author.set_roles(required_roles, "Exp thresholds reached #{roles}")
+          Rails.logger.info("added roles #{roles} to discord user #{author_id} for exp #{exp.detailed_exp}")
+        end
       rescue RuntimeError
         Rails.logger.debug("discord user exp for #{author_id} was updated in DB recently; skipping update")
       end

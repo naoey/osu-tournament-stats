@@ -54,6 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
     t.datetime "updated_at", null: false
     t.bigint "verification_log_channel_id"
     t.boolean "exp_enabled", default: false, null: false
+    t.json "exp_roles_config"
     t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
   end
 
