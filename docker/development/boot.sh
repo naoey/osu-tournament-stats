@@ -22,6 +22,7 @@ fi
 
 _serve() {
   ruby --version
+  bundle --version
   ./bin/rails s -b 0.0.0.0
   # ./bin/dev
 }
@@ -30,7 +31,6 @@ _wds() {
   node --version
   yarn --version
   echo "Booting webpack dev server..."
-  yarn install
   yarn run webpack serve
 }
 

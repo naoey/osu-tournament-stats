@@ -42,9 +42,7 @@
     "react_ujs": "^2.6.2",
     "sass-loader": "^13.0.2",
     "uuid": "^8.3.2",
-    "voca": "^1.4.0"
-  },
-  "devDependencies": {
+    "voca": "^1.4.0",
     "@babel/core": "^7.18.13",
     "@babel/plugin-transform-runtime": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
@@ -78,5 +76,6 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.10.1",
     "webpack-remove-empty-scripts": "^0.8.3"
-  }
+  },
+  "devDependencies": {}
 }
