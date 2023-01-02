@@ -25,7 +25,7 @@
   <body>
     <%= react_component('common.NavigationBar') %>
 
-    <div class="ot-body-wrap">
+    <div class="ot-body-wrap" id="body-wrap">
       <% if player_signed_in? %>
         <div id="current-user" data-current-user="<%= current_player.to_json %>"></div>
       <% end %>
@@ -33,4 +33,23 @@
       <%= yield %>
     </div>
   </body>
+
+  <script>
+    (function() {
+      const body = document.getElementById("body-wrap");
+
+      let atEnd = false;
+
+      body.addEventListener("scroll", function (e) {
+        if (e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop < 100) {
+          if (!atEnd) {
+            document.dispatchEvent(new CustomEvent("ots.page_end_reached"));
+            atEnd = true;
+          }
+        } else {
+          atEnd = false;
+        }
+      });
+    })();
+  </script>
 </html>
