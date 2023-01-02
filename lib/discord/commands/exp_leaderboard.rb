@@ -94,7 +94,7 @@ class ExpLeaderboard < CommandBase
 
   def make_text
     data = get_leaderboard.each_with_index.map { |d, i|
-      [i + 1 + @current_page * 10, d.player.name, d.level, d.exp, d.message_count]
+      [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_fs(:delimited), d.message_count.to_fs(:delimited)]
     }
 
     sort_indicator = @options[:ascending] ? ' ▲' : ' ▼'
@@ -105,7 +105,7 @@ class ExpLeaderboard < CommandBase
 
     labels[sort_criteria_idx].concat(sort_indicator)
 
-    "```#{MarkdownTables.plain_text(MarkdownTables.make_table(labels, data, is_rows: true))}\n\nPage #{@current_page + 1} of #{@total_pages}```\nView in browser: https://osu.naoey.pw/discord/servers/1/exp"
+    "```#{MarkdownTables.plain_text(MarkdownTables.make_table(labels, data, is_rows: true))}\n\nPage #{@current_page} of #{@total_pages}```\nView in browser: https://osu.naoey.pw/discord/servers/1/exp"
   end
 
   def get_leaderboard()
