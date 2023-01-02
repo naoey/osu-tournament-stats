@@ -5,7 +5,7 @@ class DiscordExp < ApplicationRecord
   belongs_to :discord_server, optional: false
 
   def add_exp()
-    # raise RuntimeError, "Cannot update exp within 60s of last update!" if self.updated_at && Time.now - self.updated_at < 60.seconds
+    raise RuntimeError, "Cannot update exp within 60s of last update!" if self.updated_at && Time.now - self.updated_at < 60.seconds
 
     exp = rand(15..25)
 

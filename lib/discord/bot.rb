@@ -207,11 +207,11 @@ module Discord
       last_spoke = Rails.cache.read(last_spoke_cache_key)
 
       begin
-        # if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-        #   Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
-        #
-        #   return
-        # end
+        if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
+          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+
+          return
+        end
 
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
