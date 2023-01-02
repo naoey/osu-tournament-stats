@@ -244,15 +244,20 @@ module Discord
         end
       rescue RuntimeError => e
         Rails.logger.error("failed to process message updates for #{author_id}")
+        Rails.logger.error(e.message)
         Rails.logger.error(e.backtrace.join("\r\n"))
       end
     end
 
     def member_join(event)
-      player = Player.find_or_create_by(discord_id: event.user.id)
+      player = Player.find_by(discord_id: event.user.id)
+      server = DiscordServer.find_by(discord_id: event.server.id)
 
-      player.name = DiscordHelper.sanitise_username(event.user.username) if player.name.nil?
-      player.discord_exp.find_or_create_by(discord_server_id: event.message.server.id)
+      if player.nil?
+        player = player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username))
+      end
+
+      player.discord_exp.find_or_create_by(discord_server: server)
     end
   end
 end
