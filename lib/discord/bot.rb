@@ -194,7 +194,7 @@ module Discord
     end
 
     def message(event)
-      return if event.message.server.nil?
+      return if event.message.server.nil? || event.message.author.bot_account
 
       author_id = event.message.author.id
       server_id = event.message.server.id
