@@ -208,7 +208,7 @@ module Discord
 
       begin
         if !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+          Rails.logger.info("discord user #{author_id} has recently cached last spoke; skipping update")
 
           return
         end
@@ -235,13 +235,15 @@ module Discord
 
         current_roles = event.message.author.roles.map { |r| r.id }
         required_roles = roles.map { |r| r[1] }
+        delta_roles = (required_roles - current_roles)
 
-        unless (required_roles - current_roles).empty?
-          event.message.author.set_roles(required_roles, "Roles #{required_roles - current_roles} missing for #{exp.detailed_exp}")
+        unless delta_roles.empty?
+          Rails.logger.info("attempting to add missing roles #{delta_roles} to user #{author_id}")
+          event.message.author.set_roles(delta_roles, "Roles #{delta_roles} missing for #{exp.detailed_exp}")
           Rails.logger.info("added roles #{roles} to discord user #{author_id} for exp #{exp.detailed_exp}")
         end
       rescue RuntimeError
-        Rails.logger.debug("discord user exp for #{author_id} was updated in DB recently; skipping update")
+        Rails.logger.info("discord user exp for #{author_id} was updated in DB recently; skipping update")
       end
     end
 
