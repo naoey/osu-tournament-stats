@@ -235,15 +235,16 @@ module Discord
 
         current_roles = event.message.author.roles.map { |r| r.id }
         required_roles = roles.map { |r| r[1] }
-        delta_roles = (required_roles - current_roles)
+        delta_roles = required_roles - current_roles
 
-        unless delta_roles.empty?
-          Rails.logger.info("attempting to add missing roles #{delta_roles} to user #{author_id}")
-          event.message.author.set_roles(delta_roles, "Roles #{delta_roles} missing for #{exp.detailed_exp}")
-          Rails.logger.info("added roles #{roles} to discord user #{author_id} for exp #{exp.detailed_exp}")
+        delta_roles.each do |r|
+          t = roles.find { |rl| rl[1] == r }
+          Rails.logger.info("adding role #{r} for user #{author_id} for threshold #{t}")
+          event.message.author.add_role(r, "Exp threshold #{t} reached with #{exp.detailed_exp}")
         end
-      rescue RuntimeError
-        Rails.logger.info("discord user exp for #{author_id} was updated in DB recently; skipping update")
+      rescue RuntimeError => e
+        Rails.logger.error("failed to process message updates for #{author_id}")
+        Rails.logger.error(e.backtrace.join("\r\n"))
       end
     end
 
