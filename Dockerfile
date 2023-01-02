@@ -14,6 +14,7 @@ COPY ./Gemfile ./
 COPY ./Gemfile.lock ./
 
 RUN bundle install
+RUN yarn install
 
 RUN groupadd ots && useradd -g ots ots
 
