@@ -21,7 +21,7 @@ gem 'devise'
 gem 'devise_invitable'
 
 gem 'markdown-tables'
-
+gem 'kaminari'
 gem 'react-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
