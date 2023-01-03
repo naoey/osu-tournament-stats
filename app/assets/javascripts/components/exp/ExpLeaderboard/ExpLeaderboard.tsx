@@ -80,7 +80,21 @@ export function ExpLeaderboard() {
         <Table.Column title="Level" dataIndex="level" key="level" />
         <Table.Column title="XP" dataIndex="exp" key="exp" render={text => text.toLocaleString()}/>
         <Table.Column title="Messages" dataIndex="message_count" key="message_count" render={text => text.toLocaleString()} />
-        <Table.Column title="Last Updated" dataIndex="updated_at" key="updated" render={text => moment(text).calendar()} />
+        <Table.Column
+          title="Last Updated"
+          dataIndex="updated_at"
+          key="updated"
+          render={text => {
+            const t = moment(text);
+
+            if (t.unix() <= 0) {
+              // Unix epoch (date) set for this record meaning it has never been updated within KelaBot
+              return "Never";
+            }
+
+            return t.calendar();
+          }}
+        />
       </Table>
 
       <div className="spin-wrap">
