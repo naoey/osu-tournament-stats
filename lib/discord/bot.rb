@@ -81,8 +81,9 @@ module Discord
         embed.color = EMBED_PURPLE
         embed.description = "KelaBot level in #{server.name}"
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord_id}>"),
+          Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord_id}>", inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level, inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Rank', value: exp.rank.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited), inline: true),
