@@ -59,4 +59,11 @@ class DiscordExp < ApplicationRecord
 
     return acquired_roles
   end
+
+  def rank
+    DiscordExp
+      .all
+      .order(exp: :desc)
+      .index(self)
+  end
 end
