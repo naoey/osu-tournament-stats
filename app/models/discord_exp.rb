@@ -61,9 +61,6 @@ class DiscordExp < ApplicationRecord
   end
 
   def rank
-    DiscordExp
-      .all
-      .order(exp: :desc)
-      .index(self)
+    DiscordExp.all.order(exp: :desc).index(self) + 1
   end
 end
