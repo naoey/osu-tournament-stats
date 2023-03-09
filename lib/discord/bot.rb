@@ -290,7 +290,7 @@ module Discord
       server = DiscordServer.find_by(discord_id: event.server.id)
 
       if player.nil?
-        player = player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username))
+        player = Player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username))
       end
 
       player.discord_exp.find_or_create_by(discord_server: server)
