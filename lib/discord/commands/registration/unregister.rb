@@ -42,16 +42,27 @@ class Unregister < CommandBase
       player.discord_id = nil
       player.osu_verified = false
 
-      player.save!
+      begin
+        player.save!
 
-      if !member.nil? && member.role?(@server[:db_server].verified_role_id)
-        member.remove_role(
-          @server[:db_server].verified_role_id,
-          "Unregister invoked by #{@event.message.author.name} (#{@event.message.author.id})",
-        )
+        puts player.errors.full_messages
+
+        if @server[:db_server].verified_role_id.nil?
+          return @event.respond("Successfully unregistered #{player.name}, but the server does not have a verified role ID configured; no roles were modified.")
+        end
+
+        if !member.nil? && member.role?(@server[:db_server].verified_role_id)
+          member.remove_role(
+            @server[:db_server].verified_role_id,
+            "Unregister invoked by #{@event.message.author.name} (#{@event.message.author.id})",
+          )
+        end
+
+        @event.respond("Successfully unregistered #{player.name}")
+      rescue StandardError => e
+        Rails.logger.error(e)
+        Sentry.capture_exception(e)
       end
-
-      @event.respond("Successfully unregistered #{player.name}")
     end
   end
 end
