@@ -65,7 +65,7 @@ jobs:
 
       - name: Run asset compile
         run: |
-          RAILS_ENV=production SECRET_KEY_BASE=dummy ./bin/rails assets:precompile
+          RAILS_ENV=production SECRET_KEY_BASE=dummy SENTRY_DSN=test ./bin/rails assets:precompile
 
       - name: Run rspec
         run: |
