@@ -48,8 +48,9 @@ class AuthController < ApplicationController
 
         player.discord_id = transient_player.discord_id
 
-        # Find and update all auth requests by this transient player to point to the actual user
-        OsuAuthRequest.where(player_id: transient_player.id).update_all(player_id: player.id)
+        # Find and update all foreign key dependencies on this temporary player
+        OsuAuthRequest.where(player: transient_player.id).update_all(player: player)
+        DiscordExp.where(player: transient_player).update_all(player: player)
 
         transient_player.destroy!
         player.save!
