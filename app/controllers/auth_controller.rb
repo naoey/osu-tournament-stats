@@ -39,7 +39,7 @@ class AuthController < ApplicationController
           type: 'debug',
           message: "Existing player found with osu_id #{osu_user['id']}, but without a linked discord ID",
           level: 'info',
-          data: { existing_player: player.as_json, transient_player: auth_request.player }
+          data: { existing_player: player.as_json, transient_player: auth_request.player.as_json }
         ))
         # If a player was found with this osu! ID but whose discord ID is empty, then the osu! user was likely already added earlier
         # through a match import. Link this authorising discord user to that existing player and delete the new user created by
