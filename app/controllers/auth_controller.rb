@@ -39,7 +39,7 @@ class AuthController < ApplicationController
           type: 'debug',
           message: "Existing player found with osu_id #{osu_user['id']}, but without a linked discord ID",
           level: 'info',
-          data: { existing_player: player.as_json, transient_player: auth_request.player }
+          data: { existing_player: player.as_json, transient_player: auth_request.player.as_json }
         ))
         # If a player was found with this osu! ID but whose discord ID is empty, then the osu! user was likely already added earlier
         # through a match import. Link this authorising discord user to that existing player and delete the new user created by
@@ -49,7 +49,7 @@ class AuthController < ApplicationController
         player.discord_id = transient_player.discord_id
 
         # Find and update all foreign key dependencies on this temporary player
-        OsuAuthRequest.where(player: transient_player.id).update_all(player: player)
+        OsuAuthRequest.where(player: transient_player).update_all(player: player)
         DiscordExp.where(player: transient_player).update_all(player: player)
 
         transient_player.destroy!
