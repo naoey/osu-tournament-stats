@@ -259,7 +259,7 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.0)
-    rubocop (1.53.1)
+    rubocop (1.54.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -363,7 +363,7 @@ DEPENDENCIES
   react-rails
   rest-client
   rspec-rails
-  rubocop (~> 1.53.1)
+  rubocop (~> 1.54.0)
   sass-rails (~> 6.0)
   sentry-rails
   sentry-ruby
