@@ -4,6 +4,7 @@ require 'factory_bot'
 require 'support/factory_bot'
 
 ENV['RAILS_ENV'] ||= 'test'
+ENV['DISCORD_ENABLED'] = '0'
 
 require File.expand_path('../config/environment', __dir__)
 
