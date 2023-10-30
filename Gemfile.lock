@@ -184,7 +184,7 @@ GEM
       ast (~> 2.4.1)
       racc
     public_suffix (5.0.3)
-    puma (6.3.1)
+    puma (6.4.0)
       nio4r (~> 2.0)
     racc (1.7.1)
     rack (2.2.8)
@@ -358,7 +358,7 @@ DEPENDENCIES
   kaminari
   markdown-tables
   mysql2
-  puma (~> 6.3.1)
+  puma (~> 6.4.0)
   rails (~> 7.0.7)
   rake-progressbar
   react-rails
