@@ -91,7 +91,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.8)
+    devise_invitable (2.0.9)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.5.0)
@@ -116,8 +116,8 @@ GEM
       railties (>= 5.0.0)
     ffi (1.15.5)
     ffi (1.15.5-x64-mingw32)
-    globalid (1.1.0)
-      activesupport (>= 5.0)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
     hashdiff (1.0.1)
     http-accept (1.7.0)
     http-cookie (1.0.5)
@@ -162,14 +162,14 @@ GEM
     minitest (5.20.0)
     msgpack (1.6.0)
     mysql2 (0.5.5)
-    net-imap (0.3.7)
+    net-imap (0.4.3)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.1)
       timeout
-    net-smtp (0.3.3)
+    net-smtp (0.4.0)
       net-protocol
     netrc (0.11.0)
     nio4r (2.5.9)
