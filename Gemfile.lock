@@ -298,7 +298,7 @@ GEM
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     solid_assert (1.1.0)
-    spring (4.1.1)
+    spring (4.1.2)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
