@@ -19,6 +19,7 @@ gem 'jsbundling-rails'
 
 gem 'devise'
 gem 'devise_invitable'
+gem 'omniauth-oauth2'
 
 gem 'markdown-tables'
 gem 'kaminari'
