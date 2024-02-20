@@ -1,5 +1,5 @@
 import { Input } from "antd";
-import * as qs from "query-string";
+import qs from "query-string";
 import React, { useState } from "react";
 
 interface IDebouncedSearchFieldProps {
