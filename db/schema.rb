@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
   create_table "ban_histories", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "player_id", null: false
     t.bigint "banned_by_id"
@@ -157,6 +157,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
     t.boolean "osu_verified", default: false
     t.datetime "osu_verified_on", precision: nil
     t.integer "ban_status", default: 0, null: false
+    t.string "provider"
+    t.string "uid"
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
     t.index ["discord_id"], name: "index_unique_discord_ids", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true

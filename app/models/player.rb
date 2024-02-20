@@ -8,7 +8,9 @@ class Player < ApplicationRecord
          :confirmable,
          :lockable,
          :timeoutable,
-         :trackable) && :omniauthable
+         :trackable)
+
+  devise :omniauthable, omniauth_providers: %i[osu]
 
   has_many :match_scores, foreign_key: 'player_id'
   has_many :osu_auth_requests, foreign_key: 'player_id'
