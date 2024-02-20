@@ -202,6 +202,9 @@ GEM
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
+    omniauth-rails_csrf_protection (1.0.1)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
     opus-ruby (1.0.1)
       ffi
     orm_adapter (0.5.0)
@@ -393,6 +396,7 @@ DEPENDENCIES
   markdown-tables
   mysql2
   omniauth-oauth2
+  omniauth-rails_csrf_protection
   puma (~> 6.4.2)
   rails (~> 7.0.7)
   rake-progressbar
