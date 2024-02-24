@@ -1,4 +1,6 @@
-class AuthController < ApplicationController
+class AuthController < Devise::OmniauthCallbacksController
+  skip_before_action :verify_authenticity_token, only: :osu
+
   def osu
     auth_request = OsuAuthRequest.find_by_nonce(params[:state])
 
@@ -90,5 +92,9 @@ class AuthController < ApplicationController
 
       render plain: 'An unknown error occurred', status: :internal_server_error
     end
+  end
+
+  def failure
+    render template: 'auth/failure'
   end
 end
