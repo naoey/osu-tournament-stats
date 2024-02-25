@@ -19,8 +19,6 @@ Rails.application.routes.draw do
   get 'beatmaps', to: 'beatmaps#search'
   get 'beatmaps/:id', to: 'beatmaps#show'
 
-  get 'authorise/osu', to: 'auth#osu'
-
   get 'discord/servers', to: 'discord#show'
   get 'discord/servers/:id', to: 'discord#show_server'
   get 'discord/servers/:server_id/exp', to: 'discord#show_exp_leaderboard'
@@ -36,6 +34,11 @@ Rails.application.routes.draw do
   }, controllers: {
     omniauth_callbacks: 'auth'
   }
+
+  devise_scope :player do
+    get 'authorise/osu', to: 'auth#osu'
+  end
+
   root to: redirect('/tournaments')
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
