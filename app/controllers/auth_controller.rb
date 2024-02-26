@@ -1,11 +1,11 @@
 class AuthController < Devise::OmniauthCallbacksController
-  skip_before_action :verify_authenticity_token, only: %i[osu discord]
-
-  # login_flow_type_code = {
+  # private flow_code = {
   #   "discord_bot" => 0,
   #   "direct" => 1,
   #   "login" => 2,
   # }.freeze
+
+  skip_before_action :verify_authenticity_token, only: %i[osu discord]
 
   def osu
     @service_name = "osu!"
@@ -47,6 +47,17 @@ class AuthController < Devise::OmniauthCallbacksController
         )
       end
 
+      id = player.identities.find_by_provider('osu')
+
+      if id.raw.nil?
+        id.raw = auth.info
+        logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
+      end
+
+      player.avatar_url = auth.info[:avatar_url]
+      player.country_code = auth.info[:country_code]
+      player.name = auth.info[:username]
+
       sign_in player, event: :authentication
       redirect_to authorise_success_path(player: player, code: flow_code)
     rescue StandardError => e
@@ -81,11 +92,11 @@ class AuthController < Devise::OmniauthCallbacksController
         return self.process(:failure)
       end
 
-      discord_auth = player.identities.where(provider: 'discord')
+      id = player.identities.find_by_provider('discord')
 
-      if discord_auth.raw.nil?
-        discord_auth.raw = request.env["omniauth.auth"]["extra"]["raw_info"]
-        discord_auth.save
+      if id.raw.nil?
+        id.raw = request.env["omniauth.auth"]["extra"]["raw_info"]
+        logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
       end
 
       sign_in player, event: :authentication
