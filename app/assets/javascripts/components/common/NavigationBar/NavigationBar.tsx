@@ -20,6 +20,9 @@ export function NavigationBar() {
       <Menu.Item key="discord">
         <a href="/discord/servers/1/exp">osu!india discord exp</a>
       </Menu.Item>
+      <Menu.Item>
+        <a href="/users/me/edit">Profile</a>
+      </Menu.Item>
 
       <Menu.Item key="authentication" style={{ float: "right" }}>
         {
@@ -32,4 +35,3 @@ export function NavigationBar() {
     </Menu>
   );
 }
-

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/:id/edit', to: 'users#show_edit_profile'
+
   get 'beatmaps/get'
   get 'matches', to: 'matches#show'
   get 'matches/:id', to: 'matches#show_match'
@@ -27,9 +29,6 @@ Rails.application.routes.draw do
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
-    password: 'secret',
-    confirmation: 'verification',
-    registration: 'register',
     edit: 'profile/edit',
   }, controllers: {
     omniauth_callbacks: 'auth'

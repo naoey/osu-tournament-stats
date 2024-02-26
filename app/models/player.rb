@@ -81,6 +81,8 @@ class Player < ApplicationRecord
   end
 
   def as_json(*)
-    super.slice('id', 'name', 'osu_id')
+    hash = super.slice('id', 'name', 'avatar_url', 'country_code', 'identities', 'last_sign_in_at', 'ban_status', 'discord_last_spoke', 'created_at')
+    hash['identities'] = identities.as_json(include: :auth_provider)
+    hash
   end
 end

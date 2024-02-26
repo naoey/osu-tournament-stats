@@ -1,5 +1,5 @@
 class DiscordController < ApplicationController
-  # before_action :authenticate_players!, except: %i[]
+  before_action :authenticate_players!
 
   def show
     @data = DiscordServer.all
@@ -45,4 +45,3 @@ class DiscordController < ApplicationController
     params.permit(:discord_server)
   end
 end
-
