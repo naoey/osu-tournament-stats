@@ -20,9 +20,9 @@ module OmniAuth
       }
 
       option :token_params, {
-        client_id: ENV.fetch('OSU_CLIENT_ID'),
-        client_secret: ENV.fetch('OSU_CLIENT_SECRET'),
-        redirect_uri: ENV.fetch('OSU_CALLBACK_URL'),
+        client_id: ENV.fetch('OSU_CLIENT_ID', ''),
+        client_secret: ENV.fetch('OSU_CLIENT_SECRET', ''),
+        redirect_uri: ENV.fetch('OSU_CALLBACK_URL', ''),
         headers: {
           Accept: 'application/json',
         }

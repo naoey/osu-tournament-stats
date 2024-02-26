@@ -310,7 +310,7 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  config.omniauth :osu, ENV.fetch('OSU_CLIENT_ID'), ENV.fetch('OSU_CLIENT_SECRET'), scope: 'identify public', strategy_class: OmniAuth::Strategies::Osu, callback_path: '/authorise/osu'
+  config.omniauth :osu, ENV.fetch('OSU_CLIENT_ID', ''), ENV.fetch('OSU_CLIENT_SECRET', ''), scope: 'identify public', strategy_class: OmniAuth::Strategies::Osu, callback_path: '/authorise/osu'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
