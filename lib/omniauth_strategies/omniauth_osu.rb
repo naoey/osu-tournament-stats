@@ -34,9 +34,7 @@ module OmniAuth
       uid{ raw_info['id'] }
 
       info do
-        {
-          :name => raw_info['username'],
-        }
+        raw_info.to_hash
       end
 
       extra do

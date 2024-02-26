@@ -35,30 +35,14 @@ class Player < ApplicationRecord
     OsuAuthRequest.create(player: self, discord_server: discord_server).authorisation_link
   end
 
-  def complete_osu_verification(nonce, osu_api_response)
-    auth_request = OsuAuthRequest.find_by(player: self, nonce: nonce)
+  def self.from_osu_omniauth(auth)
+    find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
+      user.password = Devise.friendly_token[0, 20]
+      user.name = auth.info.username
+      user.osu_id = auth.info.id
 
-    logger.debug("Completing auth request #{auth_request.inspect}")
-
-    if auth_request.nil? || auth_request.resolved
-      raise StandardError, "No pending authorisation requests found for #{self} with request ID #{nonce}"
+      user.skip_confirmation!
     end
-
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with bot account!' if osu_api_response['is_bot']
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_deleted']
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_restricted']
-
-    self.osu_id = osu_api_response['id']
-    self.name = osu_api_response['username']
-    self.osu_verified = true
-    self.osu_verified_on = DateTime.now
-
-    save!
-
-    auth_request.resolved = true
-    auth_request.save!
-
-    ActiveSupport::Notifications.instrument 'player.osu_verified', { auth_request: auth_request }
   end
 
   def as_json(*)
