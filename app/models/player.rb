@@ -1,14 +1,14 @@
 class Player < ApplicationRecord
   # Include default devise modules. Others available are:
   devise(:invitable,
-         :database_authenticatable,
-         :recoverable,
-         :rememberable,
-         :validatable,
-         :confirmable,
-         :lockable,
-         :timeoutable,
-         :trackable)
+    :database_authenticatable,
+    :recoverable,
+    :rememberable,
+    :validatable,
+    :confirmable,
+    :lockable,
+    :timeoutable,
+    :trackable)
 
   devise :omniauthable, omniauth_providers: %i[osu discord]
 
@@ -34,26 +34,27 @@ class Player < ApplicationRecord
   def self.from_omniauth(auth)
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if auth.nil? && auth.provider != 'osu'
+    raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != 'osu'
 
     identity = PlayerAuth.create_with_omniauth(auth)
+
+    if identity.player.nil?
+      Player.create do |player|
+        player.password = Devise.friendly_token[0, 20]
+        player.name = auth.info.username
+        player.country_code = auth.info[:country_code]
+        player.avatar_url = auth.info[:avatar_url]
+        player.identities = [identity]
+
+        player.save!
+      end
+    end
 
     unless identity.player.confirmed?
       # if it was one of the old migrated users being logged in for the first time, it might still be unconfirmed
       # preventing the user from signing in. consider this login as confirmation that the user is the real owner
       # of the account.
       identity.player.skip_confirmation!
-    end
-
-    return identity.player unless identity.player.nil?
-
-    identity.player.create do |player|
-      user.password = Devise.friendly_token[0, 20]
-      user.name = auth.info.username
-      user.country_code = auth.info[:country_code]
-      user.avatar_url = auth.info[:avatar_url]
-
-      user.skip_confirmation!
     end
 
     identity.player

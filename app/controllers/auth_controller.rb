@@ -8,6 +8,8 @@ class AuthController < Devise::OmniauthCallbacksController
   # }.freeze
 
   def osu
+    @service_name = "osu!"
+
     begin
       flow_code = nil
       # todo: eventually plug in registration initiated from discord here
@@ -49,14 +51,55 @@ class AuthController < Devise::OmniauthCallbacksController
       redirect_to authorise_success_path(player: player, code: flow_code)
     rescue StandardError => e
       logger.error("⚠️osu! OAuth handling failed")
-      Sentry.capture_exception(e)
       @oauth_error = e
       self.process(:failure)
     end
   end
 
   def discord
+    @service_name = "Discord"
 
+    begin
+      auth = request.env['omniauth.auth']
+      player = Player.from_omniauth(auth)
+      raw_user = auth["extra"]["raw_info"]
+
+      logger.debug("⚠️began Discord OAuth handling")
+
+      Sentry.add_breadcrumb(Sentry::Breadcrumb.new(
+        category: 'auth_controller',
+        type: 'debug',
+        message: 'began Discord OAuth callback',
+        level: 'info',
+        data: { raw_user: raw_user, player: player&.id }
+      ))
+
+      if player.nil?
+        # This Discord ID is not linked to any Player and we don't allow creating new users with anything except
+        # osu! accounts so just bail
+        @error_code = 0
+        return self.process(:failure)
+      end
+
+      discord_auth = player.identities.where(provider: 'discord')
+
+      if discord_auth.raw.nil?
+        discord_auth.raw = request.env["omniauth.auth"]["extra"]["raw_info"]
+        discord_auth.save
+      end
+
+      sign_in player, event: :authentication
+      redirect_to authorise_success_path(player: player, code: 2)
+    rescue ArgumentError => e
+      logger.error("⚠ Discord account is not linked to an existing account")
+      @error_code = 0
+      @oauth_error = e
+      self.process(:failure)
+    rescue StandardError => e
+      logger.error("⚠ Discord OAuth handling failed")
+      @oauth_error = e
+      self.process(:failure)
+    end
   end
 
   def success
@@ -72,8 +115,6 @@ class AuthController < Devise::OmniauthCallbacksController
     exception ||= @oauth_error
 
     return redirect_to root_path if exception.nil?
-
-    @service_name = "osu!"
 
     logger.debug(exception)
     Sentry.capture_exception(exception)

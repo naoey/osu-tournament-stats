@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     password: 'secret',
     confirmation: 'verification',
     registration: 'register',
-    edit: 'edit/profile',
+    edit: 'profile/edit',
   }, controllers: {
     omniauth_callbacks: 'auth'
   }

@@ -1,2 +1,2 @@
 <%= content_for :title, 'error' %>
-<%= react_component('pages/OAuthFailure', { service: @service_name }) %>
+<%= react_component('pages/OAuthFailure', { service: @service_name, code: @error_code }) %>

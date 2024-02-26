@@ -33,7 +33,7 @@ module OmniAuth
 
       option :token_method, :post
 
-      uid{ raw_info['id'] }
+      uid { raw_info['id'] }
 
       info do
         raw_info.to_hash
