@@ -4,7 +4,6 @@ require 'oauth2'
 module OmniAuth
   module Strategies
     class Osu < OmniAuth::Strategies::OAuth2
-      require 'oauth2/access_token'
       class OsuAccessToken < ::OAuth2::AccessToken
         def headers
           { 'Accept': 'application/json', 'Content-Type': 'application/json' }.merge(super)
