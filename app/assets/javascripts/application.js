@@ -10,9 +10,9 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 
-window.$ = window.jQuery = require("jquery");
-
 import '../../assets/stylesheets/application.scss';
+
+window.$ = window.jQuery = require("jquery");
 
 var componentRequireContext = require.context("./components", true, /^((?!\.(sc|sa|le|c)ss).)*$/);
 var ReactRailsUJS = require("react_ujs");

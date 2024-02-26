@@ -1,94 +1,141 @@
-class AuthController < ApplicationController
-  def osu
-    auth_request = OsuAuthRequest.find_by_nonce(params[:state])
+class AuthController < Devise::OmniauthCallbacksController
+  # private flow_code = {
+  #   "discord_bot" => 0,
+  #   "direct" => 1,
+  #   "login" => 2,
+  # }.freeze
 
-    return if auth_request.nil?
+  skip_before_action :verify_authenticity_token, only: %i[osu discord]
+
+  def osu
+    @service_name = "osu!"
 
     begin
+      flow_code = nil
+      # todo: eventually plug in registration initiated from discord here
+      discord_register_request = nil
+      auth = request.env["omniauth.auth"]
+      raw_user = auth["extra"]["raw_info"]
+      player = Player.from_omniauth(auth)
+
+      # flow_code = login_flow_type_code['discord_bot'] unless discord_register_request.nil?
+      # flow_code = login_flow_type_code['direct'] if player.nil?
+      # flow_code = login_flow_type_code['login']
+      # todo: why the fuck is ruby so shit at something as basic as constants
+      flow_code = 0 unless discord_register_request.nil?
+      flow_code = 1 unless player&.persisted?
+      flow_code = 2
+
+      # logger.debug("⚠️began osu! OAuth handling for flow type #{login_flow_type_code.key(flow_code)}")
+      logger.debug("⚠️began osu! OAuth handling for flow type #{flow_code}")
+
       Sentry.add_breadcrumb(Sentry::Breadcrumb.new(
         category: 'auth_controller',
         type: 'debug',
-        message: 'Began osu! verification handling',
+        message: 'began osu! OAuth callback',
         level: 'info',
-        data: { auth_request: auth_request.as_json }
+        data: { discord_register_request: discord_register_request, raw_user: raw_user }
       ))
 
-      osu_user = auth_request.process_code_response(params[:code])
+      if flow_code == 0
+        player.identities.build(uid: discord_register_request.discord_id)
+        player.save!
+
+        ActiveSupport::Notifications.instrument(
+          'player.discord_linked',
+          { player: player }
+        )
+      end
+
+      id = player.identities.find_by_provider('osu')
+
+      if id.raw.nil?
+        id.raw = auth.info
+        logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
+      end
+
+      player.avatar_url = auth.info[:avatar_url]
+      player.country_code = auth.info[:country_code]
+      player.name = auth.info[:username]
+
+      sign_in player, event: :authentication
+      redirect_to authorise_success_path(player: player, code: flow_code)
+    rescue StandardError => e
+      logger.error("⚠️osu! OAuth handling failed")
+      @oauth_error = e
+      self.process(:failure)
+    end
+  end
+
+  def discord
+    @service_name = "Discord"
+
+    begin
+      auth = request.env['omniauth.auth']
+      player = Player.from_omniauth(auth)
+      raw_user = auth["extra"]["raw_info"]
+
+      logger.debug("⚠️began Discord OAuth handling")
 
       Sentry.add_breadcrumb(Sentry::Breadcrumb.new(
         category: 'auth_controller',
         type: 'debug',
-        message: 'Successfully retrieved user JSON from osu! API',
+        message: 'began Discord OAuth callback',
         level: 'info',
-        data: { osu_user: osu_user }
+        data: { raw_user: raw_user, player: player&.id, logged_in: !current_player.nil? }
       ))
 
-      player = Player.find_by(osu_id: osu_user['id'])
+      unless current_player.nil?
+        # if a user is already logged in and we're here in this flow, then it's adding an additional account
+        current_player.add_additional_account(auth)
+        return redirect_to authorise_success_path(player: player, code: 3)
+      end
 
       if player.nil?
-        # No existing player with this osu_id, just complete verification ez
-        auth_request.player.complete_osu_verification(params[:state], osu_user)
-
-        return render plain: 'Verification successful. Contact the Discord server administrators if you still do not have access.',
-          status: :ok
+        # This Discord ID is not linked to any Player and we don't allow creating new users with anything except
+        # osu! accounts so just bail
+        @error_code = 0
+        return self.process(:failure)
       end
 
-      if player.discord_id.nil?
-        Sentry.add_breadcrumb(Sentry::Breadcrumb.new(
-          category: 'auth_controller',
-          type: 'debug',
-          message: "Existing player found with osu_id #{osu_user['id']}, but without a linked discord ID",
-          level: 'info',
-          data: { existing_player: player.as_json, transient_player: auth_request.player.as_json }
-        ))
-        # If a player was found with this osu! ID but whose discord ID is empty, then the osu! user was likely already added earlier
-        # through a match import. Link this authorising discord user to that existing player and delete the new user created by
-        # the discord command.
-        transient_player = auth_request.player
+      id = player.identities.find_by_provider('discord')
 
-        player.discord_id = transient_player.discord_id
-
-        # Find and update all foreign key dependencies on this temporary player
-        OsuAuthRequest.where(player_id: transient_player.id).update_all(player_id: player.id)
-        DiscordExp.where(player_id: transient_player.id).update_all(player_id: player.id)
-
-        transient_player.destroy!
-        player.save!
-      elsif !player.discord_id.nil? && player.discord_id != auth_request.player.discord_id
-        # Check if the original player was banned, and in the case of a hard ban trigger a separate event so the alt is banned too
-
-        if player.ban_status == Player.ban_statuses[:hard]
-          ActiveSupport::Notifications.instrument 'player.banned_discord_verify', { auth_request: auth_request, player: player }
-
-          return render plain: 'Verification failed. This osu! account is banned on the server.',
-                        status: :ok
-        end
-
-        # If a player was found with this osu! ID that already has a discord ID linked, then this is an alt discord and shouldn't
-        # be allowed to register.
-
-        ActiveSupport::Notifications.instrument 'player.alt_discord_verify', { auth_request: auth_request, player: player }
-
-        return render plain: 'Verification failed. This osu! account is already linked to another Discord ID. Contact the server admins if you have a valid reason for using a new Discord account.',
-                      status: :ok
+      if id.raw.nil?
+        id.raw = request.env["omniauth.auth"]["extra"]["raw_info"]
+        logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
       end
 
-      auth_request.player.complete_osu_verification(params[:state], osu_user)
-
-      return render plain: 'Verification successful. Contact the Discord server administrators if you still do not have access.',
-        status: :ok
-    rescue OsuAuthErrors::TimeoutError => e
-      render plain: e.message, status: :bad_request
-    rescue OsuAuthErrors::OsuAuthError => e
-      logger.error(e)
-      Sentry.capture_exception(e)
-
-      render plain: e.message, status: :bad_request
+      sign_in player, event: :authentication
+      redirect_to authorise_success_path(player: player, code: 2)
+    rescue ArgumentError => e
+      logger.error("⚠ Discord account is not linked to an existing account")
+      @error_code = 0
+      @oauth_error = e
+      self.process(:failure)
     rescue StandardError => e
-      logger.error(e)
-      Sentry.capture_exception(e)
-
-      render plain: 'An unknown error occurred', status: :internal_server_error
+      logger.error("⚠ Discord OAuth handling failed")
+      @oauth_error = e
+      self.process(:failure)
     end
+  end
+
+  def success
+    return redirect_to root_path if params[:player].nil?
+
+    @code = params[:code].to_i
+    render template: 'auth/success'
+  end
+
+  def failure
+    # exception retrieval copied from https://github.com/heartcombo/devise/blob/main/app/controllers/devise/omniauth_callbacks_controller.rb#L22C17-L22C120
+    exception = request.respond_to?(:get_header) ? request.get_header("omniauth.error") : request.env["omniauth.error"]
+    exception ||= @oauth_error
+
+    return redirect_to root_path if exception.nil?
+
+    logger.debug(exception)
+    Sentry.capture_exception(exception)
+
+    render template: 'auth/failure'
   end
 end

@@ -1,17 +1,19 @@
 class Player < ApplicationRecord
   # Include default devise modules. Others available are:
   devise(:invitable,
-         :database_authenticatable,
-         :recoverable,
-         :rememberable,
-         :validatable,
-         :confirmable,
-         :lockable,
-         :timeoutable,
-         :trackable) && :omniauthable
+    :database_authenticatable,
+    :recoverable,
+    :rememberable,
+    :validatable,
+    :confirmable,
+    :lockable,
+    :timeoutable,
+    :trackable)
 
+  devise :omniauthable, omniauth_providers: %i[osu discord]
+
+  has_many :identities, class_name: 'PlayerAuth'
   has_many :match_scores, foreign_key: 'player_id'
-  has_many :osu_auth_requests, foreign_key: 'player_id'
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
   has_many :ban_history, foreign_key: 'player_id'
@@ -29,37 +31,58 @@ class Player < ApplicationRecord
     false
   end
 
-  def begin_osu_discord_verification(discord_server)
-    OsuAuthRequest.create(player: self, discord_server: discord_server).authorisation_link
-  end
+  def self.from_omniauth(auth)
+    identity = PlayerAuth.find_with_omniauth(auth)
 
-  def complete_osu_verification(nonce, osu_api_response)
-    auth_request = OsuAuthRequest.find_by(player: self, nonce: nonce)
+    raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != 'osu'
 
-    logger.debug("Completing auth request #{auth_request.inspect}")
+    identity = PlayerAuth.create_with_omniauth(auth)
 
-    if auth_request.nil? || auth_request.resolved
-      raise StandardError, "No pending authorisation requests found for #{self} with request ID #{nonce}"
+    if identity.player.nil?
+      Player.create do |player|
+        player.password = Devise.friendly_token[0, 20]
+        player.name = auth.info.username
+        player.country_code = auth.info[:country_code]
+        player.avatar_url = auth.info[:avatar_url]
+        player.identities = [identity]
+
+        player.save!
+      end
     end
 
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with bot account!' if osu_api_response['is_bot']
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_deleted']
-    raise OsuAuthErrors::InvalidOsuUserError, 'Cannot verify user with deleted osu! account!' if osu_api_response['is_restricted']
+    unless identity.player.confirmed?
+      # if it was one of the old migrated users being logged in for the first time, it might still be unconfirmed
+      # preventing the user from signing in. consider this login as confirmation that the user is the real owner
+      # of the account.
+      identity.player.skip_confirmation!
+    end
 
-    self.osu_id = osu_api_response['id']
-    self.name = osu_api_response['username']
-    self.osu_verified = true
-    self.osu_verified_on = DateTime.now
+    identity.player
+  end
 
-    save!
+  # Links additional Omniauth identities to this Player. Primarily intended for users to link their
+  # Discord account after the fact without invoking the Discord bot.
+  def add_additional_account(auth)
+    # for now we only support adding discord accounts, so it's just thrown in here
+    raise ArgumentError, 'Only Discord is supported as an additional account' if auth.provider != 'discord'
 
-    auth_request.resolved = true
-    auth_request.save!
+    identity = PlayerAuth.find_with_omniauth(auth)
 
-    ActiveSupport::Notifications.instrument 'player.osu_verified', { auth_request: auth_request }
+    raise RuntimeError, 'Discord is already linked. Unlink it first to link a different account.' unless identity.nil?
+
+    identity = PlayerAuth.create_with_omniauth(auth)
+    identity.player = self
+    identity.save!
+
+    ActiveSupport::Notifications.instrument(
+      'player.discord_linked',
+      { player: player }
+    )
   end
 
   def as_json(*)
-    super.slice('id', 'name', 'osu_id')
+    hash = super.slice('id', 'name', 'avatar_url', 'country_code', 'identities', 'last_sign_in_at', 'ban_status', 'discord_last_spoke', 'created_at')
+    hash['identities'] = identities.as_json(include: :auth_provider)
+    hash
   end
 end

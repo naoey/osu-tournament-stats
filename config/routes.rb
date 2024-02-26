@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/:id/edit', to: 'users#show_edit_profile'
+
   get 'beatmaps/get'
   get 'matches', to: 'matches#show'
   get 'matches/:id', to: 'matches#show_match'
@@ -19,8 +21,6 @@ Rails.application.routes.draw do
   get 'beatmaps', to: 'beatmaps#search'
   get 'beatmaps/:id', to: 'beatmaps#show'
 
-  get 'authorise/osu', to: 'auth#osu'
-
   get 'discord/servers', to: 'discord#show'
   get 'discord/servers/:id', to: 'discord#show_server'
   get 'discord/servers/:server_id/exp', to: 'discord#show_exp_leaderboard'
@@ -29,11 +29,17 @@ Rails.application.routes.draw do
   devise_for :players, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
-    password: 'secret',
-    confirmation: 'verification',
-    registration: 'register',
-    edit: 'edit/profile',
+    edit: 'profile/edit',
+  }, controllers: {
+    omniauth_callbacks: 'auth'
   }
+
+  devise_scope :player do
+    get 'authorise/osu', to: 'auth#osu'
+    get 'authorise/discord', to: 'auth#discord'
+    get 'authorise/success', to: 'auth#success'
+  end
+
   root to: redirect('/tournaments')
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
