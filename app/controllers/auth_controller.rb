@@ -10,7 +10,8 @@ class AuthController < Devise::OmniauthCallbacksController
   def osu
     begin
       flow_code = nil
-      discord_register_request = OsuAuthRequest.find_by_nonce(params[:state])
+      # todo: eventually plug in registration initiated from discord here
+      discord_register_request = nil
       auth = request.env["omniauth.auth"]
       raw_user = auth["extra"]["raw_info"]
       persisted_user = Player.find_by_osu_id(raw_user['id'])

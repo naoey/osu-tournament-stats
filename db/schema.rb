@@ -111,17 +111,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "osu_auth_requests", charset: "utf8mb3", force: :cascade do |t|
-    t.string "nonce", null: false
-    t.boolean "resolved", default: false, null: false
-    t.bigint "player_id", null: false
-    t.bigint "discord_server_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discord_server_id"], name: "index_osu_auth_requests_on_discord_server_id"
-    t.index ["player_id"], name: "index_osu_auth_requests_on_player_id"
-  end
-
   create_table "players", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -154,11 +143,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.bigint "osu_id"
     t.string "discord_id"
     t.datetime "discord_last_spoke", precision: nil
-    t.boolean "osu_verified", default: false
-    t.datetime "osu_verified_on", precision: nil
+    t.datetime "osu_registered_on", precision: nil
     t.integer "ban_status", default: 0, null: false
     t.string "provider"
     t.string "uid"
+    t.json "osu_profile"
+    t.string "country_code"
+    t.string "avatar_url"
+    t.json "discord_profile"
+    t.datetime "discord_registered_on"
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
     t.index ["discord_id"], name: "index_unique_discord_ids", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true
@@ -189,7 +182,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "osu_auth_requests", "discord_servers"
-  add_foreign_key "osu_auth_requests", "players"
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end

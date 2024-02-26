@@ -13,7 +13,6 @@ class Player < ApplicationRecord
   devise :omniauthable, omniauth_providers: %i[osu]
 
   has_many :match_scores, foreign_key: 'player_id'
-  has_many :osu_auth_requests, foreign_key: 'player_id'
   has_and_belongs_to_many :match_teams
   has_many :hosted_tournaments, foreign_key: 'id', class_name: 'Tournament'
   has_many :ban_history, foreign_key: 'player_id'
@@ -31,15 +30,14 @@ class Player < ApplicationRecord
     false
   end
 
-  def begin_osu_discord_verification(discord_server)
-    OsuAuthRequest.create(player: self, discord_server: discord_server).authorisation_link
-  end
-
   def self.from_osu_omniauth(auth)
     find_or_create_by(provider: auth.provider, uid: auth.uid) do |user|
       user.password = Devise.friendly_token[0, 20]
       user.name = auth.info.username
       user.osu_id = auth.info.id
+      user.osu_registered_on = DateTime.now
+      user.osu_profile = auth.info
+      user.country_code = auth.info[:country_code]
 
       user.skip_confirmation!
     end
