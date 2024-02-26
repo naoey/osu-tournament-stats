@@ -33,7 +33,6 @@ export default function OAuthSuccess({ code }: OsuLoginSuccessProps) {
       <h1>success!</h1>
 
       {getMessage()}
-      <p></p>
     </Content>
   )
 }
