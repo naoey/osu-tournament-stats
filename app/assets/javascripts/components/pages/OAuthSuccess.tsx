@@ -5,6 +5,7 @@ enum AuthFlowCode {
   DiscordBotRegistration,
   DirectRegistration,
   ExistingUserLogin,
+  DiscordAdditionalAccount,
 };
 
 type OsuLoginSuccessProps = {
@@ -22,6 +23,9 @@ export default function OAuthSuccess({ code }: OsuLoginSuccessProps) {
 
       case AuthFlowCode.ExistingUserLogin:
         return <p>Login complete!</p>
+
+      case AuthFlowCode.DiscordAdditionalAccount:
+        return <p>Discord account linkage completed!</p>
 
       default:
         return <p>You shouldn't be here.</p>

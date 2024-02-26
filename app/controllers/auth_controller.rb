@@ -82,8 +82,14 @@ class AuthController < Devise::OmniauthCallbacksController
         type: 'debug',
         message: 'began Discord OAuth callback',
         level: 'info',
-        data: { raw_user: raw_user, player: player&.id }
+        data: { raw_user: raw_user, player: player&.id, logged_in: !current_player.nil? }
       ))
+
+      unless current_player.nil?
+        # if a user is already logged in and we're here in this flow, then it's adding an additional account
+        current_player.add_additional_account(auth)
+        return redirect_to authorise_success_path(player: player, code: 3)
+      end
 
       if player.nil?
         # This Discord ID is not linked to any Player and we don't allow creating new users with anything except

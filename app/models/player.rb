@@ -63,7 +63,21 @@ class Player < ApplicationRecord
   # Links additional Omniauth identities to this Player. Primarily intended for users to link their
   # Discord account after the fact without invoking the Discord bot.
   def add_additional_account(auth)
-    # todo
+    # for now we only support adding discord accounts, so it's just thrown in here
+    raise ArgumentError, 'Only Discord is supported as an additional account' if auth.provider != 'discord'
+
+    identity = PlayerAuth.find_with_omniauth(auth)
+
+    raise RuntimeError, 'Discord is already linked. Unlink it first to link a different account.' unless identity.nil?
+
+    identity = PlayerAuth.create_with_omniauth(auth)
+    identity.player = self
+    identity.save!
+
+    ActiveSupport::Notifications.instrument(
+      'player.discord_linked',
+      { player: player }
+    )
   end
 
   def as_json(*)
