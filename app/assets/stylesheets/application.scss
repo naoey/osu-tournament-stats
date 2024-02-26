@@ -18,8 +18,13 @@
 @import "./common/typography";
 @import "./common/buttons";
 
-body {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
+  height: 100%;
 }
 
 .ot-body-wrap {
