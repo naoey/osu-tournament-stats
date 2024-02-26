@@ -199,6 +199,9 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
+    omniauth-discord (1.1.0)
+      omniauth (~> 2.1.0)
+      omniauth-oauth2
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
@@ -395,6 +398,7 @@ DEPENDENCIES
   kaminari
   markdown-tables
   mysql2
+  omniauth-discord
   omniauth-oauth2
   omniauth-rails_csrf_protection
   puma (~> 6.4.2)

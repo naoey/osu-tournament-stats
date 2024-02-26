@@ -37,6 +37,7 @@ Rails.application.routes.draw do
 
   devise_scope :player do
     get 'authorise/osu', to: 'auth#osu'
+    get 'authorise/discord', to: 'auth#discord'
     get 'authorise/success', to: 'auth#success'
   end
 

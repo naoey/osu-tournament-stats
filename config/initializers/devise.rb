@@ -311,6 +311,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth :osu, ENV.fetch('OSU_CLIENT_ID', ''), ENV.fetch('OSU_CLIENT_SECRET', ''), scope: 'identify public', strategy_class: OmniAuth::Strategies::Osu, callback_path: '/authorise/osu'
+  config.omniauth :discord, ENV.fetch('DISCORD_CLIENT_ID', ''), ENV.fetch('DISCORD_CLIENT_SECRET', ''), scope: 'identify', callback_url: AuthHelper::get_callback_url('discord')
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

@@ -1,5 +1,8 @@
 require 'omniauth-oauth2'
 require 'oauth2'
+require 'uri'
+
+require_relative '../../app/helpers/auth_helper'
 
 module OmniAuth
   module Strategies
@@ -22,7 +25,7 @@ module OmniAuth
       option :token_params, {
         client_id: ENV.fetch('OSU_CLIENT_ID', ''),
         client_secret: ENV.fetch('OSU_CLIENT_SECRET', ''),
-        redirect_uri: ENV.fetch('OSU_CALLBACK_URL', ''),
+        redirect_uri: ::AuthHelper::get_callback_url('osu'),
         headers: {
           Accept: 'application/json',
         }
