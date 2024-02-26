@@ -36,10 +36,13 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
 
     reversible do |d|
       d.up do
-        # move all previously registered osu_ids to the new player_auths table
-        logger.info("⚠️migrating #{Player.all.count} existing players to new identities structure")
+        # move all previously registered osu_ids and discord_ids to the new player_auths table
+        # users who didn't finish linking probably have name NULL, which we drop and have them restart
+        # the registration all over
+        players_to_migrate = Player.where.not(name: nil)
+        puts("⚠️migrating #{players_to_migrate.all.count} existing players to new identities structure")
 
-        Player.all.each do |p|
+        players_to_migrate.each do |p|
           p.identities.build(uid: p.osu_id, provider: 'osu', uname: p.name, created_at: p.osu_verified_on) if p.osu_verified
           p.identities.build(uid: p.discord_id, provider: 'discord', uname: p.name, created_at: p.osu_verified_on || p.created_at) unless p.discord_id.nil?
           p.save!
