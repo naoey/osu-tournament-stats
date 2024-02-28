@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Identity, IdentityProvider, User } from "../../models/User";
-import { Avatar, Button, Divider, Flex, Form, Input, message } from "antd";
+import { Avatar, Button, Divider, Flex, message } from "antd";
 import moment from "moment";
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
 
@@ -47,7 +47,7 @@ export default function EditProfile({ user }: EditProfileProps) {
 
     if (editingUser.identities.length < 2) {
       options.push(
-        <Form method="post" action="/auth/discord">
+        <form method="post" action="/auth/discord">
           <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
           <Button
             icon={<DiscordOutlined />}
@@ -55,9 +55,10 @@ export default function EditProfile({ user }: EditProfileProps) {
             style={{ backgroundColor: '#5865F2' }}
             htmlType="submit"
             shape="circle"
+            value="submit"
             data-turbo="false"
           />
-        </Form>,
+        </form>,
       );
     } else {
       return null;
