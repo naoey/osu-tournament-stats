@@ -81,8 +81,13 @@ class Player < ApplicationRecord
   end
 
   def as_json(*)
-    hash = super.slice('id', 'name', 'avatar_url', 'country_code', 'identities', 'last_sign_in_at', 'ban_status', 'discord_last_spoke', 'created_at')
+    hash = super.as_json(include: [
+      :discord_exp,
+      :ban_history
+    ])
     hash['identities'] = identities.as_json(include: :auth_provider)
+    hash['ban_history'] = ban_history.as_json(include: :banned_by)
+    hash['discord_exp'] = discord_exp.as_json(include: :discord_server)
     hash
   end
 end

@@ -20,7 +20,7 @@ export function NavigationBar() {
       <Menu.Item key="discord">
         <a href="/discord/servers/1/exp">osu!india discord exp</a>
       </Menu.Item>
-      <Menu.Item>
+      <Menu.Item key="profile">
         <a href="/users/me/edit">Profile</a>
       </Menu.Item>
 

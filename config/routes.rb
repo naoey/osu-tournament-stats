@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   get 'users/:id/edit', to: 'users#show_edit_profile'
+  delete '/users/:id/connection', to: 'users#delete_identity'
+  post '/users/:id/connection', to: 'users#create_identity'
 
   get 'beatmaps/get'
   get 'matches', to: 'matches#show'
