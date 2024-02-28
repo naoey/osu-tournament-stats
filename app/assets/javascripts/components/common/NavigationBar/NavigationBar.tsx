@@ -4,6 +4,8 @@ import * as React from "react";
 import './styles.scss';
 
 export function NavigationBar() {
+  if (!window.currentUser) return null;
+
   return (
     <Menu
       className="ot-navbar"
@@ -26,8 +28,7 @@ export function NavigationBar() {
 
       <Menu.Item key="authentication" style={{ float: "right" }}>
         {
-          // TODO: replace with proper global types
-          (window as any).currentUser
+          window.currentUser
             ? <a rel="nofollow" data-method="delete" href="/logout">Logout</a>
             : <a rel="nofollow" href="/login">Login</a>
         }

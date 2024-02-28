@@ -1,8 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_player!
 
-  respond_to :json, only: %i[delete_identity create_identity]
-
   def show_edit_profile
     return render status: 404 if params[:id] != 'me'
 
@@ -11,19 +9,21 @@ class UsersController < ApplicationController
   end
 
   def delete_identity
-    params = params.permit(:provider)
+    args = params.permit(:provider, :id)
 
-    return render status: :bad_request if params[:id] != 'me'
+    respond_to do |format|
+      format.json do
+        return render status: :bad_request if args[:id] != 'me'
 
-    provider = params[:provider]
-    id = current_player.identities.find_by_provider(provider)
+        provider = args[:provider]
+        id = current_player.identities.find_by_provider(provider)
 
-    return render json: { error: "Provider #{provider} is not linked." }, status: :bad_request if id.nil?
+        return render json: { error: "Provider #{provider} is not linked." }, status: :bad_request if id.nil?
 
-    id.destroy!
+        id.destroy!
 
-    render json: { result: 'ok' }
+        render json: current_player.identities.as_json(include: :auth_provider, except: :raw)
+      end
+    end
   end
-
-  def create_identity; end
 end

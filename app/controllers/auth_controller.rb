@@ -1,9 +1,9 @@
 class AuthController < Devise::OmniauthCallbacksController
-  # private flow_code = {
-  #   "discord_bot" => 0,
-  #   "direct" => 1,
-  #   "login" => 2,
-  # }.freeze
+  FLOW_CODE = {
+    "discord_bot" => 0,
+    "direct" => 1,
+    "login" => 2,
+  }.freeze
 
   skip_before_action :verify_authenticity_token, only: %i[osu discord]
 
@@ -12,19 +12,15 @@ class AuthController < Devise::OmniauthCallbacksController
 
     begin
       flow_code = nil
-      # todo: eventually plug in registration initiated from discord here
+      # todo: eventually plug in registration initiated from discord bot here
       discord_register_request = nil
       auth = request.env["omniauth.auth"]
       raw_user = auth["extra"]["raw_info"]
       player = Player.from_omniauth(auth)
 
-      # flow_code = login_flow_type_code['discord_bot'] unless discord_register_request.nil?
-      # flow_code = login_flow_type_code['direct'] if player.nil?
-      # flow_code = login_flow_type_code['login']
-      # todo: why the fuck is ruby so shit at something as basic as constants
-      flow_code = 0 unless discord_register_request.nil?
-      flow_code = 1 unless player&.persisted?
-      flow_code = 2
+      flow_code = AuthController::FLOW_CODE['discord_bot'] unless discord_register_request.nil?
+      flow_code = AuthController::FLOW_CODE['direct'] unless player&.persisted?
+      flow_code = AuthController::FLOW_CODE['login']
 
       # logger.debug("⚠️began osu! OAuth handling for flow type #{login_flow_type_code.key(flow_code)}")
       logger.debug("⚠️began osu! OAuth handling for flow type #{flow_code}")
@@ -72,7 +68,16 @@ class AuthController < Devise::OmniauthCallbacksController
 
     begin
       auth = request.env['omniauth.auth']
-      player = Player.from_omniauth(auth)
+      player = nil
+
+      begin
+        player = Player.from_omniauth(auth)
+      rescue ArgumentError => e
+        # special handling for now since registration with discord is not allowed, create and add the new identity
+        # here in the controller
+        Sentry.capture_exception(e)
+      end
+
       raw_user = auth["extra"]["raw_info"]
 
       logger.debug("⚠️began Discord OAuth handling")
@@ -88,7 +93,7 @@ class AuthController < Devise::OmniauthCallbacksController
       unless current_player.nil?
         # if a user is already logged in and we're here in this flow, then it's adding an additional account
         current_player.add_additional_account(auth)
-        return redirect_to authorise_success_path(player: player, code: 3)
+        return redirect_to authorise_success_path(player: current_player, code: 3)
       end
 
       if player.nil?
