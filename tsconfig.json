@@ -19,6 +19,6 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["./declaration.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["**/*.spec.ts", "node_modules", "vendor", "public"]
 }

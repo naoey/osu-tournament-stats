@@ -1,25 +1,44 @@
 import React, { useState } from "react";
-import { IdentityProvider, User } from "../../models/User";
-import { Avatar, Button, Divider, Flex, Form } from "antd";
+import { Identity, IdentityProvider, User } from "../../models/User";
+import { Avatar, Button, Divider, Flex, Form, Input, message } from "antd";
 import moment from "moment";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
 
 type EditProfileProps = {
   user: User;
 };
 
 export default function EditProfile({ user }: EditProfileProps) {
-  const [editingUser, setEditingUser] = useState<User>(user);
+  const [editingUser, setEditingUser] = useState<User>(new User(user));
+  const [deleteIdLoadingKeys, setDeleteLoadingKeys] = useState<IdentityProvider[]>([]);
+
+  const deleteIdentity = async (id: Identity) => {
+    try {
+      setDeleteLoadingKeys(k => [...k, id.provider]);
+      setEditingUser(await editingUser.deleteIdentity(id));
+      setDeleteLoadingKeys(k => k.filter(i => i !== id.provider));
+      message.success("Removed Discord connection");
+    } catch (e) {
+      console.error(e);
+      setDeleteLoadingKeys(k => k.filter(i => i !== id.provider));
+      message.error("Something went wrong!");
+    }
+  };
 
   const renderLinkedAccounts = () => editingUser.identities.map(id => (
-    <Flex align="center" gap="middle">
+    <Flex align="center" gap="middle" key={id.provider}>
       <p>
         <b>{id.auth_provider.display_name}</b>: {id.uname} [{id.uid}]
         <br />
         <small><i>Connected on {moment(id.created_at).toLocaleString()}</i></small>
       </p>
 
-      <Button type="primary" danger icon={<DeleteOutlined />} disabled={id.provider === IdentityProvider.Osu} />
+      <Button
+        onClick={() => deleteIdentity(id)}
+        type="primary" danger icon={<DeleteOutlined />}
+        disabled={id.provider === IdentityProvider.Osu || deleteIdLoadingKeys.includes(id.provider)}
+        loading={deleteIdLoadingKeys.includes(id.provider)}
+      />
     </Flex>
   ));
 
@@ -27,42 +46,51 @@ export default function EditProfile({ user }: EditProfileProps) {
     const options = [];
 
     if (editingUser.identities.length < 2) {
-      options.push(<a href="/profile/edit/add_discord">Connect Discord</a>);
+      options.push(
+        <Form method="post" action="/auth/discord">
+          <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
+          <Button
+            icon={<DiscordOutlined />}
+            type="primary"
+            style={{ backgroundColor: '#5865F2' }}
+            htmlType="submit"
+            shape="circle"
+            data-turbo="false"
+          />
+        </Form>,
+      );
     } else {
       return null;
     }
 
     return (
-      <>
-        <h4>Add Accounts</h4>
-        {options}
-      </>
+      <Flex align="center" gap="small">
+        <strong>Add other accounts:</strong>{options}
+      </Flex>
     );
-  }
+  };
 
   return (
     <>
-      <Form method="PUT" action="/users/profile">
-        <Flex align="center" gap="large">
-          <Avatar src={editingUser.avatar_url} size={75} />
-          <h1>{editingUser.name}</h1>
-        </Flex>
+      <Flex align="center" gap="large">
+        <Avatar src={editingUser.avatar_url} size={75} />
+        <h1>{editingUser.name}</h1>
+      </Flex>
 
-        <Divider />
+      <Divider />
 
-        <h2>Basic</h2>
+      <h2>Basic</h2>
 
-        <p>
-          <b>Registered: </b> {moment(editingUser.created_at).toLocaleString()}
-        </p>
+      <p>
+        <b>Registered: </b> {moment(editingUser.created_at).toLocaleString()}
+      </p>
 
-        <Divider />
+      <Divider />
 
-        <h2>Linked Accounts</h2>
+      <h2>Linked Accounts</h2>
 
-        {renderLinkedAccounts()}
-        {renderAdditionalAccountOptions()}
-      </Form>
+      {renderLinkedAccounts()}
+      {renderAdditionalAccountOptions()}
     </>
-  )
+  );
 }
