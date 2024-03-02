@@ -1,3 +1,5 @@
+require 'base64'
+
 class AuthController < Devise::OmniauthCallbacksController
   FLOW_CODE = {
     "discord_bot" => 0,
@@ -12,15 +14,18 @@ class AuthController < Devise::OmniauthCallbacksController
 
     begin
       flow_code = nil
-      # todo: eventually plug in registration initiated from discord bot here
-      discord_register_request = nil
       auth = request.env["omniauth.auth"]
+      params = Rack::Utils.parse_query(Base64.decode64(request.params['state']))
       raw_user = auth["extra"]["raw_info"]
       player = Player.from_omniauth(auth)
 
-      flow_code = AuthController::FLOW_CODE['discord_bot'] unless discord_register_request.nil?
-      flow_code = AuthController::FLOW_CODE['direct'] unless player&.persisted?
-      flow_code = AuthController::FLOW_CODE['login']
+      if !params['f'].empty? && params['f'] == 'bot' && !params['s'].empty?
+        flow_code = AuthController::FLOW_CODE['discord_bot']
+      elsif !player&.persisted?
+        flow_code = AuthController::FLOW_CODE['direct']
+      else
+        flow_code = AuthController::FLOW_CODE['login']
+      end
 
       # logger.debug("⚠️began osu! OAuth handling for flow type #{login_flow_type_code.key(flow_code)}")
       logger.debug("⚠️began osu! OAuth handling for flow type #{flow_code}")
@@ -30,29 +35,30 @@ class AuthController < Devise::OmniauthCallbacksController
         type: 'debug',
         message: 'began osu! OAuth callback',
         level: 'info',
-        data: { discord_register_request: discord_register_request, raw_user: raw_user }
+        data: { flow_code: flow_code, state: params, raw_user: raw_user }
       ))
 
       if flow_code == 0
-        player.identities.build(uid: discord_register_request.discord_id)
-        player.save!
+        begin
+          player.complete_osu_verification_link(params['s'])
+        rescue OsuAuthError::TimeoutError
+          return render plain: 'Timeout'
+        rescue OsuAuthError::UnauthorisedError
+          raise ActionController::BadRequest
+        end
+      else
+        id = player.identities.find_by_provider('osu')
 
-        ActiveSupport::Notifications.instrument(
-          'player.discord_linked',
-          { player: player }
-        )
-      end
-
-      id = player.identities.find_by_provider('osu')
-
-      if id.raw.nil?
-        id.raw = auth.info
-        logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
+        if id.raw.nil?
+          id.raw = auth.info
+          logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
+        end
       end
 
       player.avatar_url = auth.info[:avatar_url]
       player.country_code = auth.info[:country_code]
       player.name = auth.info[:username]
+      player.save!
 
       sign_in player, event: :authentication
       redirect_to authorise_success_path(player: player, code: flow_code)
@@ -142,5 +148,11 @@ class AuthController < Devise::OmniauthCallbacksController
     Sentry.capture_exception(exception)
 
     render template: 'auth/failure'
+  end
+
+  private
+
+  def map_omniauth_state
+
   end
 end

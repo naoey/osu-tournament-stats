@@ -1,11 +1,31 @@
+require 'base64'
+
 class UsersController < ApplicationController
-  before_action :authenticate_player!
+  before_action :authenticate_player!, except: %i[show_link_osu_discord]
 
   def show_edit_profile
     return render status: 404 if params[:id] != 'me'
 
     @user = current_player
     render template: 'users/show_edit_profile'
+  end
+
+  def show_link_osu_discord
+    return ActionController::BadRequest if params[:f] != 'bot' || params[:s].empty?
+
+    begin
+      discord_id, = Base64.decode64(params[:s]).split('|')
+      state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
+
+      raise ArgumentError if state.nil?
+
+      @query = Base64.encode64(request.query_string)
+      @username = state['user']['username']
+    rescue
+      raise ActionController::BadRequest
+    end
+
+    render template: 'users/show_link_osu_discord'
   end
 
   def delete_identity
