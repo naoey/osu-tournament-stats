@@ -40,6 +40,10 @@ class Player < ApplicationRecord
 
     raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != 'osu'
 
+    # Hack to deal with old data that was imported from matches in the dark days; ID used to be osu! ID before so check if any users
+    # already exist with the osu ID as ID and map them to the linking user now
+    player = Player.find_by(id: auth.uid) if Player.exists?(id: auth.uid)
+    
     identity = PlayerAuth.create_with_omniauth(auth)
 
     if identity.player.nil?
