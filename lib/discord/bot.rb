@@ -18,6 +18,8 @@ module Discord
 
     attr_reader :client
 
+    include RegistrationCommands
+
     def initialize!
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
 
@@ -32,12 +34,11 @@ module Discord
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
-      @client.include! RegistrationCommands
 
       @client.run true
 
-      ActiveSupport::Notifications.subscribe('player.osu_verified') do |_name, _started, _finished, _unique_id, data|
-        osu_verification_completed(data[:auth_request])
+      ActiveSupport::Notifications.subscribe('player.discord_linked') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_completed(data[:player])
       end
 
       ActiveSupport::Notifications.subscribe('player.alt_discord_verify') do |_name, _started, _finished, _unique_id, data|
@@ -175,8 +176,8 @@ module Discord
       end
     end
 
-    def osu_verification_completed(auth_request)
-      Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{auth_request.player}.") }
+    def osu_verification_completed(player)
+      Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{player.inspect}.") }
 
       server = @client.server(auth_request.discord_server.discord_id)
 
