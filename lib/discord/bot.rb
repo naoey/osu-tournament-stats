@@ -5,7 +5,7 @@ require 'optparse'
 
 require_relative './modules/leaderboard_commands'
 require_relative './modules/match_commands'
-require_relative './modules/registration_commands'
+require_relative './modules/user_commands'
 require_relative '../../app/helpers/discord_helper'
 
 EMBED_GREEN = 3_066_993
@@ -18,19 +18,21 @@ module Discord
 
     attr_reader :client
 
-    include RegistrationCommands
+    include UserCommands
 
     def initialize!
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
 
       @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: ENV['DISCORD_BOT_PREFIX']
 
-      @client.command %i[match_performance p], &method(:match_performance)
-      @client.command %i[exp, xp], &method(:show_discord_exp)
+      UserCommands.register(@client)
 
-      @client.message &method(:message)
-      @client.member_join &method(:member_join)
-      @client.ready &method(:ready)
+      @client.command %i[match_performance p], &method(:match_performance)
+      @client.command %i[exp xp], &method(:show_discord_exp)
+
+      @client.message(&method(:message))
+      @client.member_join(&method(:member_join))
+      @client.ready(&method(:ready))
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
@@ -63,18 +65,18 @@ module Discord
 
     private
 
-    def show_discord_exp(event, *args)
+    def show_discord_exp(event, *_args)
       user = event.message.mentions.first
       user ||= event.message.author
 
       server = event.message.server
       player = Player.find_by(discord_id: user.id)
-      exp = DiscordExp.find_by(player: player, discord_server: DiscordServer.find_by(discord_id: server.id))
+      exp = DiscordExp.find_by(player:, discord_server: DiscordServer.find_by(discord_id: server.id))
 
       return event.respond("Couldn't find #{user.mention}") if player.nil? || exp.nil?
 
       event.message.channel.send_embed do |embed|
-        percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1].to_f) * 100
+        percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1]) * 100
 
         embed.title = player.name
         embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
@@ -86,12 +88,13 @@ module Discord
           Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level, inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Rank', value: exp.rank.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'Next Level',
+                                              value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(
             name: 'Progress',
-            value: (":green_square:" * (percentage / 10.0).round) + (":yellow_square:" * (10 - (percentage / 10.0).round)) + " *(#{percentage.round(2)}%)*",
-          ),
+            value: (':green_square:' * (percentage / 10.0).round) + (':yellow_square:' * (10 - (percentage / 10.0).round)) + " *(#{percentage.round(2)}%)*"
+          )
         ]
       end
     end
@@ -99,10 +102,10 @@ module Discord
     def match_performance(event, *args)
       begin
         player = if args.empty?
-          Player.find_by_discord_id(event.user.id)
-        else
-          Player.find_by_name(args.join(' '))
-        end
+                   Player.find_by_discord_id(event.user.id)
+                 else
+                   Player.find_by_name(args.join(' '))
+                 end
 
         return 'No such player found' if player.nil?
 
@@ -118,18 +121,18 @@ module Discord
           fields: stats
             .except(:player)
             .map do |k, v|
-            {
-              name: "**#{k.to_s.humanize}**",
-              inline: true,
-              value: if k == :best_accuracy
-                v[:accuracy]
-              elsif v.is_a?(Array)
-                v.length
-              else
-                v
-              end.to_s,
-            }
-          end,
+                    {
+                      name: "**#{k.to_s.humanize}**",
+                      inline: true,
+                      value: if k == :best_accuracy
+                               v[:accuracy]
+                             elsif v.is_a?(Array)
+                               v.length
+                             else
+                               v
+                             end.to_s,
+                    }
+                  end,
         }
 
         event.respond('', false, embed)
@@ -171,7 +174,7 @@ module Discord
         embed.color = EMBED_RED
         embed.description = 'Banned account verification'
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
+          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>")
         ]
       end
     end
@@ -203,7 +206,8 @@ module Discord
         return
       end
 
-      member.add_role(auth_request.discord_server.verified_role_id, "osu! verification completed with ID #{auth_request.player.osu_id}")
+      member.add_role(auth_request.discord_server.verified_role_id,
+                      "osu! verification completed with ID #{auth_request.player.osu_id}")
       member.set_nick(auth_request.player.name, "osu! user #{auth_request.player.name} linked")
 
       get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
@@ -226,7 +230,7 @@ module Discord
 
     # Event handling
 
-    def ready(event)
+    def ready(_event)
       Rails.cache.write('discord_bot/servers', DiscordServer.all.as_json)
     end
 
@@ -254,23 +258,19 @@ module Discord
 
         player = Player.find_by(discord_id: author_id)
 
-        if player.nil?
-          player = Player.create(discord_id: author_id, name: event.message.author.display_name)
-        end
+        player = Player.create(discord_id: author_id, name: event.message.author.display_name) if player.nil?
 
         exp = player.discord_exp.find_by(discord_server_id: server['id'])
 
-        if exp.nil?
-          exp = DiscordExp.create(player: player, discord_server_id: server['id'], detailed_exp: DiscordHelper::INITIAL_EXP)
-        end
+        exp = DiscordExp.create(player:, discord_server_id: server['id'], detailed_exp: DiscordHelper::INITIAL_EXP) if exp.nil?
 
-        exp.add_exp()
+        exp.add_exp
 
         Rails.cache.write(last_spoke_cache_key, exp.updated_at)
 
-        roles = exp.get_role_ids()
+        roles = exp.get_role_ids
 
-        current_roles = event.message.author.roles.map { |r| r.id }
+        current_roles = event.message.author.roles.map(&:id)
         required_roles = roles.map { |r| r[1] }
         delta_roles = required_roles - current_roles
 
@@ -290,9 +290,7 @@ module Discord
       player = Player.find_by(discord_id: event.user.id)
       server = DiscordServer.find_by(discord_id: event.server.id)
 
-      if player.nil?
-        player = Player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username))
-      end
+      player = Player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username)) if player.nil?
 
       player.discord_exp.find_or_create_by(discord_server: server)
     end
