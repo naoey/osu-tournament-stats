@@ -28,3 +28,6 @@ Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
   IndentationWidth: 2
 
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+  IndentationWidth: 2
