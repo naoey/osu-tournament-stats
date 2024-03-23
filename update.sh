@@ -64,7 +64,7 @@ fi
 
 # Assuming you want to start the rails server in the background
 echo "Starting Rails server..."
-./bin/rails server -d || exit_failure 1
+env $(grep -v '^#' .env | xargs) ./bin/rails server -d || exit_failure 1
 
 echo "Update and server restart complete."
 send_webhook "ots $TAG release complete!"
