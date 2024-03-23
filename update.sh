@@ -2,6 +2,7 @@
 
 WEBHOOK_URL=$OTS_NOTIFICATIONS_WEBHOOK_URL
 TAG=$1
+WORKING_BRANCH=release/$TAG
 
 # Function to send a webhook notification
 send_webhook() {
@@ -10,6 +11,8 @@ send_webhook() {
 }
 
 exit_failure() {
+  git checkout master --force
+  git branch -D "$WORKING_BRANCH"
   send_webhook "Auto-release $TAG failed"
   exit "$1"
 }
@@ -27,15 +30,15 @@ fi
 # Step 1: Checkout the provided tag
 echo "Checking out tag $TAG..."
 git fetch --tags
-git checkout tags/$TAG -b $TAG-branch || exit_failure 1
+git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 
 # Step 2: Run bundle install
 echo "Running bundle install..."
-bundle install || exit_failure 1
+~/.rbenv/shims/bundle install || exit_failure 1
 
 # Step 3: Run yarn install
 echo "Running yarn install..."
-yarn install || exit_failure 1
+/usr/bin/yarn install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
