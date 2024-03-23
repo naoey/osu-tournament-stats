@@ -18,6 +18,15 @@
 @import "./common/typography";
 @import "./common/buttons";
 
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
 .ot-body-wrap {
   height: calc(100% - 40px);
   padding: 15px;

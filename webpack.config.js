@@ -11,7 +11,7 @@ let isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
   mode: isDevelopment ? "development" : "production",
-  devtool: "source-map",
+  devtool: isDevelopment ? 'eval-source-map' : undefined,
   context: path.resolve("."),
   entry: {
     application: "./app/assets/javascripts/application.js"

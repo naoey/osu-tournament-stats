@@ -10,7 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
+  create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "display_name"
+    t.boolean "enabled"
+  end
+
   create_table "ban_histories", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "player_id", null: false
     t.bigint "banned_by_id"
@@ -32,7 +37,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "discord_exps", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "discord_exps", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "player_id", null: false
     t.bigint "discord_server_id", null: false
     t.bigint "exp", default: 0, null: false
@@ -111,15 +116,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "osu_auth_requests", charset: "utf8mb3", force: :cascade do |t|
-    t.string "nonce", null: false
-    t.boolean "resolved", default: false, null: false
+  create_table "player_auths", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "uid", null: false
+    t.string "uname", null: false
+    t.json "raw"
     t.bigint "player_id", null: false
-    t.bigint "discord_server_id"
+    t.string "provider", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["discord_server_id"], name: "index_osu_auth_requests_on_discord_server_id"
-    t.index ["player_id"], name: "index_osu_auth_requests_on_player_id"
+    t.index ["player_id"], name: "index_player_auths_on_player_id"
+    t.index ["provider", "player_id", "uid"], name: "index_player_auths_on_provider_and_player_id_and_uid", unique: true
+    t.index ["provider"], name: "index_player_auths_on_provider"
   end
 
   create_table "players", charset: "utf8mb3", force: :cascade do |t|
@@ -151,20 +158,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.bigint "invitations_count", default: 0
-    t.bigint "osu_id"
-    t.string "discord_id"
     t.datetime "discord_last_spoke", precision: nil
-    t.boolean "osu_verified", default: false
-    t.datetime "osu_verified_on", precision: nil
     t.integer "ban_status", default: 0, null: false
+    t.string "country_code"
+    t.string "avatar_url"
     t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
-    t.index ["discord_id"], name: "index_unique_discord_ids", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true
     t.index ["invitation_token"], name: "index_players_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_players_on_invitations_count"
     t.index ["invited_by_id"], name: "index_players_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_players_on_invited_by_type_and_invited_by_id"
-    t.index ["osu_id"], name: "players_uniq_online_id", unique: true
     t.index ["reset_password_token"], name: "index_players_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
@@ -187,7 +190,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_04_075607) do
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "osu_auth_requests", "discord_servers"
-  add_foreign_key "osu_auth_requests", "players"
+  add_foreign_key "player_auths", "auth_providers", column: "provider", primary_key: "name"
+  add_foreign_key "player_auths", "players"
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end

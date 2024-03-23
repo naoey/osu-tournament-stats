@@ -6,27 +6,35 @@ class Register < CommandBase
   protected
 
   def make_response
-    player = Player.find_or_create_by(discord_id: @event.message.author.id)
-    server = DiscordServer.find_or_create_by(discord_id: @event.message.server.id)
+    return if @server.registration_channel_id.nil? || @server.registration_channel_id != @event.message.channel.id
 
-    return if server.registration_channel_id.nil? || server.registration_channel_id != @event.message.channel.id
+    discord_auth = PlayerAuth.find_by(uid: @event.message.author.id, provider: :discord)
+    osu_auth = discord_auth.nil? ? nil : discord_auth.player.identities.find_by(provider: :osu)
 
-    if player.osu_verified && player.ban_status == Player.ban_statuses[:none]
-      @event.message.author.add_role(server.verified_role_id)
-      @event.respond("Verification completed #{mention_invoker}!")
+    if osu_auth
+      if osu_auth.player.ban_status == Player.ban_statuses[:none]
+        # This osu! account is already linked to a Discord account, provide role and finish registration
+        @event.message.author.add_role(@server.verified_role_id)
+        @event.respond("Verification completed #{mention_invoker}!")
+      elsif osu_auth.player.ban_status == Player.ban_statuses[:soft]
+        @event.message.author.pm(
+          "You are soft banned on #{@server[:discordrb_server].name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
+        )
+      end
 
       return
     end
 
-    if player.ban_status == Player.ban_statuses[:soft]
-      @event.message.author.pm(
-        "You are soft banned on #{@server[:discordrb_server].name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
-      )
-
-      return
-    end
-
-    link = player.begin_osu_discord_verification(server)
+    # manually extracting probably useful values since to_json runs into a stack too deep error
+    link = Player.get_osu_verification_link({
+      username: @event.message.author.global_name,
+      id: @event.message.author.id,
+      joined_at: @event.message.author.joined_at,
+      bot_account: @event.message.author.bot_account,
+      discriminator: @event.message.author.discriminator,
+      avatar_id: @event.message.author.avatar_id,
+      public_flags: @event.message.author.public_flags,
+    }.stringify_keys)
 
     begin
       @event.message.author.pm(
