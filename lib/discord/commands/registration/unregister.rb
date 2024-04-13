@@ -3,67 +3,47 @@ require 'discordrb'
 require_relative '../command_base'
 
 class Unregister < CommandBase
-  protected
-
-  def requires_admin
-    true
-  end
-
-  def required_options
+  def self.required_options
     [
-      ['-i TEXT', '--osu_id', 'The osu! ID of the player to disassociate from their Discord ID.']
+      [6, 'user', 'The user to unregister. Has higher precedence than osu_id.'],
+      [10, 'osu_id', 'The osu! ID to unregister. Can be used when the linked Discord account is not in the server.']
     ]
   end
 
-  def make_response
-    osu_id = @options[:osu_id]
+  protected
 
-    if osu_id.nil? && @event.message.mentions.length == 0
-      return @event.respond('No user specified to unregister')
+  def requires_admin?
+    true
+  end
+
+  def handle_response
+    return @event.respond(content: 'Verified role ID is not configured properly', ephemeral: true) if @server.verified_role_id.nil?
+
+    user_id = @event.options['user']&.to_i
+    osu_id = @event.options['osu_id']&.to_i
+
+    if user_id.nil? && osu_id.nil?
+      return @event.respond(content: 'At least one of user or osu_id options is required', ephemeral: true)
     end
 
-    if osu_id.nil? && @event.message.mentions.length > 0
-      member = @server[:discordrb_server].member(@event.message.mentions.first.id)
+    player = if user_id
+      PlayerAuth.find_by(provider: :discord, uid: user_id)&.player
+    else
+      PlayerAuth.find_by(provider: :osu, uid: osu_id)&.player
     end
 
-    player = osu_id.nil? ? Player.find_by(discord_id: member.id) : Player.find_by(osu_id: osu_id.to_i)
-    
-    if player.nil? || player.discord_id.nil?
-      return @event.respond('osu! user has not registered a Discord ID.')
+    if player.nil? || player.discord_id.nil? || player.osu_id.nil?
+      return @event.respond(
+        content: 'Unable to find a registered user with the given options',
+        ephemeral: true
+      )
     end
 
-    if !player.osu_verified || player.osu_id.nil?
-      return @event.respond('User has not registered an osu! account.')
-    end
+    osu_account_name = player.identities.find_by(provider: :osu).uname
+    member = @event.server.member(player.discord_id)
+    player.remove_additional_account(:discord)
+    member&.remove_role(@server.verified_role_id)
 
-    member ||= @server[:discordrb_server].member(player.discord_id)
-
-    ActiveRecord::Base.transaction do
-      player.discord_id = nil
-      player.osu_verified = false
-
-      begin
-        player.save!
-
-        puts player.errors.full_messages
-
-        if @server[:db_server].verified_role_id.nil?
-          return @event.respond("Successfully unregistered #{player.name}, but the server does not have a verified role ID configured; no roles were modified.")
-        end
-
-        if !member.nil? && member.role?(@server[:db_server].verified_role_id)
-          member.remove_role(
-            @server[:db_server].verified_role_id,
-            "Unregister invoked by #{@event.message.author.name} (#{@event.message.author.id})",
-          )
-        end
-
-        @event.respond("Successfully unregistered #{player.name}")
-      rescue StandardError => e
-        Rails.logger.error(e)
-        Sentry.capture_exception(e)
-      end
-    end
+    @event.respond(content: "Unlinked osu! user #{osu_account_name} from #{member&.name || 'unknown user'}")
   end
 end
-
