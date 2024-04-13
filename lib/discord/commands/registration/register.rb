@@ -5,44 +5,54 @@ require_relative '../command_base'
 class Register < CommandBase
   protected
 
-  def make_response
-    player = Player.find_or_create_by(discord_id: @event.message.author.id)
-    server = DiscordServer.find_or_create_by(discord_id: @event.message.server.id)
+  def handle_response
+    user = @event.interaction.user
 
-    return if server.registration_channel_id.nil? || server.registration_channel_id != @event.message.channel.id
+    return @event.respond(content: 'Server configuration is incorrect!') if @server.verified_role_id.nil?
 
-    if player.osu_verified && player.ban_status == Player.ban_statuses[:none]
-      @event.message.author.add_role(server.verified_role_id)
-      @event.respond("Verification completed #{mention_invoker}!")
+    discord_auth = PlayerAuth.find_by(uid: user.id, provider: :discord)
+    osu_auth = discord_auth.nil? ? nil : discord_auth.player.identities.find_by(provider: :osu)
+
+    if osu_auth
+      if osu_auth.player.ban_status == Player.ban_statuses[:none]
+        # This osu! account is already linked to a Discord account, provide role and finish registration
+        user.add_role(@server.verified_role_id)
+        @event.respond(content: "Verification complete!", ephemeral: true)
+      elsif osu_auth.player.ban_status == Player.ban_statuses[:soft]
+        user.pm(
+          "You are soft banned on #{@event.server.name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
+        )
+      end
 
       return
     end
 
-    if player.ban_status == Player.ban_statuses[:soft]
-      @event.message.author.pm(
-        "You are soft banned on #{@server[:discordrb_server].name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
-      )
-
-      return
-    end
-
-    link = player.begin_osu_discord_verification(server)
+    # manually extracting probably useful values since to_json runs into a stack too deep error
+    link = Player.get_osu_verification_link({
+      username: user.global_name,
+      id: user.id,
+      joined_at: user.joined_at,
+      bot_account: user.bot_account,
+      discriminator: user.discriminator,
+      avatar_id: user.avatar_id,
+      public_flags: user.public_flags,
+    }.stringify_keys)
 
     begin
-      @event.message.author.pm(
-        "Login with your osu! account using this link to complete verifying your Discord account in #{@event.message.server.name}\n\n<#{link}>"
+      user.pm(
+        "Login with your osu! account using this link to complete verifying your Discord account in #{@event.server.name}\n\n<#{link}>"
       )
 
-      @event.respond("Verification started for #{@event.message.author.name}. Please check your DMs to complete the verification process.")
+      @event.respond(content: "Verification started for #{user.name}. Please check your DMs to complete the verification process.", ephemeral: true)
     rescue Discordrb::Errors::NoPermission
       @event.respond(
-        "#{mention_invoker} KelaBot doesn't have permission to DM you. Please check that server members have permission to send you DMs in your privacy settings."
+        content: "KelaBot doesn't have permission to DM you. Please check that server members have permission to send you DMs in your privacy settings.", ephemeral: true
       )
     rescue StandardError => e
       Rails.logger.tagged(self.class.name) { Rails.logger.error("Failed to execute register command\n#{e.backtrace}") }
 
       @event.respond(
-        "#{mention_invoker} something went wrong, contact the administrators to complete your verification."
+        content: "Something went wrong, contact the administrators to complete your verification.", ephemeral: true
       )
     end
   end

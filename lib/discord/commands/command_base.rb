@@ -1,70 +1,46 @@
 require 'optparse'
 
 class CommandBase
-  def initialize(event, *args)
+  def initialize(bot, event, *args)
+    @bot = bot
     @event = event
     @bot_args = args
-    @server = {
-      db_server: DiscordServer.find_by_discord_id(event.message.server.id),
-      discordrb_server: event.message.server,
-    }
-    @invoker = {
-      db_player: Player.find_by_discord_id(event.message.author.id),
-      discordrb_user: event.message.author,
-    }
+    @server = DiscordServer.find_by_discord_id(event.server.id)
+    @player = PlayerAuth.find_by(uid: event.interaction.user.id, provider: :discord)&.player
+  end
 
-    @options = {}
+  def respond
+    @event.respond(content: 'Can only be used by staff!', ephemeral: true) if requires_admin? && !invoker_admin?
 
     begin
-      OptionParser.new do |opts|
-        required_options.each do |opt|
-          opts.on(*opt)
-        end
-
-        opts.on('-h', '--help', 'Prints this help message') do
-          @help_message = opts
-        end
-      end.parse!(event.message.content.split(' '), into: @options)
-    rescue OptionParser::MissingArgument
-      @event.respond("Missing arguments")
-      raise
+      handle_response
+    rescue Discordrb::Errors::NoPermission
     end
   end
 
-  def response
-    return "```#{@help_message}```" if @options[:help]
-
-    return 'Can only be invoked by adminstrators!' if requires_admin && !invoker_admin?
-
-    begin
-      make_response
-    rescue Discordrb::Errors::NoPermission
-    end
+  def self.required_options
+    []
   end
 
   protected
 
   def mention_invoker
-    @event.message.author.mention
+    @event.interaction.user.mention
   end
 
-  def requires_admin
+  def requires_admin?
     false
   end
 
   def invoker_admin?
-    @event.message.author.defined_permission?(:administrator) || invoker_owner?
+    @event.interaction.user.defined_permission?(:administrator) || invoker_owner?
   end
 
   def invoker_owner?
-    @event.message.author.owner?
+    @event.interaction.user.owner?
   end
 
-  def make_response
+  def handle_response
     nil
-  end
-
-  def required_options
-    []
   end
 end

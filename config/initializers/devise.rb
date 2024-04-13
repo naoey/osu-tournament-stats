@@ -1,3 +1,7 @@
+require 'base64'
+
+require_relative '../../lib/omniauth_strategies/omniauth_osu'
+
 # frozen_string_literal: true
 
 # Use this hook to configure devise mailer, warden hooks and so forth.
@@ -201,7 +205,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
-  # config.remember_for = 2.weeks
+  config.remember_for = 2.years
 
   # Invalidates all the remember me tokens when the user signs out.
   config.expire_all_remember_me_on_sign_out = true
@@ -303,12 +307,20 @@ Devise.setup do |config|
   # config.navigational_formats = ['*/*', :html]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  config.sign_out_via = :get
 
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  config.omniauth :osu, ENV.fetch('OSU_CLIENT_ID', ''), ENV.fetch('OSU_CLIENT_SECRET', ''), scope: 'identify public', strategy_class: OmniAuth::Strategies::Osu, callback_path: '/authorise/osu', state: ->(env) {
+    request = Rack::Request.new(env)
+    query = Rack::Utils.parse_query(Base64.decode64(request.params['s']))
+    # Generate the default state if the params for Discord-bot origin osu! linkage are not found, otherwise use the already generated state
+    # containing linkage information.
+    return SecureRandom.hex(24) if request.params['s'].empty? || query['f'].empty? || query['f'] != 'bot' || query['s'].empty?
+    request.params['s']
+  }
+  config.omniauth :discord, ENV.fetch('DISCORD_CLIENT_ID', ''), ENV.fetch('DISCORD_CLIENT_SECRET', ''), scope: 'identify', callback_url: AuthHelper::get_callback_url('discord'), callback_path: '/authorise/discord'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
@@ -319,7 +331,7 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
-  # ==> Mountable engine configurations
+  # ==> Mountable engine
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.
   # The following options are available, assuming the engine is mounted as:
