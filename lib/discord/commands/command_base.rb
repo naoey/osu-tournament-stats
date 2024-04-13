@@ -18,6 +18,10 @@ class CommandBase
     end
   end
 
+  def self.required_options
+    []
+  end
+
   protected
 
   def mention_invoker
@@ -29,18 +33,14 @@ class CommandBase
   end
 
   def invoker_admin?
-    event.interaction.user.defined_permission?(:administrator) || invoker_owner?
+    @event.interaction.user.defined_permission?(:administrator) || invoker_owner?
   end
 
   def invoker_owner?
-    event.interaction.user.owner?
+    @event.interaction.user.owner?
   end
 
   def handle_response
     nil
-  end
-
-  def required_options
-    []
   end
 end
