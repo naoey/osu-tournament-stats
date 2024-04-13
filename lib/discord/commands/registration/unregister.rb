@@ -5,8 +5,8 @@ require_relative '../command_base'
 class Unregister < CommandBase
   def self.required_options
     [
-      [6, 'user', 'The user to unregister. Has higher precedence than osu_id.'],
-      [10, 'osu_id', 'The osu! ID to unregister. Can be used when the linked Discord account is not in the server.']
+      [[6, 'user', 'The user to unregister. Has higher precedence than osu_id.'], {}],
+      [[10, 'osu_id', 'The osu! ID to unregister. Can be used when the linked Discord account is not in the server.'], {}]
     ]
   end
 

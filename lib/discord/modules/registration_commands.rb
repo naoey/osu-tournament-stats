@@ -13,8 +13,13 @@ module RegistrationCommands
   def self.init(bot)
     bot.register_application_command(:register, 'Link your osu! ID with your Discord ID')
     bot.register_application_command(:unregister, 'Unlink a user from a Discord ID (admin only)') do |cmd|
-      Unregister.required_options.each do |o|
-        cmd.option(*o)
+      Unregister.required_options.each do |o, k|
+        cmd.option(*o, **k)
+      end
+    end
+    bot.register_application_command(:who, 'Get info on a server member') do |cmd|
+      Whois.required_options.each do |o, k|
+        cmd.option(*o, **k)
       end
     end
 
@@ -24,6 +29,10 @@ module RegistrationCommands
 
     bot.application_command(:unregister) do |event|
       Unregister.new(bot, event).respond
+    end
+
+    bot.application_command(:who) do |event|
+      Whois.new(bot, event).respond
     end
   end
 end
