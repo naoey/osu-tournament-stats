@@ -35,12 +35,11 @@ class UsersController < ApplicationController
       format.json do
         return render status: :bad_request if args[:id] != 'me'
 
-        provider = args[:provider]
-        id = current_player.identities.find_by_provider(provider)
-
-        return render json: { error: "Provider #{provider} is not linked." }, status: :bad_request if id.nil?
-
-        id.destroy!
+        begin
+          current_player.remove_additional_account(args[:provider])
+        rescue ArgumentError
+          return render json: { error: "Provider #{provider} is not linked." }, status: :bad_request if id.nil?
+        end
 
         render json: current_player.identities.as_json(include: :auth_provider, except: :raw)
       end
