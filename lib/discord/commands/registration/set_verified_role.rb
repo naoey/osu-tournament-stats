@@ -11,7 +11,7 @@ class SetVerifiedRole < CommandBase
     ]
   end
 
-  def requires_admin
+  def requires_admin?
     true
   end
 
