@@ -25,6 +25,22 @@ class Player < ApplicationRecord
 
   enum ban_statuses: { none: 0, soft: 1, hard: 2 }, _prefix: :ban_status
 
+  def discord_id
+    identities.find_by_provider(:discord)&.uid
+  end
+
+  def discord
+    identities.find_by_provider(:discord)
+  end
+
+  def osu_id
+    identities.find_by_provider(:osu)&.uid
+  end
+
+  def osu
+    identities.find_by_provider(:osu)
+  end
+
   def email_required?
     # new_record? ? false : super
     false
@@ -38,7 +54,7 @@ class Player < ApplicationRecord
   def self.from_omniauth(auth)
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != 'osu'
+    raise ArgumentError, 'Only osu! provider is allowed for new user sign ups!' if identity.nil? && auth.provider != 'osu'
 
     identity = PlayerAuth.create_with_omniauth(auth)
 
@@ -72,16 +88,32 @@ class Player < ApplicationRecord
 
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    raise RuntimeError, 'Discord is already linked. Unlink it first to link a different account.' unless identity.nil?
+    raise 'Discord is already linked. Unlink it first to link a different account.' unless identity.nil?
 
     identity = PlayerAuth.create_with_omniauth(auth)
     identity.player = self
     identity.save!
 
-    ActiveSupport::Notifications.instrument(
-      'player.discord_linked',
-      { player: self }
-    )
+    return if osu.nil? # Don't bother notifying Discord linkage when there's no osu! account linked
+
+    begin
+      ActiveSupport::Notifications.instrument(
+        'player.discord_linked',
+        { player: self }
+      )
+    rescue StandardError => e
+      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+    end
+  end
+
+  def remove_additional_account(provider)
+    raise ArgumentError, 'Unlinking osu! account is not allowed' if provider == 'osu'
+
+    id = identities.find_by_provider(provider)
+
+    raise ArgumentError, "Provider #{provider} is not linked" if id.nil?
+
+    id.destroy!
   end
 
   # Creates a special link to complete osu! verification and OAuth registration with implicit Discord verification
@@ -89,7 +121,8 @@ class Player < ApplicationRecord
   # the osu! registration.
   def self.get_osu_verification_link(discord_user)
     guid = SecureRandom.uuid
-    Rails.cache.write("discord_bot/osu_verification_links/#{discord_user['id']}", { guid: guid, user: discord_user }.stringify_keys, expires_in: 5.minutes)
+    Rails.cache.write("discord_bot/osu_verification_links/#{discord_user['id']}", { guid:, user: discord_user }.stringify_keys,
+      expires_in: 5.minutes)
 
     state = Base64.encode64("#{discord_user['id']}|#{guid}")
     Rails.application.routes.url_helpers.polymorphic_url(:users_register_discord, f: 'bot', s: state)
@@ -107,18 +140,22 @@ class Player < ApplicationRecord
     raise OsuAuthErrors::UnauthorisedError if saved_state['guid'] != guid
     raise OsuAuthErrors::UnauthorisedError if raw['id'] != discord_id.to_i
 
-    identities.build(provider: :discord, uid: raw['id'], uname: raw['username'], raw: raw).save!
+    identities.build(provider: :discord, uid: raw['id'], uname: raw['username'], raw:).save!
 
-    ActiveSupport::Notifications.instrument(
-      'player.discord_linked',
-      { player: self }
-    )
+    begin
+      ActiveSupport::Notifications.instrument(
+        'player.discord_linked',
+        { player: self }
+      )
+    rescue StandardError => e
+      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+    end
   end
 
   def as_json(*)
-    hash = super.as_json(include: [
-      :discord_exp,
-      :ban_history
+    hash = super.as_json(include: %i[
+      discord_exp
+      ban_history
     ])
     hash['identities'] = identities.as_json(include: :auth_provider, except: :raw_info)
     hash['ban_history'] = ban_history.as_json(include: :banned_by)
