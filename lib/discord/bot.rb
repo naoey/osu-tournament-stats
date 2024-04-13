@@ -32,20 +32,15 @@ module Discord
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
-      @client.include! RegistrationCommands
+
+      # todo: need to move all these registration steps into a different script since they need to be run only on change
+      # doesn't have to run on every startup
+      RegistrationCommands.init(@client)
 
       @client.run true
 
-      ActiveSupport::Notifications.subscribe('player.osu_verified') do |_name, _started, _finished, _unique_id, data|
-        osu_verification_completed(data[:auth_request])
-      end
-
-      ActiveSupport::Notifications.subscribe('player.alt_discord_verify') do |_name, _started, _finished, _unique_id, data|
-        osu_verification_alt(data[:auth_request], data[:player])
-      end
-
-      ActiveSupport::Notifications.subscribe('player.banned_discord_verify') do |_name, _started, _finished, _unique_id, data|
-        osu_verification_banned(data[:auth_request])
+      ActiveSupport::Notifications.subscribe('player.discord_linked') do |_name, _started, _finished, _unique_id, data|
+        osu_verification_completed(data)
       end
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
@@ -175,52 +170,33 @@ module Discord
       end
     end
 
-    def osu_verification_completed(auth_request)
-      Rails.logger.tagged(self.class.name) { Rails.logger.info("Completing osu verification for user #{auth_request.player}.") }
+    def osu_verification_completed(data)
+      servers = DiscordServer.where.not(verification_log_channel_id: nil)
 
-      server = @client.server(auth_request.discord_server.discord_id)
+      player = data[:player]
 
-      if server.nil?
-        Rails.logger.tagged(self.class.name) do
-          Rails.logger.error(
-            "Error completing verification for #{auth_request.player}. Server #{auth_request.discord_server} not found."
-          )
+      servers.each do |server|
+        guild = @client.server(server.discord_id)
+        member = @client.member(server.discord_id, player.discord_id)
+
+        next if guild.nil? || member.nil? # Bot probably removed from server
+
+        unless server.verified_role_id.nil?
+          member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu_id}")
+          # member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
         end
 
-        return
-      end
-
-      member = @client.member(server.id, auth_request.player.discord_id)
-
-      if member.nil?
-        Rails.logger.tagged(self.class.name) do
-          Rails.logger.error(
-            "Error completing verification for #{auth_request.player}. Member #{auth_request.player} not found."
-          )
+        @client.channel(server.verification_log_channel_id, guild).send_embed do |embed|
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
+          embed.color = EMBED_GREEN
+          embed.description = 'Verification completed'
+          embed.fields = [
+            Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: member.mention || '<User not in server>')
+          ]
         end
-
-        return
       end
-
-      member.add_role(auth_request.discord_server.verified_role_id, "osu! verification completed with ID #{auth_request.player.osu_id}")
-      member.set_nick(auth_request.player.name, "osu! user #{auth_request.player.name} linked")
-
-      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
-        embed.title = auth_request.player.name
-        embed.url = "https://osu.ppy.sh/users/#{auth_request.player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{auth_request.player.osu_id}")
-        embed.color = EMBED_GREEN
-        embed.description = 'Verification completed'
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: member.mention || '<No user>')
-        ]
-      end
-    end
-
-    def get_server_log_channel(server, discordrb_server)
-      return nil if server.verification_log_channel_id.nil?
-
-      @client.channel(server.verification_log_channel_id, discordrb_server)
     end
 
     # Event handling
