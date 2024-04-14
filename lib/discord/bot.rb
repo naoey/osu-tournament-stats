@@ -71,7 +71,7 @@ module Discord
         percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1].to_f) * 100
 
         embed.title = player.name
-        embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
+        embed.url = "https://osu.ppy.sh/users/#{player.osu&.uid}"
         embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu&.uid}")
         embed.color = EMBED_PURPLE
         embed.description = "KelaBot level in #{server.name}"
