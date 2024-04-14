@@ -1,5 +1,5 @@
 class DiscordController < ApplicationController
-  before_action :authenticate_players!
+  before_action :authenticate_player!
 
   def show
     @data = DiscordServer.all
