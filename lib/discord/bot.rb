@@ -227,10 +227,10 @@ module Discord
 
         Rails.cache.write(last_spoke_cache_key, Time.now)
 
-        player = Player.find_by(discord_id: author_id)
+        player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: author_id })
 
         if player.nil?
-          player = Player.create(discord_id: author_id, name: event.message.author.display_name)
+          player = Player.create(name: DiscordHelper.sanitise_username(event.user.username), identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
         end
 
         exp = player.discord_exp.find_by(discord_server_id: server['id'])
@@ -262,11 +262,11 @@ module Discord
     end
 
     def member_join(event)
-      player = Player.find_by(discord_id: event.user.id)
+      player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: event.user.id })
       server = DiscordServer.find_by(discord_id: event.server.id)
 
       if player.nil?
-        player = Player.create(discord_id: event.user.id, name: DiscordHelper.sanitise_username(event.user.username))
+        player = Player.create(name: DiscordHelper.sanitise_username(event.user.username), identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
       end
 
       player.discord_exp.find_or_create_by(discord_server: server)
