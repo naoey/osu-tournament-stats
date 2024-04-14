@@ -25,7 +25,7 @@ class Whois < CommandBase
           fields: [
             Discordrb::Webhooks::EmbedField.new(
               name: 'Discord user',
-              value: @bot.member(@event.server.id, player.uid).mention || 'MIA',
+              value: @bot.member(@event.server.id, player.discord.uid).mention || 'MIA',
               inline: true
             ),
             Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu.uid, inline: true),
