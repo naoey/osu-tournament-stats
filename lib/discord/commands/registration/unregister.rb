@@ -40,7 +40,7 @@ class Unregister < CommandBase
     end
 
     osu_account_name = player.identities.find_by(provider: :osu).uname
-    member = @event.server.member(player.discord_id)
+    member = @event.server.member(player.discord.uid)
     player.remove_additional_account(:discord)
     member&.remove_role(@server.verified_role_id)
 
