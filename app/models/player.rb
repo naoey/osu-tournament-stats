@@ -25,16 +25,8 @@ class Player < ApplicationRecord
 
   enum ban_statuses: { none: 0, soft: 1, hard: 2 }, _prefix: :ban_status
 
-  def discord_id
-    identities.find_by_provider(:discord)&.uid
-  end
-
   def discord
     identities.find_by_provider(:discord)
-  end
-
-  def osu_id
-    identities.find_by_provider(:osu)&.uid
   end
 
   def osu
