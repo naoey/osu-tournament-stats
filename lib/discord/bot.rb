@@ -182,8 +182,9 @@ module Discord
         next if guild.nil? || member.nil? # Bot probably removed from server
 
         unless server.verified_role_id.nil?
-          member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu_id}")
-          # member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
+          member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu.uid}")
+          # member.add_role(server.guest_role_id, "osu! flag is #{player.osu['country']}") if !player.osu.nil? && player.osu['country'] != 'IN'
+          member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
         end
 
         @client.channel(server.verification_log_channel_id, guild).send_embed do |embed|
