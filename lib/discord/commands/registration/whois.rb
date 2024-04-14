@@ -19,8 +19,8 @@ class Whois < CommandBase
       embeds: [
         Discordrb::Webhooks::Embed.new(
           title: player.name,
-          url: "https://osu.ppy.sh/users/#{player.osu_id}",
-          thumbnail: Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}"),
+          url: "https://osu.ppy.sh/users/#{player.osu.uid}",
+          thumbnail: Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}"),
           color: EMBED_GREEN,
           fields: [
             Discordrb::Webhooks::EmbedField.new(
@@ -28,7 +28,7 @@ class Whois < CommandBase
               value: @bot.member(@event.server.id, player.discord_id).mention || 'MIA',
               inline: true
             ),
-            Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu_id, inline: true),
+            Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu.uid, inline: true),
             Discordrb::Webhooks::EmbedField.new(
               name: 'Ban status',
               value: Player.ban_statuses.key(player.ban_status).capitalize,
