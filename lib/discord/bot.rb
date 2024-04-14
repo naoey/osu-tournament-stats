@@ -72,7 +72,7 @@ module Discord
 
         embed.title = player.name
         embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
+        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu&.uid}")
         embed.color = EMBED_PURPLE
         embed.description = "KelaBot level in #{server.name}"
         embed.fields = [
