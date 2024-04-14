@@ -62,7 +62,7 @@ module Discord
       user ||= event.message.author
 
       server = event.message.server
-      player = Player.find_by(discord_id: user.id)
+      player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: user.id })
       exp = DiscordExp.find_by(player: player, discord_server: DiscordServer.find_by(discord_id: server.id))
 
       return event.respond("Couldn't find #{user.mention}") if player.nil? || exp.nil?
@@ -76,7 +76,7 @@ module Discord
         embed.color = EMBED_PURPLE
         embed.description = "KelaBot level in #{server.name}"
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord_id}>", inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord.uid}>", inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level, inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'Rank', value: exp.rank.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited), inline: true),
