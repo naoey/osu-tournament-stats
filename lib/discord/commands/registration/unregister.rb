@@ -32,7 +32,7 @@ class Unregister < CommandBase
       PlayerAuth.find_by(provider: :osu, uid: osu_id)&.player
     end
 
-    if player.nil? || player.discord_id.nil? || player.osu_id.nil?
+    if player.nil? || player.discord.nil? || player.osu.nil?
       return @event.respond(
         content: 'Unable to find a registered user with the given options',
         ephemeral: true

@@ -188,8 +188,8 @@ module Discord
 
         @client.channel(server.verification_log_channel_id, guild).send_embed do |embed|
           embed.title = player.name
-          embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
-          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
           embed.color = EMBED_GREEN
           embed.description = 'Verification completed'
           embed.fields = [
