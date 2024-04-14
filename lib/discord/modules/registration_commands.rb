@@ -1,6 +1,5 @@
 require 'discordrb'
 
-require_relative '../commands/registration/set_channel'
 require_relative '../commands/registration/set_verification_log_channel'
 require_relative '../commands/registration/set_verified_role'
 require_relative '../commands/registration/register'
