@@ -4,7 +4,9 @@ button.link {
   color: royalblue;
   text-decoration: underline;
 
-  &:hover, &:active, &:focus {
+  &:hover,
+  &:active,
+  &:focus {
     @extend button, .link;
   }
 }
