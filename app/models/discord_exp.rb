@@ -1,4 +1,4 @@
-require_relative '../helpers/discord_helper'
+require_relative "../helpers/discord_helper"
 
 class DiscordExp < ApplicationRecord
   belongs_to :player, optional: false
@@ -26,10 +26,7 @@ class DiscordExp < ApplicationRecord
 
       Rails.logger.info("player #{self.player.discord.uid} levelled up to #{self.level} carrying over #{self.detailed_exp[0]} exp")
 
-      ActiveSupport::Notifications.instrument(
-        'player.discord_level_up',
-        { exp: self }
-      )
+      ActiveSupport::Notifications.instrument("player.discord_level_up", { exp: self })
     else
       self.detailed_exp[0] += exp
       self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp
@@ -42,20 +39,18 @@ class DiscordExp < ApplicationRecord
   # Returns the list of role IDs and the corresponding thresholds from the server's exp roles configuration that this user should have
   # acquired for the given exp amount.
   def get_role_ids()
-    server = Rails.cache.read('discord_bot/servers')&.find { |s| s['id'] == self.discord_server.id }
+    server = Rails.cache.read("discord_bot/servers")&.find { |s| s["id"] == self.discord_server.id }
 
     return [] if server.nil?
 
-    roles_config = server['exp_roles_config']
+    roles_config = server["exp_roles_config"]
 
     return [] if roles_config.nil?
 
     thresholds = roles_config.sort_by { |r| r[0] }
     acquired_roles = []
 
-    while thresholds.count > 0 && self.exp > thresholds.first[0] do
-      acquired_roles.push(thresholds.shift)
-    end
+    acquired_roles.push(thresholds.shift) while thresholds.count > 0 && self.exp > thresholds.first[0]
 
     return acquired_roles
   end

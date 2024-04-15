@@ -1,9 +1,7 @@
 module PlayerStatistics
   class TotalMissesStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .joins(:match)
-        .where(player: @player)
+      q = MatchScore.joins(:match).where(player: @player)
 
       apply_filter(q).sum(:count_miss)
     end

@@ -7,8 +7,6 @@ FactoryBot.define do
     association :blue_team, factory: :match_team
     association :winner, factory: :match_team
 
-    after(:create) do |match|
-      match.winner = [match.red_team, match.blue_team].sample
-    end
+    after(:create) { |match| match.winner = [match.red_team, match.blue_team].sample }
   end
 end

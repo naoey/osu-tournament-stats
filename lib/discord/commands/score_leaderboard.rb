@@ -1,7 +1,7 @@
-require 'discordrb'
+require "discordrb"
 
-require_relative './command_base'
-require_relative '../../../app/services/leaderboards/player_leaderboard'
+require_relative "./command_base"
+require_relative "../../../app/services/leaderboards/player_leaderboard"
 
 LEFT_EMOJI = "\u2B05".freeze
 RIGHT_EMOJI = "\u27A1".freeze
@@ -21,8 +21,8 @@ class ScoreLeaderboard < CommandBase
 
   def required_options
     [
-      ['-s TEXT', '--sort TEXT', 'Sort by one of (name, score, play_count, accuracy)'],
-      ['-a', '--ascending', 'Sort in ascending order; sorts descending if omitted'],
+      ["-s TEXT", "--sort TEXT", "Sort by one of (name, score, play_count, accuracy)"],
+      ["-a", "--ascending", "Sort in ascending order; sorts descending if omitted"]
     ]
   end
 
@@ -42,58 +42,56 @@ class ScoreLeaderboard < CommandBase
       nil
     rescue StandardError => e
       Rails.logger.tagged(self.class.name) { Rails.logger.error e }
-      'Error retrieving stats'
+      "Error retrieving stats"
     end
   end
 
   private
 
   def add_next_hook
-    Discord::OsuDiscordBot.instance.client.add_await(
-      :"next_page_#{@message.id}",
-      Discordrb::Events::ReactionAddEvent,
-      emoji: RIGHT_EMOJI
-    ) do |reaction_event|
-      next true unless reaction_event.message.id == @message.id
+    Discord::OsuDiscordBot
+      .instance
+      .client
+      .add_await(:"next_page_#{@message.id}", Discordrb::Events::ReactionAddEvent, emoji: RIGHT_EMOJI) do |reaction_event|
+        next true unless reaction_event.message.id == @message.id
 
-      return true if @explode
+        return true if @explode
 
-      if @current_page == @total_pages - 1
+        if @current_page == @total_pages - 1
+          @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
+          next
+        end
+
+        @current_page += 1
+
         @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
-        next
+        @message.edit(make_text)
+
+        false
       end
-
-      @current_page += 1
-
-      @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
-      @message.edit(make_text)
-
-      false
-    end
   end
 
   def add_previous_hook
-    Discord::OsuDiscordBot.instance.client.add_await(
-      :"previous_page_#{@message.id}",
-      Discordrb::Events::ReactionAddEvent,
-      emoji: LEFT_EMOJI
-    ) do |reaction_event|
-      next true unless reaction_event.message.id == @message.id
+    Discord::OsuDiscordBot
+      .instance
+      .client
+      .add_await(:"previous_page_#{@message.id}", Discordrb::Events::ReactionAddEvent, emoji: LEFT_EMOJI) do |reaction_event|
+        next true unless reaction_event.message.id == @message.id
 
-      return true if @explode
+        return true if @explode
 
-      if @current_page.zero?
+        if @current_page.zero?
+          @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
+          next
+        end
+
+        @current_page -= 1
+
         @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
-        next
+        @message.edit(make_text)
+
+        false
       end
-
-      @current_page -= 1
-
-      @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
-      @message.edit(make_text)
-
-      false
-    end
   end
 
   def add_cleanup
@@ -106,18 +104,13 @@ class ScoreLeaderboard < CommandBase
   end
 
   def make_text
-    data = get_leaderboard(
-      PAGE_SIZE,
-      @current_page * PAGE_SIZE,
-      order: @options[:sort],
-      ascending: @options[:ascending],
-    ).map(&:values)
+    data = get_leaderboard(PAGE_SIZE, @current_page * PAGE_SIZE, order: @options[:sort], ascending: @options[:ascending]).map(&:values)
 
-    sort_indicator = @options[:ascending] ? ' ▲' : ' ▼'
+    sort_indicator = @options[:ascending] ? " ▲" : " ▼"
     sort_criteria_idx = ORDERING.keys.find_index(@options[:sort].to_sym) if @options[:sort]
     sort_criteria_idx ||= 1
 
-    labels = ['Player', 'Average score', 'Average accuracy', 'Play count']
+    labels = ["Player", "Average score", "Average accuracy", "Play count"]
 
     labels[sort_criteria_idx].concat(sort_indicator)
 

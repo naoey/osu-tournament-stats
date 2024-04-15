@@ -1,9 +1,7 @@
 module PlayerStatistics
   class AverageMissesStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .joins(:match)
-        .where(player: @player)
+      q = MatchScore.joins(:match).where(player: @player)
 
       apply_filter(q).average(:count_miss).to_f
     end
@@ -17,4 +15,3 @@ module PlayerStatistics
     end
   end
 end
-

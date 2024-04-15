@@ -1,32 +1,16 @@
-require 'rails_helper'
+require "rails_helper"
 
-require_relative '../../app/helpers/stat_calculation_helper.rb'
+require_relative "../../app/helpers/stat_calculation_helper.rb"
 
-describe 'AccuracyHelperTest' do
-  it 'returns zero when hit counts are zero' do
-    score = create(
-      :match_score,
-      count_miss: 0,
-      count_300: 0,
-      count_100: 0,
-      count_50: 0,
-      count_katu: 0,
-      count_geki: 0,
-    )
+describe "AccuracyHelperTest" do
+  it "returns zero when hit counts are zero" do
+    score = create(:match_score, count_miss: 0, count_300: 0, count_100: 0, count_50: 0, count_katu: 0, count_geki: 0)
 
     expect(StatCalculationHelper.calculate_accuracy(score)).to equal(0)
   end
 
-  it 'returns expected accuracy for a valid scores' do
-    score = create(
-      :match_score,
-      count_miss: 0,
-      count_300: 10,
-      count_100: 0,
-      count_50: 0,
-      count_katu: 0,
-      count_geki: 0,
-    )
+  it "returns expected accuracy for a valid scores" do
+    score = create(:match_score, count_miss: 0, count_300: 10, count_100: 0, count_50: 0, count_katu: 0, count_geki: 0)
 
     expect(StatCalculationHelper.calculate_accuracy(score)).to equal(1.0)
 

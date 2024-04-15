@@ -1,7 +1,7 @@
-require 'discordrb'
+require "discordrb"
 
-require_relative './command_base'
-require_relative '../../../app/services/leaderboards/player_leaderboard'
+require_relative "./command_base"
+require_relative "../../../app/services/leaderboards/player_leaderboard"
 
 class ExpLeaderboard < CommandBase
   def initialize(*args)
@@ -29,58 +29,56 @@ class ExpLeaderboard < CommandBase
       nil
     rescue StandardError => e
       Rails.logger.tagged(self.class.name) { Rails.logger.error e }
-      'Error retrieving stats'
+      "Error retrieving stats"
     end
   end
 
   private
 
   def add_next_hook
-    Discord::OsuDiscordBot.instance.client.add_await(
-      :"next_page_#{@message.id}",
-      Discordrb::Events::ReactionAddEvent,
-      emoji: RIGHT_EMOJI
-    ) do |reaction_event|
-      next true unless reaction_event.message.id == @message.id
+    Discord::OsuDiscordBot
+      .instance
+      .client
+      .add_await(:"next_page_#{@message.id}", Discordrb::Events::ReactionAddEvent, emoji: RIGHT_EMOJI) do |reaction_event|
+        next true unless reaction_event.message.id == @message.id
 
-      return true if @explode
+        return true if @explode
 
-      if @current_page == @total_pages
+        if @current_page == @total_pages
+          @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
+          next
+        end
+
+        @current_page += 1
+
         @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
-        next
+        @message.edit(make_text)
+
+        false
       end
-
-      @current_page += 1
-
-      @message.delete_reaction(reaction_event.user, RIGHT_EMOJI)
-      @message.edit(make_text)
-
-      false
-    end
   end
 
   def add_previous_hook
-    Discord::OsuDiscordBot.instance.client.add_await(
-      :"previous_page_#{@message.id}",
-      Discordrb::Events::ReactionAddEvent,
-      emoji: LEFT_EMOJI
-    ) do |reaction_event|
-      next true unless reaction_event.message.id == @message.id
+    Discord::OsuDiscordBot
+      .instance
+      .client
+      .add_await(:"previous_page_#{@message.id}", Discordrb::Events::ReactionAddEvent, emoji: LEFT_EMOJI) do |reaction_event|
+        next true unless reaction_event.message.id == @message.id
 
-      return true if @explode
+        return true if @explode
 
-      if @current_page == 1
+        if @current_page == 1
+          @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
+          next
+        end
+
+        @current_page -= 1
+
         @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
-        next
+        @message.edit(make_text)
+
+        false
       end
-
-      @current_page -= 1
-
-      @message.delete_reaction(reaction_event.user, LEFT_EMOJI)
-      @message.edit(make_text)
-
-      false
-    end
   end
 
   def add_cleanup
@@ -93,15 +91,16 @@ class ExpLeaderboard < CommandBase
   end
 
   def make_text
-    data = get_leaderboard.each_with_index.map { |d, i|
-      [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_fs(:delimited), d.message_count.to_fs(:delimited)]
-    }
+    data =
+      get_leaderboard.each_with_index.map do |d, i|
+        [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_fs(:delimited), d.message_count.to_fs(:delimited)]
+      end
 
-    sort_indicator = @options[:ascending] ? ' ▲' : ' ▼'
+    sort_indicator = @options[:ascending] ? " ▲" : " ▼"
     # sort_criteria_idx = ORDERING.keys.find_index(@options[:sort].to_sym) if @options[:sort]
     sort_criteria_idx ||= 2
 
-    labels = ['Rank', 'User', 'Level', 'Exp', 'Messages']
+    labels = %w[Rank User Level Exp Messages]
 
     labels[sort_criteria_idx].concat(sort_indicator)
 

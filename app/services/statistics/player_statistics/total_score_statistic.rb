@@ -1,8 +1,7 @@
 module PlayerStatistics
   class TotalScoreStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .where(player: @player)
+      q = MatchScore.where(player: @player)
 
       apply_filter(q).sum(:score)
     end

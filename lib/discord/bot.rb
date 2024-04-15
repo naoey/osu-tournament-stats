@@ -1,12 +1,12 @@
-require 'discordrb'
-require 'singleton'
-require 'markdown-tables'
-require 'optparse'
+require "discordrb"
+require "singleton"
+require "markdown-tables"
+require "optparse"
 
-require_relative './modules/leaderboard_commands'
-require_relative './modules/match_commands'
-require_relative './modules/registration_commands'
-require_relative '../../app/helpers/discord_helper'
+require_relative "./modules/leaderboard_commands"
+require_relative "./modules/match_commands"
+require_relative "./modules/registration_commands"
+require_relative "../../app/helpers/discord_helper"
 
 EMBED_GREEN = 3_066_993
 EMBED_RED = 15_158_332
@@ -19,9 +19,9 @@ module Discord
     attr_reader :client
 
     def initialize!
-      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Initialising Discord bot...' }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info "Initialising Discord bot..." }
 
-      @client = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], prefix: ENV['DISCORD_BOT_PREFIX']
+      @client = Discordrb::Commands::CommandBot.new token: ENV["DISCORD_BOT_TOKEN"], prefix: ENV["DISCORD_BOT_PREFIX"]
 
       @client.command %i[match_performance p], &method(:match_performance)
       @client.command %i[exp, xp], &method(:show_discord_exp)
@@ -39,11 +39,11 @@ module Discord
 
       @client.run true
 
-      ActiveSupport::Notifications.subscribe('player.discord_linked') do |_name, _started, _finished, _unique_id, data|
+      ActiveSupport::Notifications.subscribe("player.discord_linked") do |_name, _started, _finished, _unique_id, data|
         osu_verification_completed(data)
       end
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot is running' }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info "Osu Discord bot is running" }
     end
 
     def close!
@@ -52,7 +52,7 @@ module Discord
       @client&.stop
       @client = nil
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info 'Osu Discord bot has stopped' }
+      Rails.logger.tagged(self.class.name) { Rails.logger.info "Osu Discord bot has stopped" }
     end
 
     private
@@ -76,29 +76,31 @@ module Discord
         embed.color = EMBED_PURPLE
         embed.description = "KelaBot level in #{server.name}"
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'User', value: "<@#{exp.player.discord.uid}>", inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Level', value: exp.level, inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Rank', value: exp.rank.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'XP', value: exp.exp.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Next Level', value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: 'Messages', value: exp.message_count.to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: "User", value: "<@#{exp.player.discord.uid}>", inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: "Level", value: exp.level, inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: "Rank", value: exp.rank.to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(name: "XP", value: exp.exp.to_fs(:delimited), inline: true),
           Discordrb::Webhooks::EmbedField.new(
-            name: 'Progress',
-            value: (":green_square:" * (percentage / 10.0).round) + (":yellow_square:" * (10 - (percentage / 10.0).round)) + " *(#{percentage.round(2)}%)*",
+            name: "Next Level",
+            value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited),
+            inline: true
           ),
+          Discordrb::Webhooks::EmbedField.new(name: "Messages", value: exp.message_count.to_fs(:delimited), inline: true),
+          Discordrb::Webhooks::EmbedField.new(
+            name: "Progress",
+            value:
+              (":green_square:" * (percentage / 10.0).round) + (":yellow_square:" * (10 - (percentage / 10.0).round)) +
+                " *(#{percentage.round(2)}%)*"
+          )
         ]
       end
     end
 
     def match_performance(event, *args)
       begin
-        player = if args.empty?
-          Player.find_by_discord_id(event.user.id)
-        else
-          Player.find_by_name(args.join(' '))
-        end
+        player = (args.empty? ? Player.find_by_discord_id(event.user.id) : Player.find_by_name(args.join(" ")))
 
-        return 'No such player found' if player.nil?
+        return "No such player found" if player.nil?
 
         stats = player_statistics_service.get_player_stats(player)
 
@@ -107,31 +109,33 @@ module Discord
         embed = {
           title: "Stats for #{player.name}",
           color: 0x4287f5,
-          type: 'rich',
-          url: 'https://osu.naoey.pw/',
-          fields: stats
-            .except(:player)
-            .map do |k, v|
-            {
-              name: "**#{k.to_s.humanize}**",
-              inline: true,
-              value: if k == :best_accuracy
-                v[:accuracy]
-              elsif v.is_a?(Array)
-                v.length
-              else
-                v
-              end.to_s,
-            }
-          end,
+          type: "rich",
+          url: "https://osu.naoey.pw/",
+          fields:
+            stats
+              .except(:player)
+              .map do |k, v|
+                {
+                  name: "**#{k.to_s.humanize}**",
+                  inline: true,
+                  value:
+                    if k == :best_accuracy
+                      v[:accuracy]
+                    elsif v.is_a?(Array)
+                      v.length
+                    else
+                      v
+                    end.to_s
+                }
+              end
         }
 
-        event.respond('', false, embed)
+        event.respond("", false, embed)
 
         nil
       rescue StandardError => e
         Rails.logger.tagged(self.class.name) { Rails.logger.error e }
-        'Error retrieving stats'
+        "Error retrieving stats"
       end
     end
 
@@ -147,10 +151,10 @@ module Discord
         embed.url = "https://osu.ppy.sh/users/#{original_player.osu_id}"
         embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{original_player.osu_id}")
         embed.color = EMBED_RED
-        embed.description = 'Alt verification attempt'
+        embed.description = "Alt verification attempt"
         embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
-          Discordrb::Webhooks::EmbedField.new(name: 'Original user', value: "<@#{original_player.discord_id}>")
+          Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{auth_request.player.discord_id}>"),
+          Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{original_player.discord_id}>")
         ]
       end
     end
@@ -163,10 +167,8 @@ module Discord
         embed.url = "https://osu.ppy.sh/users/#{auth_request.player.osu_id}"
         embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{auth_request.player.osu_id}")
         embed.color = EMBED_RED
-        embed.description = 'Banned account verification'
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: 'New user', value: "<@#{auth_request.player.discord_id}>"),
-        ]
+        embed.description = "Banned account verification"
+        embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{auth_request.player.discord_id}>")]
       end
     end
 
@@ -187,23 +189,23 @@ module Discord
           member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
         end
 
-        @client.channel(server.verification_log_channel_id, guild).send_embed do |embed|
-          embed.title = player.name
-          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
-          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
-          embed.color = EMBED_GREEN
-          embed.description = 'Verification completed'
-          embed.fields = [
-            Discordrb::Webhooks::EmbedField.new(name: 'Discord user', value: member.mention || '<User not in server>')
-          ]
-        end
+        @client
+          .channel(server.verification_log_channel_id, guild)
+          .send_embed do |embed|
+            embed.title = player.name
+            embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+            embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+            embed.color = EMBED_GREEN
+            embed.description = "Verification completed"
+            embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member.mention || "<User not in server>")]
+          end
       end
     end
 
     # Event handling
 
     def ready(event)
-      Rails.cache.write('discord_bot/servers', DiscordServer.all.as_json)
+      Rails.cache.write("discord_bot/servers", DiscordServer.all.as_json)
     end
 
     def message(event)
@@ -213,9 +215,9 @@ module Discord
       server_id = event.message.server.id
       last_spoke_cache_key = "discord_bot/last_spoke/#{server_id}_#{author_id}"
 
-      server = Rails.cache.read('discord_bot/servers').find { |s| s['discord_id'] == server_id }
+      server = Rails.cache.read("discord_bot/servers").find { |s| s["discord_id"] == server_id }
 
-      return if server.nil? || !server['exp_enabled']
+      return if server.nil? || !server["exp_enabled"]
 
       last_spoke = Rails.cache.read(last_spoke_cache_key)
 
@@ -231,14 +233,16 @@ module Discord
         player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: author_id })
 
         if player.nil?
-          player = Player.create(name: DiscordHelper.sanitise_username(event.user.username), identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
+          player =
+            Player.create(
+              name: DiscordHelper.sanitise_username(event.user.username),
+              identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }]
+            )
         end
 
-        exp = player.discord_exp.find_by(discord_server_id: server['id'])
+        exp = player.discord_exp.find_by(discord_server_id: server["id"])
 
-        if exp.nil?
-          exp = DiscordExp.create(player: player, discord_server_id: server['id'], detailed_exp: DiscordHelper::INITIAL_EXP)
-        end
+        exp = DiscordExp.create(player: player, discord_server_id: server["id"], detailed_exp: DiscordHelper::INITIAL_EXP) if exp.nil?
 
         exp.add_exp()
 
@@ -267,7 +271,11 @@ module Discord
       server = DiscordServer.find_by(discord_id: event.server.id)
 
       if player.nil?
-        player = Player.create(name: DiscordHelper.sanitise_username(event.user.username), identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
+        player =
+          Player.create(
+            name: DiscordHelper.sanitise_username(event.user.username),
+            identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }]
+          )
       end
 
       player.discord_exp.find_or_create_by(discord_server: server)

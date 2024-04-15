@@ -1,31 +1,31 @@
-require 'base64'
+require "base64"
 
 class UsersController < ApplicationController
   before_action :authenticate_player!, except: %i[show_link_osu_discord]
 
   def show_edit_profile
-    return render status: 404 if params[:id] != 'me'
+    return render status: 404 if params[:id] != "me"
 
     @user = current_player
-    render template: 'users/show_edit_profile'
+    render template: "users/show_edit_profile"
   end
 
   def show_link_osu_discord
-    return ActionController::BadRequest if params[:f] != 'bot' || params[:s].empty?
+    return ActionController::BadRequest if params[:f] != "bot" || params[:s].empty?
 
     begin
-      discord_id, = Base64.decode64(params[:s]).split('|')
+      discord_id, = Base64.decode64(params[:s]).split("|")
       state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
 
       raise ArgumentError if state.nil?
 
       @query = Base64.encode64(request.query_string)
-      @username = state['user']['username']
-    rescue
+      @username = state["user"]["username"]
+    rescue StandardError
       raise ActionController::BadRequest
     end
 
-    render template: 'users/show_link_osu_discord'
+    render template: "users/show_link_osu_discord"
   end
 
   def delete_identity
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.json do
-        return render status: :bad_request if args[:id] != 'me'
+        return render status: :bad_request if args[:id] != "me"
 
         begin
           current_player.remove_additional_account(args[:provider])

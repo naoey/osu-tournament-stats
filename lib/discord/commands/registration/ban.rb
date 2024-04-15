@@ -1,15 +1,12 @@
-require 'discordrb'
+require "discordrb"
 
-require_relative '../command_base'
+require_relative "../command_base"
 
 class Ban < CommandBase
   protected
 
   def required_options
-    [
-      ['-t TEXT', '--type', 'Ban type. One of [soft, hard]. Default is hard ban.'],
-      ['-r TEXT', '--reason', 'Reason for ban.']
-    ]
+    [["-t TEXT", "--type", "Ban type. One of [soft, hard]. Default is hard ban."], ["-r TEXT", "--reason", "Reason for ban."]]
   end
 
   def requires_admin?

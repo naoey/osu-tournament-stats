@@ -24,29 +24,24 @@ class CreateMatchTeams < ActiveRecord::Migration[6.0]
     # migrate all the old 1v1 matches by making a team for each player
     Match.all.each do |m|
       red_player = Player.find_by_osu_id(m.player_red_id)
-      red_team = MatchTeam.create(
-        captain: red_player,
-        players: [red_player]
-      )
+      red_team = MatchTeam.create(captain: red_player, players: [red_player])
 
       red_team.save!
 
       blue_player = Player.find_by_osu_id(m.player_blue_id)
-      blue_team = MatchTeam.create(
-        captain: blue_player,
-        players: [blue_player]
-      )
+      blue_team = MatchTeam.create(captain: blue_player, players: [blue_player])
 
       blue_team.save!
 
       m.red_team = red_team
       m.blue_team = blue_team
 
-      m.winner = if m.awinner == red_player.osu_id
-                   red_team
-                 elsif m.awinner == blue_player.osu_id
-                   blue_team
-                 end
+      m.winner =
+        if m.awinner == red_player.osu_id
+          red_team
+        elsif m.awinner == blue_player.osu_id
+          blue_team
+        end
 
       m.save!
     end

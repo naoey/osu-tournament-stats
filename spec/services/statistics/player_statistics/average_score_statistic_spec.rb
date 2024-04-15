@@ -1,9 +1,9 @@
-require 'rails_helper'
+require "rails_helper"
 
-require_relative '../../../../app/services/statistics/player_statistics.rb'
+require_relative "../../../../app/services/statistics/player_statistics.rb"
 
-describe 'AverageScoreStatisticTest' do
-  it 'counts average score correctly' do
+describe "AverageScoreStatisticTest" do
+  it "counts average score correctly" do
     @scores = []
 
     def generate_score
@@ -19,7 +19,7 @@ describe 'AverageScoreStatisticTest' do
     expect(PlayerStatistics::AverageScoreStatistic.new(player).compute).to equal((@scores.reduce(:+) / @scores.size.to_f).round(2))
   end
 
-  it 'returns 0 when there are no scores' do
+  it "returns 0 when there are no scores" do
     player = create(:player)
 
     expect(PlayerStatistics::AverageScoreStatistic.new(player).compute).to equal(0.0)

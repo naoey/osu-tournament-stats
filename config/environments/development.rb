@@ -17,20 +17,17 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default charset: 'utf-8'
-  config.action_mailer.default_url_options = {
-    host: 'localhost',
-    port: 3000,
-  }
+  config.action_mailer.default charset: "utf-8"
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
   config.action_mailer.smtp_settings = {
-    address: ENV['OTS_MAIL_ADDRESS'],
-    port: ENV['OTS_MAIL_HOST'],
-    domain: ENV['OTS_MAIL_DOMAIN'],
-    user_name: ENV['OTS_MAIL_USERNAME'],
-    password: ENV['OTS_MAIL_PASSWORD'],
+    address: ENV["OTS_MAIL_ADDRESS"],
+    port: ENV["OTS_MAIL_HOST"],
+    domain: ENV["OTS_MAIL_DOMAIN"],
+    user_name: ENV["OTS_MAIL_USERNAME"],
+    password: ENV["OTS_MAIL_PASSWORD"],
     authentication: :plain,
     enable_starttls_auto: true,
-    openssl_verify_mode: 'none',
+    openssl_verify_mode: "none"
   }
   # Enable server timing
   config.server_timing = true
@@ -42,9 +39,7 @@ Rails.application.configure do
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
-    config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
-    }
+    config.public_file_server.headers = { "Cache-Control" => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
 

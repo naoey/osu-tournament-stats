@@ -1,8 +1,7 @@
 module PlayerStatistics
   class MapsFailedStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .where(player: @player)
+      q = MatchScore.where(player: @player)
 
       apply_filters(q).count(:all)
     end

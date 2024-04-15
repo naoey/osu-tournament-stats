@@ -4,9 +4,7 @@ FactoryBot.define do
     association :player
     association :beatmap
 
-    transient do
-      full_combo? { false }
-    end
+    transient { full_combo? { false } }
 
     max_combo { full_combo? ? beatmap.max_combo : rand(beatmap.max_combo) }
     count_300 { rand(max_combo) }

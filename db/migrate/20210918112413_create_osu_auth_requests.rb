@@ -1,6 +1,6 @@
 class CreateOsuAuthRequests < ActiveRecord::Migration[6.0]
   def up
-    enable_extension('uuid-ossp')
+    enable_extension("uuid-ossp")
 
     create_table :osu_auth_requests do |t|
       t.string :nonce, null: false

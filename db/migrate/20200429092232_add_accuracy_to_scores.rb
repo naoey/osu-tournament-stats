@@ -5,19 +5,22 @@ class AddAccuracyToScores < ActiveRecord::Migration[6.0]
     end
 
     # calculate accuracies for all existing scores
-    MatchScore.where(accuracy: nil).all.each do |score|
-      acc = StatCalculationHelper.calculate_accuracy(score)
+    MatchScore
+      .where(accuracy: nil)
+      .all
+      .each do |score|
+        acc = StatCalculationHelper.calculate_accuracy(score)
 
-      raise ArgumentError, "Accuracy for score with ID #{score.id} is null, migration failed" if acc.nil?
+        raise ArgumentError, "Accuracy for score with ID #{score.id} is null, migration failed" if acc.nil?
 
-      score.update(accuracy: acc)
+        score.update(accuracy: acc)
 
-      if MatchScore.find(score.id).accuracy.nil?
-        raise ArgumentError, "Accuracy for score with ID #{score.id} is null after update, migration failed"
+        if MatchScore.find(score.id).accuracy.nil?
+          raise ArgumentError, "Accuracy for score with ID #{score.id} is null after update, migration failed"
+        end
       end
-    end
 
-    failed_scores = MatchScore.where(accuracy: nil).select('id').all
+    failed_scores = MatchScore.where(accuracy: nil).select("id").all
 
     raise ArgumentError, "Accuracy is null for scores #{failed_scores.map(&:id)}; migration failed!" unless failed_scores.empty?
 
