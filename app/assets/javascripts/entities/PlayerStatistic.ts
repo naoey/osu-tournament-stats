@@ -12,11 +12,11 @@ export type PlayerStatistic = {
   perfect_maps: number[];
   average_misses: number;
   total_misses: number;
-  best_accuracy: { beatmap_id: number, accuracy: number };
+  best_accuracy: { beatmap_id: number; accuracy: number };
   average_accuracy: number;
   maps_failed: number[];
   online_id: number;
   full_combos: number[];
 
   [key: string]: any;
-}
+};

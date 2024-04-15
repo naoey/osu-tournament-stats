@@ -8,4 +8,4 @@ export type Tournament = {
   match_count: number;
   host_player: Player;
   staff?: Player[];
-}
+};

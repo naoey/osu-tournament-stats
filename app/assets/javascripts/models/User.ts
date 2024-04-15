@@ -4,8 +4,8 @@ import { deleteIdentity } from "../api/requests/UserRequests";
 import { Model } from "./Model";
 
 export enum IdentityProvider {
-  Osu = 'osu',
-  Discord = 'discord',
+  Osu = "osu",
+  Discord = "discord",
 }
 
 class IdentityAssociation extends Model {
@@ -46,7 +46,7 @@ export class User extends Model {
   discord_exp?: DiscordServerExp[];
 
   async deleteIdentity(id: Identity): Promise<User> {
-    this.identities = await Api.performRequest<Identity[]>(deleteIdentity({ provider: id.provider }))
+    this.identities = await Api.performRequest<Identity[]>(deleteIdentity({ provider: id.provider }));
     return this;
   }
 }

@@ -10,17 +10,17 @@ export type DiscordServer = {
   verification_log_channel_id: number;
   exp_enabled: boolean;
   exp_roles_config: Array<[number, number]>;
-}
+};
 
 export type DiscordExp = {
-  id: number,
-  player_id: number,
-  discord_server_id: number,
-  exp: number,
-  detailed_exp: [number, number, number],
-  level: number,
-  message_count: number,
-  created_at: string,
-  updated_at: string,
-  player: Player
-}
+  id: number;
+  player_id: number;
+  discord_server_id: number;
+  exp: number;
+  detailed_exp: [number, number, number];
+  level: number;
+  message_count: number;
+  created_at: string;
+  updated_at: string;
+  player: Player;
+};

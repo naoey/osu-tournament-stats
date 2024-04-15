@@ -1,20 +1,20 @@
 const path = require("path");
 const webpack = require("webpack");
 // Extracts CSS into .css file
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // Removes exported JavaScript files from CSS-only entries
 // in this example, entry.custom will create a corresponding empty custom.js file
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const RemoveEmptyScriptsPlugin = require("webpack-remove-empty-scripts");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 let isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
   mode: isDevelopment ? "development" : "production",
-  devtool: isDevelopment ? 'eval-source-map' : undefined,
+  devtool: isDevelopment ? "eval-source-map" : undefined,
   context: path.resolve("."),
   entry: {
-    application: "./app/assets/javascripts/application.js"
+    application: "./app/assets/javascripts/application.js",
   },
   devServer: {
     compress: true,
@@ -33,39 +33,36 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?|.jsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
       },
       // Add CSS/SASS/SCSS rule with loaders
       {
         test: /\.(?:sa|sc|c)ss$/i,
-        use: [
-          isDevelopment && "style-loader",
-          !isDevelopment && MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader'
-        ].filter(Boolean),
+        use: [isDevelopment && "style-loader", !isDevelopment && MiniCssExtractPlugin.loader, "css-loader", "sass-loader"].filter(
+          Boolean,
+        ),
       },
       {
         test: /\.(png|jpe?g|gif|eot|woff2|woff|ttf|svg)$/i,
-        use: 'file-loader',
+        use: "file-loader",
       },
     ],
   },
   resolve: {
     // Add additional file types
-    extensions: ['.js', '.jsx', '.scss', '.css', '.ts', '.tsx'],
+    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx"],
   },
   plugins: [
     new RemoveEmptyScriptsPlugin(),
     new MiniCssExtractPlugin(),
     new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
+      maxChunks: 1,
     }),
     new CleanWebpackPlugin(),
   ],
   optimization: {
     moduleIds: "deterministic",
-    splitChunks: false
-  }
+    splitChunks: false,
+  },
 };
