@@ -179,7 +179,7 @@ module Discord
 
       servers.each do |server|
         guild = @client.server(server.discord_id)
-        member = @client.member(server.discord_id, player.discord_id)
+        member = @client.member(server.discord_id, player.discord.uid)
 
         next if guild.nil? || member.nil? # Bot probably removed from server
 
