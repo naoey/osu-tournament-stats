@@ -232,13 +232,8 @@ module Discord
 
         player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: author_id })
 
-        if player.nil?
-          player =
-            Player.create(
-              name: DiscordHelper.sanitise_username(event.user.username),
-              identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }]
-            )
-        end
+        # Not giving any exp to users whose Discords aren't linked
+        return if player.nil?
 
         exp = player.discord_exp.find_by(discord_server_id: server["id"])
 
