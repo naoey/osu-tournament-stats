@@ -128,9 +128,11 @@ class Player < ApplicationRecord
     discord_id, guid = Base64.decode64(state).split("|")
 
     saved_state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
-    raw = saved_state["user"]
 
     raise OsuAuthErrors::TimeoutError if saved_state.empty?
+
+    raw = saved_state["user"]
+
     raise OsuAuthErrors::UnauthorisedError if saved_state["guid"] != guid
     raise OsuAuthErrors::UnauthorisedError if raw["id"] != discord_id.to_i
 

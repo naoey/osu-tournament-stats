@@ -31,7 +31,7 @@ class Register < CommandBase
     link =
       Player.get_osu_verification_link(
         {
-          username: user.global_name,
+          username: user.global_name || user.username,
           id: user.id,
           joined_at: user.joined_at,
           bot_account: user.bot_account,

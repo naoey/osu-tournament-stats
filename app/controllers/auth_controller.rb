@@ -44,9 +44,9 @@ class AuthController < Devise::OmniauthCallbacksController
       if flow_code.zero?
         begin
           player.complete_osu_verification_link(params["s"])
-        rescue OsuAuthError::TimeoutError
+        rescue OsuAuthErrors::TimeoutError
           return render plain: "Timeout"
-        rescue OsuAuthError::UnauthorisedError
+        rescue OsuAuthErrors::UnauthorisedError
           raise ActionController::BadRequest
         end
       else
