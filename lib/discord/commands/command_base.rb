@@ -1,4 +1,4 @@
-require 'optparse'
+require "optparse"
 
 class CommandBase
   def initialize(bot, event, *args)
@@ -10,7 +10,7 @@ class CommandBase
   end
 
   def respond
-    @event.respond(content: 'Can only be used by staff!', ephemeral: true) if requires_admin? && !invoker_admin?
+    @event.respond(content: "Can only be used by staff!", ephemeral: true) if requires_admin? && !invoker_admin?
 
     begin
       handle_response

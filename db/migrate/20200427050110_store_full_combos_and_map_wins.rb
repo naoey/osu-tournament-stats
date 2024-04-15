@@ -15,13 +15,9 @@ class StoreFullCombosAndMapWins < ActiveRecord::Migration[6.0]
         end
 
         # find both teams total scores
-        player_team_score = MatchScore
-          .where({ player: player_team.players, match: score.match, beatmap: score.beatmap })
-          .sum(:score)
+        player_team_score = MatchScore.where({ player: player_team.players, match: score.match, beatmap: score.beatmap }).sum(:score)
 
-        other_team_score = MatchScore
-          .where({ player: other_team.players, match: score.match, beatmap: score.beatmap })
-          .sum(:score)
+        other_team_score = MatchScore.where({ player: other_team.players, match: score.match, beatmap: score.beatmap }).sum(:score)
 
         score.update(
           is_win: player_team_score > other_team_score,

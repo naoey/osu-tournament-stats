@@ -1,10 +1,12 @@
 import { User } from "./app/assets/javascripts/models/User";
 
 declare global {
-  interface Window { currentUser: User }
+  interface Window {
+    currentUser: User;
+  }
 }
 
-declare module '*.scss' {
+declare module "*.scss" {
   const content: Record<string, string>;
   export default content;
 }

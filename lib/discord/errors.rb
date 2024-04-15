@@ -1,3 +1,4 @@
 module DiscordErrors
-  class DiscordDisabledError < StandardError; end
+  class DiscordDisabledError < StandardError
+  end
 end

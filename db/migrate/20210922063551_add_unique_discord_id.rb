@@ -11,7 +11,7 @@ class AddUniqueDiscordId < ActiveRecord::Migration[6.0]
       p.destroy
     end
 
-    add_index :players, :discord_id, unique: true, name: 'index_unique_discord_ids'
+    add_index :players, :discord_id, unique: true, name: "index_unique_discord_ids"
 
     Player.all.each do |p|
       p.osu_verified_on = p.osu_auth_requests.where(resolved: true).order(updated_at: :desc).first&.updated_at
@@ -22,6 +22,6 @@ class AddUniqueDiscordId < ActiveRecord::Migration[6.0]
 
   def down
     remove_column :players, :osu_verified_on
-    remove_index :players, name: 'index_unique_discord_ids'
+    remove_index :players, name: "index_unique_discord_ids"
   end
 end

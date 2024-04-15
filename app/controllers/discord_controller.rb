@@ -11,7 +11,6 @@ class DiscordController < ApplicationController
   end
 
   def update
-
   end
 
   def show_server
@@ -19,23 +18,22 @@ class DiscordController < ApplicationController
   end
 
   def show_exp_leaderboard
-    data = DiscordExp
-      .where(discord_server_id: params[:server_id])
-      .order(exp: :desc, player_id: :asc)
-      .includes(%i[player])
-      .page(params[:page])
-      .per(params[:limit])
-      .to_json(:include => :player)
+    data =
+      DiscordExp
+        .where(discord_server_id: params[:server_id])
+        .order(exp: :desc, player_id: :asc)
+        .includes(%i[player])
+        .page(params[:page])
+        .per(params[:limit])
+        .to_json(include: :player)
 
     respond_to do |format|
-      format.html {
+      format.html do
         @data = data
         render status: :ok
-      }
+      end
 
-      format.json {
-        render json: data, status: :ok
-      }
+      format.json { render json: data, status: :ok }
     end
   end
 

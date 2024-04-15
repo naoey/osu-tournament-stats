@@ -17,7 +17,13 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
       t.references :player, null: false, foreign_key: true
       t.references(
         :auth_providers,
-        type: :string, null: false, foreign_key: { to_table: :auth_providers, primary_key: :name, column: :provider }
+        type: :string,
+        null: false,
+        foreign_key: {
+          to_table: :auth_providers,
+          primary_key: :name,
+          column: :provider
+        }
       )
 
       t.index %i[auth_providers_id player_id uid], unique: true
@@ -29,10 +35,9 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
     rename_column :player_auths, :auth_providers_id, :provider
 
     # create standard auth providers
-    AuthProvider.insert_all([
-      { name: 'osu', display_name: 'osu!', enabled: true },
-      { name: 'discord', display_name: 'Discord', enabled: true }
-    ])
+    AuthProvider.insert_all(
+      [{ name: "osu", display_name: "osu!", enabled: true }, { name: "discord", display_name: "Discord", enabled: true }]
+    )
 
     reversible do |d|
       d.up do
@@ -43,8 +48,24 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
         puts("⚠️migrating #{players_to_migrate.all.count} existing players to new identities structure")
 
         players_to_migrate.each do |p|
-          p.identities.build(uid: p.osu_id, provider: 'osu', uname: p.name, created_at: p.osu_verified_on) if p.osu_verified
-          p.identities.build(uid: p.discord_id, provider: 'discord', uname: p.name, created_at: p.osu_verified_on || p.created_at) unless p.discord_id.nil?
+          unless p.osu_id.nil?
+            p.identities.build(
+              uid: p.osu_id,
+              provider: "osu",
+              uname: p.name || "kela",
+              created_at: p.osu_verified_on || p.created_at,
+              raw: Hash.new
+            )
+          end
+          unless p.discord_id.nil?
+            p.identities.build(
+              uid: p.discord_id,
+              provider: "discord",
+              uname: p.name || "kela",
+              created_at: p.osu_verified_on || p.created_at,
+              raw: Hash.new
+            )
+          end
           p.save!
         end
       end
@@ -57,14 +78,14 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
     remove_column :players, :osu_verified, :boolean
 
     drop_table :osu_auth_requests do |t|
-      t.string 'nonce', null: false
-      t.boolean 'resolved', default: false, null: false
-      t.bigint 'player_id', null: false
-      t.bigint 'discord_server_id'
-      t.datetime 'created_at', null: false
-      t.datetime 'updated_at', null: false
-      t.index ['discord_server_id'], name: 'index_osu_auth_requests_on_discord_server_id'
-      t.index ['player_id'], name: 'index_osu_auth_requests_on_player_id'
+      t.string "nonce", null: false
+      t.boolean "resolved", default: false, null: false
+      t.bigint "player_id", null: false
+      t.bigint "discord_server_id"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index ["discord_server_id"], name: "index_osu_auth_requests_on_discord_server_id"
+      t.index ["player_id"], name: "index_osu_auth_requests_on_player_id"
     end
   end
 end

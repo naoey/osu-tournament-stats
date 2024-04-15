@@ -5,4 +5,4 @@ export type MatchTeam = {
   players: Player[];
   captain: Player;
   id: number;
-}
+};

@@ -9,7 +9,7 @@ class CreateDiscordExps < ActiveRecord::Migration[7.0]
       t.column :level, :int, null: false, default: 0
       t.column :message_count, :int, null: false, default: 0
 
-      t.index %i[player_id discord_server_id], name: 'uniq_player_exp_per_server', unique: true
+      t.index %i[player_id discord_server_id], name: "uniq_player_exp_per_server", unique: true
 
       t.timestamps
     end

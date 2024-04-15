@@ -1,15 +1,12 @@
-require 'discordrb'
+require "discordrb"
 
-require_relative '../command_base'
+require_relative "../command_base"
 
 class Unban < CommandBase
   protected
 
   def required_options
-    [
-      ['-d INTEGER', '--discord-id', 'Discord ID linked to the user'],
-      ['-o INTEGER', '--osu-id', 'osu! ID to unban']
-    ]
+    [["-d INTEGER", "--discord-id", "Discord ID linked to the user"], ["-o INTEGER", "--osu-id", "osu! ID to unban"]]
   end
 
   def requires_admin?
@@ -17,9 +14,9 @@ class Unban < CommandBase
   end
 
   def make_response
-    return @event.respond('No user specified to unregister') if @event.message.mentions.length.zero?
+    return @event.respond("No user specified to unregister") if @event.message.mentions.length.zero?
 
-    return @event.respond('Mention a single user to unregister') if @event.message.mentions.length > 1
+    return @event.respond("Mention a single user to unregister") if @event.message.mentions.length > 1
 
     mentioned_member = @event.message.server.member(@event.message.mentions.first.id)
 

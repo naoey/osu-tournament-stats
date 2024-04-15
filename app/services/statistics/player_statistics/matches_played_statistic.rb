@@ -3,9 +3,10 @@ module PlayerStatistics
   # Statistic that computes how many matches a given [Player](#Player) has participated in.
   class MatchesPlayedStatistic < PlayerStatistics::PlayerStatistic
     def compute
-      query = Match
-        .joins('JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)')
-        .where('match_teams_players.player_id = ?', player.id)
+      query =
+        Match.joins(
+          "JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)"
+        ).where("match_teams_players.player_id = ?", player.id)
 
       query = apply_filter(query)
 

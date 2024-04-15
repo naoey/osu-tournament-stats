@@ -6,8 +6,8 @@ import { UserEvents } from "../events/UserEvents";
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: RequestDescriptor): Promise<P> {
     const headers = {
-      ...(options && options.headers) || {},
-      "Accept": ContentType.Json,
+      ...((options && options.headers) || {}),
+      Accept: ContentType.Json,
       "Content-Type": ContentType.Json,
     };
 
@@ -24,7 +24,7 @@ export default class Api {
     // TODO: set up the request here first with auth headers and whatnot
 
     const opts: RequestInit = {
-      ...options || {},
+      ...(options || {}),
       credentials: "same-origin",
       mode: "same-origin",
     };
@@ -44,7 +44,7 @@ export default class Api {
       }
 
       if (response.status >= 400) {
-        console.log('Response status greater than 400, json is', json);
+        console.log("Response status greater than 400, json is", json);
         throw new RequestError(json?.error ?? "An error occurred!", response.status, (json && json.code) || null);
       }
 
@@ -59,7 +59,7 @@ export default class Api {
       console.error(`Request to ${url} failed!`, e.code, e.status);
 
       if (e.code === "AbortError") {
-        throw new RequestError("Request cancelled!", 0, 'E_REQUEST_CANCELLED');
+        throw new RequestError("Request cancelled!", 0, "E_REQUEST_CANCELLED");
       }
 
       throw e;

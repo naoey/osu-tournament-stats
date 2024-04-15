@@ -15,7 +15,7 @@ export enum PoolBeatmapCategory {
  */
 export type PoolBeatmap = Beatmap & {
   category: PoolBeatmapCategory;
-}
+};
 
 /**
  * Represents a pool of beatmaps that can be used in a match.
@@ -26,4 +26,4 @@ export type BeatmapPool = {
   created_at: string;
   updated_at: string;
   beatmaps: PoolBeatmap[];
-}
+};

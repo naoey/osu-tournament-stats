@@ -4,4 +4,4 @@ export type Player = {
   created_at: string;
   osu_id?: number;
   discord_id?: number;
-}
+};

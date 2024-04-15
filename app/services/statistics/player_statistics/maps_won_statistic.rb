@@ -1,13 +1,11 @@
 module PlayerStatistics
   class MapsWonStatistic < PlayerStatistic
     def compute
-      player_team_fragment = Match.sanitize_sql_for_conditions([
-        'player_id = ?',
-        @player.id
-      ])
+      player_team_fragment = Match.sanitize_sql_for_conditions(["player_id = ?", @player.id])
 
       # TODO: there HAS to be a better way to compute this
-      sql = "SELECT COUNT(*) as maps_won FROM (
+      sql =
+        "SELECT COUNT(*) as maps_won FROM (
               SELECT MAX(team_total_score), team_id FROM (
                 -- Get all players in a given set of teams
                 SELECT SUM(match_scores.score) as team_total_score, match_scores.beatmap_id, team_players.match_id, match_teams_players.player_id, team_players.team_id FROM match_teams_players
@@ -32,7 +30,7 @@ module PlayerStatistics
             ) AS total_team_scores
             WHERE team_id IN (SELECT match_team_id FROM match_teams_players WHERE #{player_team_fragment})"
 
-      ActiveRecord::Base.connection.execute(sql)[0]['maps_won']
+      ActiveRecord::Base.connection.execute(sql)[0]["maps_won"]
     end
 
     protected
@@ -40,7 +38,8 @@ module PlayerStatistics
     ##
     # Not allowed on this stat because the SQL is weird and handwritten
     def apply_filters
-      raise NotImplementedError, "#{self.class.name} does not allow queryable filtering, use apply_tournament_filter, apply_match_filter instead"
+      raise NotImplementedError,
+            "#{self.class.name} does not allow queryable filtering, use apply_tournament_filter, apply_match_filter instead"
     end
   end
 end

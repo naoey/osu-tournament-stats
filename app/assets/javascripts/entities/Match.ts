@@ -12,4 +12,4 @@ export type Match = {
   tournament?: Tournament;
   online_id: number;
   beatmap_pool?: BeatmapPool;
-}
+};

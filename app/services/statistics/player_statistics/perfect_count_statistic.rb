@@ -1,9 +1,7 @@
 module PlayerStatistics
   class PerfectCountStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .joins(:match)
-        .where(player: @player, perfect: true)
+      q = MatchScore.joins(:match).where(player: @player, perfect: true)
 
       apply_filter(q).count(:all)
     end
@@ -17,4 +15,3 @@ module PlayerStatistics
     end
   end
 end
-

@@ -16,4 +16,4 @@ export type Beatmap = {
   duration: number;
   max_combo: number;
   availability: BeatmapAvailability;
-}
+};

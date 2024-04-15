@@ -10,4 +10,4 @@ export type User = Player & {
   last_login: string;
   email: string;
   privilege: UserPrivilege;
-}
+};

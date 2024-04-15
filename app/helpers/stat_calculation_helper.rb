@@ -4,7 +4,11 @@ module StatCalculationHelper
     d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
     if d.zero?
-      Rails.logger.tagged(self.class.name) { Rails.logger.debug "Denominator for accuracy calculation of score #{score} is zero, using zero acc instead." }
+      Rails
+        .logger
+        .tagged(self.class.name) do
+          Rails.logger.debug "Denominator for accuracy calculation of score #{score} is zero, using zero acc instead."
+        end
       return 0
     end
 
@@ -14,6 +18,6 @@ module StatCalculationHelper
   end
 
   def self.fc?(score, beatmap)
-    score['count_miss'].to_i.zero? && (beatmap.max_combo - score['max_combo'].to_i) <= 0.01 * beatmap.max_combo
+    score["count_miss"].to_i.zero? && (beatmap.max_combo - score["max_combo"].to_i) <= 0.01 * beatmap.max_combo
   end
 end

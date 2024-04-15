@@ -4,6 +4,6 @@ class Beatmap < ApplicationRecord
   validates_uniqueness_of :online_id
 
   def as_json(*)
-    super.except('created_at', 'updated_at')
+    super.except("created_at", "updated_at")
   end
 end

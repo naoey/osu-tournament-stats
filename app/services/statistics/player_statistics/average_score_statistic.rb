@@ -1,8 +1,7 @@
 module PlayerStatistics
   class AverageScoreStatistic < PlayerStatistic
     def compute
-      q = MatchScore
-        .where(player: @player)
+      q = MatchScore.where(player: @player)
 
       # TODO: check why this is returning BigDecimal, this cast to float should be unnecessary
       apply_filter(q).average(:score)&.round(2).to_f || 0

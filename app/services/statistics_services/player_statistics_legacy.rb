@@ -2,19 +2,20 @@ module StatisticsServices
   ##
   # Service that provides functionality for various player statistics related operations.
   class PlayerStatistics_Legacy
-    def get_all_player_stats_for_tournament(tournament_id, round_name_search = '')
+    def get_all_player_stats_for_tournament(tournament_id, round_name_search = "")
       @data = []
 
-      raise GenericExceptions::NotFoundError 'Tournament not found' if Tournament.find(tournament_id).nil?
+      raise GenericExceptions.NotFoundError "Tournament not found" if Tournament.find(tournament_id).nil?
 
       Player.all.each do |player|
-        player_scores = MatchScore
-          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-          .joins('LEFT JOIN tournaments ON matches.tournament_id = tournaments.id')
-          .select('match_scores.*, matches.round_name')
-          .where('tournaments.id = ?', tournament_id)
-          .where(player: player)
-          .where('matches.round_name like ?', "%#{round_name_search}%")
+        player_scores =
+          MatchScore
+            .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
+            .joins("LEFT JOIN tournaments ON matches.tournament_id = tournaments.id")
+            .select("match_scores.*, matches.round_name")
+            .where("tournaments.id = ?", tournament_id)
+            .where(player: player)
+            .where("matches.round_name like ?", "%#{round_name_search}%")
 
         next if player_scores.count(:all).zero?
 
@@ -24,21 +25,22 @@ module StatisticsServices
       @data
     end
 
-    def get_all_player_stats_for_match(match_id, round_name_search = '')
+    def get_all_player_stats_for_match(match_id, round_name_search = "")
       @data = []
 
       match = Match.find(match_id)
 
-      raise GenericExceptions::NotFoundError 'Match not found' if match.nil?
+      raise GenericExceptions.NotFoundError "Match not found" if match.nil?
 
       match.players.each do |player|
-        player_scores = MatchScore
-          .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-          .joins('LEFT JOIN tournaments ON matches.tournament_id = tournaments.id')
-          .select('match_scores.*, matches.round_name')
-          .where('match_scores.match_id = ?', match_id)
-          .where(player: player)
-          .where('matches.round_name like ?', "%#{round_name_search}%")
+        player_scores =
+          MatchScore
+            .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
+            .joins("LEFT JOIN tournaments ON matches.tournament_id = tournaments.id")
+            .select("match_scores.*, matches.round_name")
+            .where("match_scores.match_id = ?", match_id)
+            .where(player: player)
+            .where("matches.round_name like ?", "%#{round_name_search}%")
 
         next if player_scores.count(:all).zero?
 
@@ -49,21 +51,20 @@ module StatisticsServices
     end
 
     def get_player_stats(player)
-      player_scores = MatchScore
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.*')
-        .where(player: player)
+      player_scores =
+        MatchScore.joins("LEFT JOIN matches ON match_scores.match_id = matches.id").select("match_scores.*").where(player: player)
 
       return {} if player_scores.count(:all).zero?
 
-      create_player_match_statistic(player, player_scores, '', nil)
+      create_player_match_statistic(player, player_scores, "", nil)
     end
 
     def get_player_leaderboard(*player_ids)
-      player_scores = MatchScore
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.*, matches.*')
-        .where(player: player_ids)
+      player_scores =
+        MatchScore
+          .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
+          .select("match_scores.*, matches.*")
+          .where(player: player_ids)
 
       return [] if player_scores.count(:all).zero?
     end
@@ -73,7 +74,11 @@ module StatisticsServices
       d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
       if d.zero?
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead." }
+        Rails
+          .logger
+          .tagged(self.class.name) do
+            Rails.logger.debug "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead."
+          end
         return 0
       end
 
@@ -86,23 +91,26 @@ module StatisticsServices
 
     # TODO: all these x? methods should take a queryable and get the result
     def matches_played?(player, tournament_id: nil, round_name: nil)
-      q = Match
-        .joins('JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)')
-        .where('match_teams_players.player_id = ?', player.id)
+      q =
+        Match.joins(
+          "JOIN match_teams_players ON match_teams_players.match_team_id IN (matches.red_team_id, matches.blue_team_id)"
+        ).where("match_teams_players.player_id = ?", player.id)
 
-      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name LIKE ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
+      q = q.where("matches.tournament_id = ?", tournament_id) unless tournament_id.nil?
+      q = q.where("matches.round_name LIKE ?", "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
       q.count(:all)
     end
 
     def matches_won?(player, tournament_id: nil, round_name: nil)
-      q = Match
-        .joins('JOIN match_teams_players ON match_teams_players.match_team_id = matches.winner_id')
-        .where('match_teams_players.player_id = ?', player.id)
+      q =
+        Match.joins("JOIN match_teams_players ON match_teams_players.match_team_id = matches.winner_id").where(
+          "match_teams_players.player_id = ?",
+          player.id
+        )
 
-      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil? || round_name.empty?
+      q = q.where("matches.tournament_id = ?", tournament_id) unless tournament_id.nil?
+      q = q.where("matches.round_name like ?", "%#{round_name}%") unless round_name.nil? || round_name.empty?
 
       q.count
     end
@@ -110,28 +118,30 @@ module StatisticsServices
     def full_combos?(player, tournament_id: nil, match_id: nil, round_name: nil)
       # this is following Potla's formula for approximated FCs since we we can't differentiate sliderbreaks
       # from slider end misses from the scores alone
-      q = MatchScore
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .select('match_scores.*, matches.*')
-        .where("player_id = #{player.id} AND is_full_combo = 1")
+      q =
+        MatchScore
+          .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
+          .select("match_scores.*, matches.*")
+          .where("player_id = #{player.id} AND is_full_combo = 1")
 
-      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.id = ?', match_id) unless match_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where("matches.tournament_id = ?", tournament_id) unless tournament_id.nil?
+      q = q.where("matches.id = ?", match_id) unless match_id.nil?
+      q = q.where("matches.round_name like ?", "%#{round_name}%") unless round_name.nil?
 
       q.all.map(&:beatmap_id)
     end
 
     def maps_won?(player, tournament_id: nil, match_id: nil, round_name: nil)
-      q = MatchScore
-        .joins('LEFT JOIN matches ON match_scores.match_id = matches.id')
-        .joins('LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.id')
-        .select('match_scores.*, matches.*')
-        .where("player_id = #{player.id} AND is_win = 1")
+      q =
+        MatchScore
+          .joins("LEFT JOIN matches ON match_scores.match_id = matches.id")
+          .joins("LEFT JOIN beatmaps ON match_scores.beatmap_id = beatmaps.id")
+          .select("match_scores.*, matches.*")
+          .where("player_id = #{player.id} AND is_win = 1")
 
-      q = q.where('matches.tournament_id = ?', tournament_id) unless tournament_id.nil?
-      q = q.where('matches.id = ?', match_id) unless match_id.nil?
-      q = q.where('matches.round_name like ?', "%#{round_name}%") unless round_name.nil?
+      q = q.where("matches.tournament_id = ?", tournament_id) unless tournament_id.nil?
+      q = q.where("matches.id = ?", match_id) unless match_id.nil?
+      q = q.where("matches.round_name like ?", "%#{round_name}%") unless round_name.nil?
 
       q.all.map(&:beatmap_id)
     end
@@ -156,7 +166,7 @@ module StatisticsServices
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
         maps_failed: player_scores.where(player_id: player.id, pass: false).all.map(&:beatmap_id).uniq,
-        full_combos: full_combos?(player, match_id: match_id),
+        full_combos: full_combos?(player, match_id: match_id)
       }
     end
 
@@ -175,7 +185,7 @@ module StatisticsServices
         average_score: player_scores.average(:score).round(2),
         total_score: player_scores.sum(:score),
         maps_failed: player_scores.where(player_id: player.id, pass: false).all.map(&:beatmap_id).uniq,
-        full_combos: full_combos?(player, tournament_id: tournament_id, round_name: round_name_search),
+        full_combos: full_combos?(player, tournament_id: tournament_id, round_name: round_name_search)
       }
     end
   end

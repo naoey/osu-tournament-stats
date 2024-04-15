@@ -9,4 +9,4 @@ export enum RecentActivityType {
 export type RecentActivity = {
   type: RecentActivityType;
   data: any[];
-}
+};

@@ -4,10 +4,7 @@ class TournamentsController < ApplicationController
   before_action :authenticate_player!, except: %i[show show_tournament]
 
   def show
-    @data = Tournament
-      .where('name LIKE ?', "%#{params[:name]}%")
-      .all
-      .map(&method(:create_tournament_json))
+    @data = Tournament.where("name LIKE ?", "%#{params[:name]}%").all.map(&method(:create_tournament_json))
 
     respond_to do |format|
       format.html
@@ -16,7 +13,7 @@ class TournamentsController < ApplicationController
   end
 
   def show_tournament
-    (@tournament = Tournament.find_by_id(params[:id])) || raise(ActionController::RoutingError, 'Tournament not found')
+    (@tournament = Tournament.find_by_id(params[:id])) || raise(ActionController::RoutingError, "Tournament not found")
     @tournament = create_tournament_json(@tournament)
 
     respond_to do |format|
@@ -62,13 +59,13 @@ class TournamentsController < ApplicationController
       start_date: tournament.start_date,
       end_date: tournament.end_date,
       created_at: tournament.created_at,
-      updated_at: tournament.updated_at,
+      updated_at: tournament.updated_at
     }
   end
 
   def create_player_json(player)
     return nil if player.nil?
 
-    player.as_json.except('updated_at')
+    player.as_json.except("updated_at")
   end
 end

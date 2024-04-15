@@ -9,7 +9,6 @@ export default class RequestError extends Error {
     this.message = message;
     this.status = status;
 
-    if (code)
-      this.code = code;
+    if (code) this.code = code;
   }
 }

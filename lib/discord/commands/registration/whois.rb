@@ -1,19 +1,17 @@
-require_relative '../command_base'
+require_relative "../command_base"
 
 class Whois < CommandBase
   def self.required_options
-    [
-      [[6, 'user', 'The user whose info to show'], { required: true }]
-    ]
+    [[[6, "user", "The user whose info to show"], { required: true }]]
   end
 
   protected
 
   def handle_response
-    player = PlayerAuth.find_by(provider: :discord, uid: @event.options['user'].to_i)&.player
+    player = PlayerAuth.find_by(provider: :discord, uid: @event.options["user"].to_i)&.player
 
-    return @event.respond(content: 'User is not registered with KelaBot') if player.nil?
-    return @event.respond(content: 'User has no linked osu! ID') if player.osu.nil?
+    return @event.respond(content: "User is not registered with KelaBot") if player.nil?
+    return @event.respond(content: "User has no linked osu! ID") if player.osu.nil?
 
     @event.respond(
       embeds: [
@@ -24,24 +22,21 @@ class Whois < CommandBase
           color: EMBED_GREEN,
           fields: [
             Discordrb::Webhooks::EmbedField.new(
-              name: 'Discord user',
-              value: @bot.member(@event.server.id, player.discord.uid).mention || 'MIA',
+              name: "Discord user",
+              value: @bot.member(@event.server.id, player.discord.uid).mention || "MIA",
               inline: true
             ),
-            Discordrb::Webhooks::EmbedField.new(name: 'osu! ID', value: player.osu.uid, inline: true),
+            Discordrb::Webhooks::EmbedField.new(name: "osu! ID", value: player.osu.uid, inline: true),
             Discordrb::Webhooks::EmbedField.new(
-              name: 'Ban status',
+              name: "Ban status",
               value: Player.ban_statuses.key(player.ban_status).capitalize,
               inline: true
             ),
-            Discordrb::Webhooks::EmbedField.new(name: 'Ban count', value: player.ban_history.count.to_s, inline: true),
+            Discordrb::Webhooks::EmbedField.new(name: "Ban count", value: player.ban_history.count.to_s, inline: true),
+            Discordrb::Webhooks::EmbedField.new(name: "Created on", value: "<t:#{player.created_at.to_time.to_i}>"),
             Discordrb::Webhooks::EmbedField.new(
-              name: 'Created on',
-              value: "<t:#{player.created_at.to_time.to_i}>"
-            ),
-            Discordrb::Webhooks::EmbedField.new(
-              name: 'osu! verified on',
-              value: player.osu ? "<t:#{player.osu.created_at.to_time.to_i}>" : 'N/A'
+              name: "osu! verified on",
+              value: player.osu ? "<t:#{player.osu.created_at.to_time.to_i}>" : "N/A"
             )
           ]
         )
