@@ -54,8 +54,7 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
               provider: "osu",
               uname: p.name || "kela",
               created_at: p.osu_verified_on || p.created_at,
-              raw: {
-              }
+              raw: Hash.new
             )
           end
           unless p.discord_id.nil?
@@ -64,8 +63,7 @@ class AddOmniauthToPlayers < ActiveRecord::Migration[7.0]
               provider: "discord",
               uname: p.name || "kela",
               created_at: p.osu_verified_on || p.created_at,
-              raw: {
-              }
+              raw: Hash.new
             )
           end
           p.save!
