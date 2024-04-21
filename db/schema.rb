@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
-  create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb3", force: :cascade do |t|
     t.string "display_name"
     t.boolean "enabled"
   end
@@ -47,7 +47,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discord_server_id"], name: "index_discord_exps_on_discord_server_id"
-    t.index ["player_id", "discord_server_id"], name: "uniq_player_exp_per_server", unique: true
+    t.index %w[player_id discord_server_id], name: "uniq_player_exp_per_server", unique: true
     t.index ["player_id"], name: "index_discord_exps_on_player_id"
   end
 
@@ -99,7 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
   create_table "match_teams_players", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "match_team_id", null: false
     t.bigint "player_id", null: false
-    t.index ["match_team_id", "player_id"], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
+    t.index %w[match_team_id player_id], name: "index_match_teams_players_on_match_team_id_and_player_id", unique: true
   end
 
   create_table "matches", charset: "utf8mb3", force: :cascade do |t|
@@ -116,7 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "player_auths", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "player_auths", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "uid", null: false
     t.string "uname", null: false
     t.json "raw"
@@ -125,7 +125,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["player_id"], name: "index_player_auths_on_player_id"
-    t.index ["provider", "player_id", "uid"], name: "index_player_auths_on_provider_and_player_id_and_uid", unique: true
+    t.index %w[provider player_id uid], name: "index_player_auths_on_provider_and_player_id_and_uid", unique: true
     t.index ["provider"], name: "index_player_auths_on_provider"
   end
 
@@ -167,7 +167,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.index ["invitation_token"], name: "index_players_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_players_on_invitations_count"
     t.index ["invited_by_id"], name: "index_players_on_invited_by_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_players_on_invited_by_type_and_invited_by_id"
+    t.index %w[invited_by_type invited_by_id], name: "index_players_on_invited_by_type_and_invited_by_id"
     t.index ["reset_password_token"], name: "index_players_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_players_on_unlock_token", unique: true
   end
