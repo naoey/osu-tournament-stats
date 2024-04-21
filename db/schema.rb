@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
-  create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb3", force: :cascade do |t|
     t.string "display_name"
     t.boolean "enabled"
   end
@@ -116,7 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_20_074049) do
     t.index ["winner_id"], name: "fk_rails_9d0deeb219"
   end
 
-  create_table "player_auths", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "player_auths", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "uid", null: false
     t.string "uname", null: false
     t.json "raw"
