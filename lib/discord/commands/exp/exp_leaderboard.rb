@@ -1,7 +1,7 @@
 require "discordrb"
 
-require_relative "./command_base"
-require_relative "../../../app/services/leaderboards/player_leaderboard"
+require_relative "../command_base"
+require_relative "../../../../app/services/leaderboards/player_leaderboard"
 
 class ExpLeaderboard < CommandBase
   def initialize(*args)
@@ -11,11 +11,17 @@ class ExpLeaderboard < CommandBase
     @total_pages = get_leaderboard.total_pages
   end
 
+  def required_options
+    [
+      [[5, "ascending", "Sort in ascending order"], {}]
+    ]
+  end
+
   protected
 
-  def make_response
+  def handle_response
     begin
-      @message = @event.respond(make_text)
+      @message = @event.channel.send_message(make_text)
 
       if @total_pages > 1
         @message.create_reaction(LEFT_EMOJI)
@@ -96,7 +102,7 @@ class ExpLeaderboard < CommandBase
         [i + 1 + ((@current_page - 1) * 10), d.player.name, d.level, d.exp.to_fs(:delimited), d.message_count.to_fs(:delimited)]
       end
 
-    sort_indicator = @options[:ascending] ? " ▲" : " ▼"
+    sort_indicator = @event.options["ascending"] ? " ▲" : " ▼"
     # sort_criteria_idx = ORDERING.keys.find_index(@options[:sort].to_sym) if @options[:sort]
     sort_criteria_idx ||= 2
 
@@ -109,8 +115,8 @@ class ExpLeaderboard < CommandBase
 
   def get_leaderboard()
     DiscordExp
-      .where(discord_server_id: @server[:db_server])
-      .order(exp: :desc, player_id: :asc)
+      .where(discord_server_id: @server.id)
+      .order(exp: @event.options["ascending"] ? :asc : :desc, player_id: :asc)
       .includes(%i[player])
       .page(@current_page)
       .per(10)

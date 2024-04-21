@@ -1,4 +1,5 @@
 require_relative "../commands/exp/exp"
+require_relative "../commands/exp/exp_leaderboard"
 
 module ExpCommands
   def self.init(bot)
@@ -6,6 +7,9 @@ module ExpCommands
       Exp.required_options.each { |o, k| cmd.option(*o, **k) }
     end
 
+    bot.register_application_command(:exp_leaderboard, "Show the current leaderboard for KelaBot XP")
+
     bot.application_command(:exp) { |event| Exp.new(bot, event).respond }
+    bot.application_command(:exp_leaderboard) { |event| ExpLeaderboard.new(bot, event).respond }
   end
 end

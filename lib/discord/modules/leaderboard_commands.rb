@@ -1,7 +1,7 @@
 require "discordrb"
 
 require_relative "../commands/score_leaderboard"
-require_relative "../commands/exp_leaderboard"
+require_relative "../commands/exp/exp_leaderboard"
 
 module LeaderboardCommands
   extend Discordrb::Commands::CommandContainer
