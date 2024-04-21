@@ -231,7 +231,7 @@ module Discord
         player =
           Player.create(
             name: DiscordHelper.sanitise_username(event.user.username),
-            identities: [{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }]
+            identities: PlayerAuth.create([{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
           )
       end
 
