@@ -2,6 +2,8 @@ class PlayerAuth < ApplicationRecord
   belongs_to :player
   belongs_to :auth_provider, foreign_key: :provider
 
+  after_initialize { self.raw ||= {}  }
+
   def self.find_with_omniauth(auth)
     find_by(uid: auth.uid, provider: auth.provider)
   end
