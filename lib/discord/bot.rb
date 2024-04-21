@@ -6,6 +6,7 @@ require "optparse"
 require_relative "./modules/leaderboard_commands"
 require_relative "./modules/match_commands"
 require_relative "./modules/registration_commands"
+require_relative "./modules/exp_commands"
 require_relative "../../app/helpers/discord_helper"
 
 EMBED_GREEN = 3_066_993
@@ -24,7 +25,6 @@ module Discord
       @client = Discordrb::Commands::CommandBot.new token: ENV["DISCORD_BOT_TOKEN"], prefix: ENV["DISCORD_BOT_PREFIX"]
 
       @client.command %i[match_performance p], &method(:match_performance)
-      @client.command %i[exp, xp], &method(:show_discord_exp)
 
       @client.message &method(:message)
       @client.member_join &method(:member_join)
@@ -36,6 +36,7 @@ module Discord
       # todo: need to move all these registration steps into a different script since they need to be run only on change
       # doesn't have to run on every startup
       RegistrationCommands.init(@client)
+      ExpCommands.init(@client)
 
       @client.run true
 
@@ -56,45 +57,6 @@ module Discord
     end
 
     private
-
-    def show_discord_exp(event, *args)
-      user = event.message.mentions.first
-      user ||= event.message.author
-
-      server = event.message.server
-      player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: user.id })
-      exp = DiscordExp.find_by(player: player, discord_server: DiscordServer.find_by(discord_id: server.id))
-
-      return event.respond("Couldn't find #{user.mention}") if player.nil? || exp.nil?
-
-      event.message.channel.send_embed do |embed|
-        percentage = (exp.detailed_exp[0].to_f / exp.detailed_exp[1].to_f) * 100
-
-        embed.title = player.name
-        embed.url = "https://osu.ppy.sh/users/#{player.osu&.uid}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu&.uid}")
-        embed.color = EMBED_PURPLE
-        embed.description = "KelaBot level in #{server.name}"
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: "User", value: "<@#{exp.player.discord.uid}>", inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: "Level", value: exp.level, inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: "Rank", value: exp.rank.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: "XP", value: exp.exp.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(
-            name: "Next Level",
-            value: (exp.detailed_exp[1] - exp.detailed_exp[0]).to_fs(:delimited),
-            inline: true
-          ),
-          Discordrb::Webhooks::EmbedField.new(name: "Messages", value: exp.message_count.to_fs(:delimited), inline: true),
-          Discordrb::Webhooks::EmbedField.new(
-            name: "Progress",
-            value:
-              (":green_square:" * (percentage / 10.0).round) + (":yellow_square:" * (10 - (percentage / 10.0).round)) +
-                " *(#{percentage.round(2)}%)*"
-          )
-        ]
-      end
-    end
 
     def match_performance(event, *args)
       begin
