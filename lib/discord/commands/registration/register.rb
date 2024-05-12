@@ -8,17 +8,17 @@ class Register < CommandBase
   def handle_response
     user = @event.interaction.user
 
-    return @event.respond(content: "Server configuration is incorrect!") if @server.verified_role_id.nil?
+    return @event.respond(content: "Server configuration is incorrect!") if @server.nil? || @server.verified_role_id.nil?
 
     discord_auth = PlayerAuth.find_by(uid: user.id, provider: :discord)
     osu_auth = discord_auth.nil? ? nil : discord_auth.player.identities.find_by(provider: :osu)
 
     if osu_auth
-      if osu_auth.player.ban_status == Player.ban_statuses[:none]
+      if osu_auth.player.ban_status == Player.ban_status[:none]
         # This osu! account is already linked to a Discord account, provide role and finish registration
         user.add_role(@server.verified_role_id)
         @event.respond(content: "Verification complete!", ephemeral: true)
-      elsif osu_auth.player.ban_status == Player.ban_statuses[:soft]
+      elsif osu_auth.player.ban_status == Player.ban_status[:soft]
         user.pm(
           "You are soft banned on #{@event.server.name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
         )
