@@ -31,7 +31,7 @@ class Unban < CommandBase
     end
 
     return @event.respond("User not found") if player.nil?
-    return @event.respond("User #{player.name} is not banned") if player.ban_status == Player.ban_statuses[:none]
+    return @event.respond("User #{player.name} is not banned") if player.ban_status == Player.ban_status[:none]
 
     ActiveRecord::Base.transaction do
       BanHistory.create(
@@ -41,7 +41,7 @@ class Unban < CommandBase
         ban_type: BanHistory.ban_types[:none]
       )
 
-      player.ban_status = Player.ban_statuses[:none]
+      player.ban_status = Player.ban_status[:none]
 
       player.save!
 
