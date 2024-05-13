@@ -1,3 +1,6 @@
+inherit_from:
+  - node_modules/@prettier/plugin-ruby/rubocop.yml
+
 Metrics/LineLength:
   Max: 135
 
@@ -27,4 +30,3 @@ Layout/FirstHashElementIndentation:
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
   IndentationWidth: 2
-
