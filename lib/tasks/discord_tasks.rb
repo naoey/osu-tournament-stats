@@ -10,7 +10,7 @@ namespace :discord do
 
       next if config.nil? || config.verified_role_id.nil?
 
-      server.begin_prune(server.id, include_roles: [config.verified_role_id])
+      server.begin_prune(server.id, 30, include_roles: [config.verified_role_id])
     end
   end
 end
