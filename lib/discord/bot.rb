@@ -147,8 +147,11 @@ module Discord
 
         unless server.verified_role_id.nil?
           member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu.uid}")
-          # member.add_role(server.guest_role_id, "osu! flag is #{player.osu['country']}") if !player.osu.nil? && player.osu['country'] != 'IN'
           member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
+        end
+
+        unless server.guest_role_id.nil? || player.country_code == 'IN'
+          member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
         end
 
         @client
