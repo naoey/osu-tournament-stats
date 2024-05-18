@@ -17,6 +17,7 @@ class Register < CommandBase
       if osu_auth.player.ban_status == Player.ban_statuses[:none]
         # This osu! account is already linked to a Discord account, provide role and finish registration
         user.add_role(@server.verified_role_id)
+        user.add_role(@server.guest_role_id) unless @server.guest_role_id.nil? || discord_auth.player.country_code.nil? || discord_auth.player.country_code == 'IN'
         @event.respond(content: "Verification complete!", ephemeral: true)
       elsif osu_auth.player.ban_status == Player.ban_statuses[:soft]
         user.pm(
