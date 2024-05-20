@@ -23,7 +23,7 @@ class Whois < CommandBase
           fields: [
             Discordrb::Webhooks::EmbedField.new(
               name: "Discord user",
-              value: @bot.member(@event.server.id, player.discord.uid).mention || "MIA",
+              value: @bot.member(@event.server.id, player.discord.uid)&.mention || "MIA",
               inline: true
             ),
             Discordrb::Webhooks::EmbedField.new(name: "osu! ID", value: player.osu.uid, inline: true),
@@ -33,6 +33,11 @@ class Whois < CommandBase
               inline: true
             ),
             Discordrb::Webhooks::EmbedField.new(name: "Ban count", value: player.ban_history.count.to_s, inline: true),
+            Discordrb::Webhooks::EmbedField.new(
+              name: "Country",
+              value: player.country_code.nil? ? ":alien:" : ":flag_#{player.country_code.downcase}:",
+              inline: true
+            ),
             Discordrb::Webhooks::EmbedField.new(name: "Created on", value: "<t:#{player.created_at.to_time.to_i}>"),
             Discordrb::Webhooks::EmbedField.new(
               name: "osu! verified on",
