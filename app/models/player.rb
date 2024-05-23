@@ -45,22 +45,31 @@ class Player < ApplicationRecord
     false
   end
 
-  def self.from_omniauth(auth)
+  def self.from_omniauth(auth, state: nil)
     identity = PlayerAuth.find_with_omniauth(auth)
 
     raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != "osu"
 
     identity = PlayerAuth.create_with_omniauth(auth)
+    discord_user_id, = state.nil? || state.empty? ? nil : Base64.decode64(state).split("|")[0]
 
     if identity.player.nil?
-      Player.create do |player|
-        player.password = Devise.friendly_token[0, 20]
-        player.name = auth.info.username
-        player.country_code = auth.info[:country_code]
-        player.avatar_url = auth.info[:avatar_url]
-        player.identities = [identity]
+      if discord_user_id.nil?
+        Player.create do |player|
+          player.password = Devise.friendly_token[0, 20]
+          player.name = auth.info.username
+          player.country_code = auth.info[:country_code]
+          player.avatar_url = auth.info[:avatar_url]
+          player.identities = [identity]
 
-        player.save!
+          player.save!
+        end
+      else
+        # If we are linking an osu! ID to Discord bot initiated user, a Player will already exist
+        # so we need to link this identity to that player
+        discord_identity = PlayerAuth.find_by_uid(discord_user_id)
+        identity.player = discord_identity.player
+        identity.save!
       end
     end
 
@@ -136,7 +145,9 @@ class Player < ApplicationRecord
     raise OsuAuthErrors::UnauthorisedError if saved_state["guid"] != guid
     raise OsuAuthErrors::UnauthorisedError if raw["id"] != discord_id.to_i
 
-    identities.build(provider: :discord, uid: raw["id"], uname: raw["username"], raw:).save!
+    unless identities.where(provider: :discord).exists?
+      identities.build(provider: :discord, uid: raw["id"], uname: raw["username"], raw:).save!
+    end
 
     begin
       ActiveSupport::Notifications.instrument("player.discord_linked", { player: self })

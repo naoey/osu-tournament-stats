@@ -14,7 +14,10 @@ class AuthController < Devise::OmniauthCallbacksController
       auth = request.env["omniauth.auth"]
       params = Rack::Utils.parse_query(Base64.decode64(request.params["state"]))
       raw_user = auth["extra"]["raw_info"]
-      player = Player.from_omniauth(auth)
+      player = Player.from_omniauth(
+        auth,
+        state: params["s"]
+      )
 
       flow_code =
         if !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
