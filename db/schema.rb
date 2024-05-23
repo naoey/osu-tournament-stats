@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_17_074941) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_22_021920) do
   create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb3", force: :cascade do |t|
     t.string "display_name"
     t.boolean "enabled"
@@ -127,6 +127,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_17_074941) do
     t.index ["player_id"], name: "index_player_auths_on_player_id"
     t.index ["provider", "player_id", "uid"], name: "index_player_auths_on_provider_and_player_id_and_uid", unique: true
     t.index ["provider"], name: "index_player_auths_on_provider"
+    t.index ["uid", "provider"], name: "unique_external_account", unique: true
   end
 
   create_table "players", charset: "utf8mb3", force: :cascade do |t|
@@ -185,12 +186,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_17_074941) do
   add_foreign_key "ban_histories", "players", column: "banned_by_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "ban_histories", "players", on_update: :cascade, on_delete: :cascade
   add_foreign_key "discord_exps", "discord_servers"
-  add_foreign_key "discord_exps", "players"
+  add_foreign_key "discord_exps", "players", on_delete: :cascade
   add_foreign_key "match_teams", "matches"
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"
   add_foreign_key "matches", "tournaments", on_update: :cascade, on_delete: :cascade
   add_foreign_key "player_auths", "auth_providers", column: "provider", primary_key: "name"
-  add_foreign_key "player_auths", "players"
+  add_foreign_key "player_auths", "players", on_delete: :cascade
   add_foreign_key "tournaments", "players", column: "host_player_id", on_update: :cascade, on_delete: :nullify
 end
