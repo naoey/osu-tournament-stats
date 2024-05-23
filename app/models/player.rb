@@ -66,9 +66,12 @@ class Player < ApplicationRecord
         end
       else
         # If we are linking an osu! ID to Discord bot initiated user, a Player will already exist
-        # so we need to link this identity to that player
+        # so we need to link this identity to that player. Also update basic info for osu user
         discord_identity = PlayerAuth.find_by_uid(discord_user_id)
         identity.player = discord_identity.player
+        identity.player.name = auth.info.username
+        identity.player.country_code = auth.info[:country_code]
+        identity.player.avatar_url = auth.info[:avatar_url]
         identity.save!
       end
     end

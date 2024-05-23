@@ -150,7 +150,7 @@ module Discord
           member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
         end
 
-        unless server.guest_role_id.nil? || player.country_code == 'IN'
+        unless server.guest_role_id.nil? || player.country_code.nil? || player.country_code == 'IN'
           member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
         end
 
