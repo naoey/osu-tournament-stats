@@ -238,7 +238,9 @@ module Discord
           )
       end
 
-      player.discord_exp.find_or_create_by(discord_server: server)
+      player.discord_exp.find_or_create_by(discord_server: server) do |exp|
+        exp.detailed_exp = DiscordHelper::INITIAL_EXP
+      end
     end
   end
 end
