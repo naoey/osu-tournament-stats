@@ -77,19 +77,19 @@ module Discord
             stats
               .except(:player)
               .map do |k, v|
-                {
-                  name: "**#{k.to_s.humanize}**",
-                  inline: true,
-                  value:
-                    if k == :best_accuracy
-                      v[:accuracy]
-                    elsif v.is_a?(Array)
-                      v.length
-                    else
-                      v
-                    end.to_s
-                }
-              end
+              {
+                name: "**#{k.to_s.humanize}**",
+                inline: true,
+                value:
+                  if k == :best_accuracy
+                    v[:accuracy]
+                  elsif v.is_a?(Array)
+                    v.length
+                  else
+                    v
+                  end.to_s
+              }
+            end
         }
 
         event.respond("", false, embed)
@@ -157,13 +157,13 @@ module Discord
         @client
           .channel(server.verification_log_channel_id, guild)
           .send_embed do |embed|
-            embed.title = player.name
-            embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
-            embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
-            embed.color = EMBED_GREEN
-            embed.description = "Verification completed"
-            embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member.mention || "<User not in server>")]
-          end
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+          embed.color = EMBED_GREEN
+          embed.description = "Verification completed"
+          embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member.mention || "<User not in server>")]
+        end
       end
     end
 
@@ -234,11 +234,25 @@ module Discord
         player =
           Player.create(
             name: DiscordHelper.sanitise_username(event.user.username),
-            identities: PlayerAuth.create([{ provider: :discord, uid: event.user.id, raw: {}, uname: event.user.username }])
+            identities: PlayerAuth.create([{
+              provider: :discord,
+              uid: event.user.id,
+              raw: {
+                username: event.user.global_name || event.user.username,
+                id: event.user.id,
+                joined_at: event.user.joined_at,
+                bot_account: event.user.bot_account,
+                discriminator: event.user.discriminator,
+                avatar_id: event.user.avatar_id,
+                public_flags: event.user.public_flags
+              },
+              uname: DiscordHelper::sanitise_username(event.user.username) }])
           )
       end
 
-      player.discord_exp.find_or_create_by(discord_server: server)
+      player.discord_exp.find_or_create_by(discord_server: server) do |exp|
+        exp.detailed_exp = DiscordHelper::INITIAL_EXP
+      end
     end
   end
 end
