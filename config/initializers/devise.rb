@@ -320,10 +320,16 @@ Devise.setup do |config|
                   callback_path: "/authorise/osu",
                   state: ->(env) do
                     request = Rack::Request.new(env)
-                    query = Rack::Utils.parse_query(Base64.decode64(request.params["s"]))
+
                     # Generate the default state if the params for Discord-bot origin osu! linkage are not found, otherwise use the already generated state
                     # containing linkage information.
-                    if request.params["s"].empty? || query["f"].empty? || query["f"] != "bot" || query["s"].empty?
+                    if request.params["s"].nil? || request.params['s'].empty?
+                      return SecureRandom.hex(24)
+                    end
+
+                    query = Rack::Utils.parse_query(Base64.decode64(request.params["s"]))
+
+                    if query["f"].empty? || query["f"] != "bot" || query["s"].empty?
                       return SecureRandom.hex(24)
                     end
                     request.params["s"]

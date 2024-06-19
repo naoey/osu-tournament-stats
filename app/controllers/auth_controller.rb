@@ -20,7 +20,7 @@ class AuthController < Devise::OmniauthCallbacksController
       )
 
       flow_code =
-        if !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
+        if !params['f'].nil? && !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
           AuthController::FLOW_CODE["discord_bot"]
         elsif !player&.persisted?
           AuthController::FLOW_CODE["direct"]
@@ -156,14 +156,10 @@ class AuthController < Devise::OmniauthCallbacksController
 
     return redirect_to root_path if exception.nil?
 
-    logger.debug(exception)
+    logger.error(exception)
+    logger.error(exception.backtrace.join('\n'))
     Sentry.capture_exception(exception)
 
     render template: "auth/failure"
-  end
-
-  private
-
-  def map_omniauth_state
   end
 end
