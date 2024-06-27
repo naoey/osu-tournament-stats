@@ -17,7 +17,7 @@ class UsersController < ApplicationController
       discord_id, = Base64.decode64(params[:s]).split("|")
       state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
 
-      raise ArgumentError if state.nil?
+      return render plain: "Timeout" if state.nil?
 
       @query = Base64.encode64(request.query_string)
       @username = state["user"]["username"]
