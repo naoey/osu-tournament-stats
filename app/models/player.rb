@@ -67,11 +67,13 @@ class Player < ApplicationRecord
       end
     end
 
-    # Capture main info every time login is done with osu!
+    # Capture osu info every time login is done with osu!
     if auth.provider == 'osu'
       player.name = auth.info.username
       player.country_code = auth.info[:country_code]
       player.avatar_url = auth.info[:avatar_url]
+
+      identities.where(provider: :osu).update(uname: auth.info.username, raw: auth.info)
     end
 
     unless player.confirmed?
