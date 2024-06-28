@@ -198,7 +198,7 @@ module Discord
 
       begin
         if Rails.env.production? && !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.info("discord user #{author_id} has recently cached last spoke; skipping update")
+          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
 
           return
         end
