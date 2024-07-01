@@ -54,21 +54,23 @@ class Player < ApplicationRecord
     # created for the sake of match imports. In this case we just re-use the same identity. In the case the Player
     # has never been imported through a match, then it's a completely fresh user so we just create it as normal.
     player = identity&.player
+    should_notify_linkage = false
 
     if player.nil?
       # This is a brand new user; create a Player for them
       player = Player.create do |p|
         p.password = Devise.friendly_token[0, 20]
+        p.name = auth.info.username
+        p.country_code = auth.info[:country_code]
+        p.avatar_url = auth.info[:avatar_url]
         p.skip_confirmation!
 
         p.create_discord_osu_identities(auth, state)
 
         p.save!
       end
-    end
-
-    # Capture osu info every time login is done with osu!
-    if auth.provider == 'osu'
+    elsif auth.provider == 'osu'
+      # Update name from osu! logins even for existing users
       player.name = auth.info.username
       player.country_code = auth.info[:country_code]
       player.avatar_url = auth.info[:avatar_url]
@@ -159,9 +161,6 @@ class Player < ApplicationRecord
 
     identities.build(provider: :osu, uid: osu_user["id"], uname: osu_user["username"], raw: osu_user).save!
     identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
-
-    notify_osu_discord_linkage
-    nil
   end
 
   private
