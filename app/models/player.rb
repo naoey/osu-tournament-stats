@@ -64,10 +64,9 @@ class Player < ApplicationRecord
         p.country_code = auth.info[:country_code]
         p.avatar_url = auth.info[:avatar_url]
         p.skip_confirmation!
-
-        p.create_discord_osu_identities(auth, state)
-
         p.save!
+
+        p.link_osu_discord_identities(auth, state) unless state.nil?
       end
     elsif auth.provider == 'osu'
       # Update name from osu! logins even for existing users
@@ -75,7 +74,7 @@ class Player < ApplicationRecord
       player.country_code = auth.info[:country_code]
       player.avatar_url = auth.info[:avatar_url]
 
-      identities.where(provider: :osu).update(uname: auth.info.username, raw: auth.info)
+      player.identities.where(provider: :osu).update(uname: auth.info.username, raw: auth.info)
     end
 
     unless player.confirmed?
@@ -144,7 +143,7 @@ class Player < ApplicationRecord
 
   # Creates a pair of Discord and osu! PlayerAuths for the completion of an Discord x osu! linkage initiated
   # through the bot. Throws if the link session has expired or the initiating user or hash mismatches
-  def create_discord_osu_identities(auth, state)
+  def link_osu_discord_identities(auth, state)
     discord_id, guid = Base64.decode64(state).split("|")
 
     saved_state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
@@ -154,13 +153,14 @@ class Player < ApplicationRecord
     discord_user = saved_state["user"]
     osu_user = auth.info
 
-    raise OsuAuthErrors::OsuAuthError, "Already exists" if identities.exists?(uid: [discord_user["id"], osu_user["id"]])
-
     raise OsuAuthErrors::UnauthorisedError if saved_state["guid"] != guid
     raise OsuAuthErrors::UnauthorisedError if discord_user["id"] != discord_id.to_i
 
     identities.build(provider: :osu, uid: osu_user["id"], uname: osu_user["username"], raw: osu_user).save!
     identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
+
+    notify_osu_discord_linkage
+    nil
   end
 
   private
