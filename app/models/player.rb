@@ -91,7 +91,6 @@ class Player < ApplicationRecord
   # Links additional Omniauth identities to this Player. Primarily intended for users to link their
   # Discord account after the fact without invoking the Discord bot.
   def add_additional_account(auth)
-    x
     # for now we only support adding discord accounts, so it's just thrown in here
     raise ArgumentError, "Only Discord is supported as an additional account" if auth.provider != "discord"
 
