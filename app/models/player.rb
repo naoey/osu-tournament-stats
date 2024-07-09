@@ -155,8 +155,22 @@ class Player < ApplicationRecord
     raise OsuAuthErrors::UnauthorisedError if saved_state["guid"] != guid
     raise OsuAuthErrors::UnauthorisedError if discord_user["id"] != discord_id.to_i
 
+    discord_identity = PlayerAuth.find_by_uid(discord_user["id"])
+
     identities.build(provider: :osu, uid: osu_user["id"], uname: osu_user["username"], raw: osu_user).save!
-    identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
+
+    if discord_identity.nil?
+      identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
+    else
+      ActiveRecord::Base.transaction do
+        old_player = discord_identity.player
+        discord_identity.player = self
+        discord_identity.save!
+        self.discord_exp = old_player.discord_exp
+        self.save!
+        old_player.destroy!
+      end
+    end
 
     notify_osu_discord_linkage
     nil
@@ -167,6 +181,14 @@ class Player < ApplicationRecord
   def notify_osu_discord_linkage
     begin
       ActiveSupport::Notifications.instrument("player.discord_linked", { player: self })
+    rescue StandardError => e
+      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+    end
+  end
+
+  def notify_alt_account_link(other_player)
+    begin
+      ActiveSupport::Notifications.instrument("player.alt_link", { player: self, other_player: })
     rescue StandardError => e
       Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
     end

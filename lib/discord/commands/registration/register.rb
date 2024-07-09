@@ -29,18 +29,7 @@ class Register < CommandBase
     end
 
     # manually extracting probably useful values since to_json runs into a stack too deep error
-    link =
-      Player.get_osu_verification_link(
-        {
-          username: user.global_name || user.username,
-          id: user.id,
-          joined_at: user.joined_at,
-          bot_account: user.bot_account,
-          discriminator: user.discriminator,
-          avatar_id: user.avatar_id,
-          public_flags: user.public_flags
-        }.stringify_keys
-      )
+    link = Player.get_osu_verification_link(DiscordHelper::identity_from_user(user))
 
     begin
       user.pm(
