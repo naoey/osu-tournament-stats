@@ -135,23 +135,33 @@ module Discord
     end
 
     def osu_verification_completed(data)
-      servers = DiscordServer.where.not(verification_log_channel_id: nil)
-
       player = data[:player]
+      servers = DiscordServer
+        .where(discord_id: [client.servers.keys])
+        .and(DiscordServer.where.not(verification_log_channel_id: nil))
 
       servers.each do |server|
-        guild = @client.server(server.discord_id)
+        guild = begin
+          @client.server(server.discord_id)
+        rescue
+          next
+        end
+
         member = @client.member(server.discord_id, player.discord.uid)
 
         next if guild.nil? || member.nil? # Bot probably removed from server
 
-        unless server.verified_role_id.nil?
-          member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu.uid}")
-          member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
-        end
+        begin
+          unless server.verified_role_id.nil?
+            member.add_role(server.verified_role_id, "osu! verification completed with ID #{player.osu.uid}")
+            member.set_nick(player.osu.uname, "osu! user #{player.osu.uname} linked")
+          end
 
-        unless server.guest_role_id.nil? || player.country_code.nil? || player.country_code == 'IN'
-          member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
+          unless server.guest_role_id.nil? || player.country_code.nil? || player.country_code == 'IN'
+            member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
+          end
+        rescue
+          # This can fail if trying to set nicknames on admins so we just ignore it
         end
 
         @client
@@ -188,7 +198,7 @@ module Discord
 
       begin
         if Rails.env.production? && !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.info("discord user #{author_id} has recently cached last spoke; skipping update")
+          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
 
           return
         end
@@ -197,8 +207,11 @@ module Discord
 
         player = Player.joins(:identities).find_by(identities: { provider: :discord, uid: author_id })
 
-        # Not giving any exp to users whose Discords aren't linked
-        return if player.nil?
+        if player.nil?
+          raw = DiscordHelper.identity_from_user(event.message.author)
+          player = Player.create(name: raw["username"])
+          PlayerAuth.create(provider: :discord, uid: author_id, uname: raw["username"], player:, raw:)
+        end
 
         exp = player.discord_exp.find_by(discord_server_id: server["id"])
 

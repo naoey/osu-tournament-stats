@@ -9,7 +9,7 @@ class PlayerAuth < ApplicationRecord
   end
 
   def self.create_with_omniauth(auth)
-    find_or_create_by(provider: auth.provider, uid: auth.uid) do |player_auth|
+    create(provider: auth.provider, uid: auth.uid) do |player_auth|
       player_auth.uname = auth.extra["raw_info"]["username"]
       player_auth.uid = auth.uid
       player_auth.raw = auth.info

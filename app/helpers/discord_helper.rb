@@ -12,4 +12,17 @@ module DiscordHelper
   def self.sanitise_username(name)
     name.encode("UTF-8", "binary", invalid: :replace, undef: :replace, replace: "wang").truncate(255)
   end
+
+  # Create an object that can be used for creating a PlayerAuth from a Discord User
+  def self.identity_from_user(user)
+    {
+      username: user.global_name || user.username,
+      id: user.id,
+      joined_at: user.joined_at,
+      bot_account: user.bot_account,
+      discriminator: user.discriminator,
+      avatar_id: user.avatar_id,
+      public_flags: user.public_flags
+    }.stringify_keys
+  end
 end

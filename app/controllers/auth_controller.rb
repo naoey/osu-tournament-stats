@@ -14,13 +14,21 @@ class AuthController < Devise::OmniauthCallbacksController
       auth = request.env["omniauth.auth"]
       params = Rack::Utils.parse_query(Base64.decode64(request.params["state"]))
       raw_user = auth["extra"]["raw_info"]
-      player = Player.from_omniauth(
-        auth,
-        state: params["s"]
-      )
+      player = nil
+
+      begin
+        player = Player.from_omniauth(
+          auth,
+          state: params["s"]
+        )
+      rescue OsuAuthErrors::TimeoutError
+        return render plain: "Timeout"
+      rescue OsuAuthErrors::UnauthorisedError
+        raise ActionController::BadRequest
+      end
 
       flow_code =
-        if !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
+        if !params['f'].nil? && !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
           AuthController::FLOW_CODE["discord_bot"]
         elsif !player&.persisted?
           AuthController::FLOW_CODE["direct"]
@@ -43,28 +51,6 @@ class AuthController < Devise::OmniauthCallbacksController
           }
         )
       )
-
-      if flow_code.zero?
-        begin
-          player.complete_osu_verification_link(params["s"])
-        rescue OsuAuthErrors::TimeoutError
-          return render plain: "Timeout"
-        rescue OsuAuthErrors::UnauthorisedError
-          raise ActionController::BadRequest
-        end
-      else
-        id = player.identities.find_by_provider("osu")
-
-        if id.raw.nil?
-          id.raw = auth.info
-          logger.info("ℹ️osu! user logged in has missing raw info; capturing current raw info #{id.save}")
-        end
-      end
-
-      player.avatar_url = auth.info[:avatar_url]
-      player.country_code = auth.info[:country_code]
-      player.name = auth.info[:username]
-      player.save!
 
       sign_in player, event: :authentication
       redirect_to authorise_success_path(player:, code: flow_code)
@@ -156,14 +142,10 @@ class AuthController < Devise::OmniauthCallbacksController
 
     return redirect_to root_path if exception.nil?
 
-    logger.debug(exception)
+    logger.error(exception)
+    logger.error(exception.backtrace.join('\n'))
     Sentry.capture_exception(exception)
 
     render template: "auth/failure"
-  end
-
-  private
-
-  def map_omniauth_state
   end
 end
