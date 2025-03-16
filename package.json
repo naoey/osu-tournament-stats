@@ -1,6 +1,9 @@
 {
   "name": "osu-tournament-stats",
   "private": true,
+  "scripts": {
+    "test": "echo \"Not yet\""
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
