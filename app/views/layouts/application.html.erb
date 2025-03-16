@@ -18,9 +18,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track": "reload" %>
-    <%= javascript_include_tag "application" %>
     <%= vite_client_tag %>
+    <%= vite_react_refresh_tag %>
     <%= vite_typescript_tag 'application' %>
     <!--
       If using a TypeScript entrypoint file:
@@ -31,28 +30,17 @@
 
       Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
     -->
-
   </head>
 
   <body>
     <%= react_component('common.NavigationBar') %>
-
-    <div class="ot-body-wrap" id="body-wrap">
-      <% if player_signed_in? %>
-        <div id="current-user" data-current-user="<%= current_player.to_json %>"></div>
-      <% end %>
-
-      <%= yield %>
-    </div>
   </body>
 
   <script>
     (function() {
-      const body = document.getElementById("body-wrap");
-
       let atEnd = false;
 
-      body.addEventListener("scroll", function (e) {
+      document.body.addEventListener("scroll", function (e) {
         if (e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop < 100) {
           if (!atEnd) {
             document.dispatchEvent(new CustomEvent("ots.page_end_reached"));
@@ -63,5 +51,17 @@
         }
       });
     })();
+
+    document.addEventListener("user.session_expired", function () {
+      window.location.href = "/login";
+    });
+
+    <% if player_signed_in? %>
+    window.currentUser = <%= current_player.to_json %>;
+    window.isAuthenticated = !!window.currentUser;
+    <% else %>
+    window.currentUser = null;
+    window.isAuthenticated = false;
+    <% end %>
   </script>
 </html>
