@@ -25,8 +25,6 @@ module OsuTournamentStats
 
     config.react.server_renderer_extensions = %w[jsx js tsx ts]
 
-    config.active_record.legacy_connection_handling = false
-
     config.cache_store = :memory_store, { size: 64.megabytes }
 
     config.after_initialize do
