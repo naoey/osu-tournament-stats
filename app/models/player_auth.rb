@@ -1,6 +1,7 @@
 class PlayerAuth < ApplicationRecord
   belongs_to :player
   belongs_to :auth_provider, foreign_key: :provider
+  has_many :other_auths, foreign_key: :player_id, class_name: 'PlayerAuth'
 
   after_initialize { self.raw ||= {}  }
 

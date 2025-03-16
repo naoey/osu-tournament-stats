@@ -10,4 +10,15 @@
     justify-content: center;
     align-items: center;
   }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    h4 {
+      margin-top: 0;
+      font-style: normal;
+    }
+  }
 }

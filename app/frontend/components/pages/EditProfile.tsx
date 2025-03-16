@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Identity, IdentityProvider, User } from "../../models/User";
+import { Identity, IdentityProvider, Player } from "../../models/Player";
 import { Avatar, Button, Divider, Flex, message } from "antd";
 import moment from "moment";
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
 
 type EditProfileProps = {
-  user: User;
+  user: Player;
 };
 
 export default function EditProfile({ user }: EditProfileProps) {
-  const [editingUser, setEditingUser] = useState<User>(user);
+  const [editingUser, setEditingUser] = useState<Player>(user);
   const [deleteIdLoadingKeys, setDeleteLoadingKeys] = useState<IdentityProvider[]>([]);
 
   const deleteIdentity = async (id: Identity) => {
