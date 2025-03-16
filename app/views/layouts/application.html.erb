@@ -33,7 +33,9 @@
   </head>
 
   <body>
-    <%= react_component('common.NavigationBar') %>
+    <%= react_component('common/NavigationBar') %>
+
+    <%= yield %>
   </body>
 
   <script>
@@ -57,7 +59,7 @@
     });
 
     <% if player_signed_in? %>
-    window.currentUser = <%= current_player.to_json %>;
+    window.currentUser = <%= current_player.to_json.html_safe %>;
     window.isAuthenticated = !!window.currentUser;
     <% else %>
     window.currentUser = null;
