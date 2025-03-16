@@ -21,11 +21,11 @@ class Ban < CommandBase
     target_db_player = Player.find_by_discord_id(mentioned_member.id)
 
     return @event.respond("#{mentioned_member.name} is not registered") if target_db_player.nil? || !target_db_player.osu_verified
-    unless target_db_player.ban_status == Player.ban_statuses[:none]
+    unless target_db_player.ban_status_no_ban?
       return @event.respond("#{mentioned_member.name} is already banned")
     end
 
-    ban_type = Player.ban_statuses[@options[:type].to_sym] || Player.ban_statuses[:hard]
+    ban_type = Player.ban_status.fetch(@options[:type].to_s, :hard)
     reason = @options[:reason] || "Banned by #{@event.message.author.name} (#{@event.message.author.id})"
 
     ActiveRecord::Base.transaction do
@@ -43,9 +43,9 @@ class Ban < CommandBase
   def execute_discord_action(member, ban_type, reason)
     verified_role_id = @server[:db_server].verified_role_id
 
-    if ban_type == Player.ban_statuses[:soft] && verified_role_id && member.role?(verified_role_id)
+    if ban_type == Player.ban_status_soft? && verified_role_id && member.role?(verified_role_id)
       member.remove_role(verified_role_id)
-    elsif ban_type == Player.ban_statuses[:hard]
+    elsif ban_type == Player.ban_statuses_hard?
       @server[:discordrb_server].ban(member, 0, reason: reason)
     end
   end
