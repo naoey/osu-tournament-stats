@@ -2,12 +2,12 @@ import { Button, message, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
 import * as React from "react";
-import * as v from "voca";
 import Api from "../../api/Api";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { PlayerStatistic } from "../../entities/PlayerStatistic";
 import BeatmapRequests from "../../api/requests/BeatmapRequests";
 import { LoadingView } from "../common/LoadingView";
+import { transform, toTitleCase, humanize } from "@alduino/humanizer/string";
 
 export type PlayerStatsListTableProps = {
   tournamentId?: number;
@@ -106,11 +106,11 @@ export default function PlayerStatsListTable({
         () => (
           <Tooltip title={titleTooltip}>
             <span>
-              {title || v.titleCase(key.split("_").join(" "))}
+              {title || humanize(transform(key, toTitleCase))}
             </span>
           </Tooltip>
         )
-        : title || v.titleCase(key.split("_").join(" ")),
+        : title || humanize(transform(key, toTitleCase)),
     };
 
     if (key === 'best_accuracy')
@@ -317,7 +317,7 @@ export default function PlayerStatsListTable({
         scroll={{ x: "100%" }}
       />
       <Modal
-        visible={detailModal !== null}
+        open={detailModal !== null}
         title={detailModal?.title}
         onOk={() => setDetailModal(null)}
         onCancel={() => setDetailModal(null)}

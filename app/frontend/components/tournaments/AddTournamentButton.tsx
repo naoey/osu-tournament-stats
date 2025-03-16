@@ -45,7 +45,7 @@ function AddTournamentButton() {
         <i className="material-icons">add</i>
       </Button>
       <Modal
-        visible={isFormVisible}
+        open={isFormVisible}
         title="Add match"
         onCancel={hideModal}
         onOk={form.submit}
