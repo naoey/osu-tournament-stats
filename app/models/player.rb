@@ -25,7 +25,7 @@ class Player < ApplicationRecord
   has_many :ban_history, foreign_key: "player_id"
   has_many :discord_exp
 
-  enum ban_statuses: { none: 0, soft: 1, hard: 2 }, _prefix: :ban_status
+  enum :ban_status, { no_ban: 0, soft: 1, hard: 2 }
 
   def discord
     identities.find_by_provider(:discord)

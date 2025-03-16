@@ -29,7 +29,7 @@ class Whois < CommandBase
             Discordrb::Webhooks::EmbedField.new(name: "osu! ID", value: player.osu.uid, inline: true),
             Discordrb::Webhooks::EmbedField.new(
               name: "Ban status",
-              value: Player.ban_statuses.key(player.ban_status).capitalize,
+              value: player.ban_status.to_s,
               inline: true
             ),
             Discordrb::Webhooks::EmbedField.new(name: "Ban count", value: player.ban_history.count.to_s, inline: true),
