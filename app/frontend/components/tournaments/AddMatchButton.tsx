@@ -56,7 +56,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         <span>Add match</span>
       </Button>
       <Modal
-        visible={isFormVisible}
+        open={isFormVisible}
         title="Add match"
         onCancel={hideModal}
         onOk={form.submit}

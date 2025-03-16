@@ -9,7 +9,7 @@ type EditProfileProps = {
 };
 
 export default function EditProfile({ user }: EditProfileProps) {
-  const [editingUser, setEditingUser] = useState<User>(new User(user));
+  const [editingUser, setEditingUser] = useState<User>(user);
   const [deleteIdLoadingKeys, setDeleteLoadingKeys] = useState<IdentityProvider[]>([]);
 
   const deleteIdentity = async (id: Identity) => {

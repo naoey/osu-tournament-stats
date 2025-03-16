@@ -27,12 +27,14 @@
     ]
   },
   "dependencies": {
+    "@alduino/humanizer": "^1.1.0",
     "@ant-design/icons": "^5.3.0",
+    "@hotwired/turbo": "^8.0.13",
     "@types/jquery": "^3.5.29",
     "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
-    "@types/voca": "^1.4.5",
+    "add": "^2.0.6",
     "antd": "^5.14.1",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-prettier": "^9.1.0",
@@ -53,7 +55,7 @@
     "sass-loader": "^14.1.1",
     "typescript": "^5.3.3",
     "uuid": "^9.0.1",
-    "voca": "^1.4.1"
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

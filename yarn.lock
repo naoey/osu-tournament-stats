@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@alduino/humanizer@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@alduino/humanizer/-/humanizer-1.1.0.tgz#326675906da4b9242f348ba25e86e180d0c4412c"
+  integrity sha512-giCotZG35zJctq4hQFYrTTNCLOO0U1nldwZmLR7tbzF2EzTLiIGw2orNkY5WrQD6UPyPjN4GQsKEuy+O0EzjFQ==
+
 "@ampproject/remapping@^2.2.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.3.0.tgz#ed441b6fa600072520ce18b43d2c8cc8caecc7f4"
@@ -771,6 +776,11 @@
   dependencies:
     eslint-visitor-keys "^3.3.0"
 
+"@hotwired/turbo@^8.0.13":
+  version "8.0.13"
+  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-8.0.13.tgz#ab35fda9d358432c8a872a833844b38cccb8c25b"
+  integrity sha512-M7qXUqcGab6G5PKOiwhgbByTtrPgKPFCTMNQ52QhzUEXEqmp0/ApEguUesh/FPiUjrmFec+3lq98KsWnYY2C7g==
+
 "@jest/schemas@^29.6.3":
   version "29.6.3"
   resolved "https://registry.yarnpkg.com/@jest/schemas/-/schemas-29.6.3.tgz#430b5ce8a4e0044a7e3819663305a7b3091c8e03"
@@ -1154,11 +1164,6 @@
   resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.8.tgz#518609aefb797da19bf222feb199e8f653ff7627"
   integrity sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==
 
-"@types/voca@^1.4.5":
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/@types/voca/-/voca-1.4.5.tgz#c9a14ee976ffd514e5072f62ef18c968236df6a0"
-  integrity sha512-GaPq2U8tWosTT+gBTXIPSWrW3q2ok2ohWpq3xF8mREFJ1gZrfjZUrkbt34GKbN8KGfM2NSCZzYzX/1IEcOvE9w==
-
 "@types/yargs-parser@*":
   version "21.0.3"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-21.0.3.tgz#815e30b786d2e8f0dcd85fd5bcf5e1a04d008f15"
@@ -1229,6 +1234,11 @@
     "@babel/plugin-transform-react-jsx-source" "^7.25.9"
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.14.2"
+
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==
 
 ajv-formats@^2.1.1:
   version "2.1.1"
@@ -4406,11 +4416,6 @@ vite@^5.0.0:
   optionalDependencies:
     fsevents "~2.3.3"
 
-voca@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/voca/-/voca-1.4.1.tgz#9f84939e1aaca80c39158049d3321c67c6d2ed0a"
-  integrity sha512-NJC/BzESaHT1p4B5k4JykxedeltmNbau4cummStd4RjFojgq/kLew5TzYge9N2geeWyI2w8T30wUET5v+F7ZHA==
-
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"
@@ -4470,3 +4475,8 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+yarn@^1.22.22:
+  version "1.22.22"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.22.tgz#ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  integrity sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==

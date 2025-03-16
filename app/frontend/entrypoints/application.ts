@@ -13,9 +13,6 @@ console.log('Vite ⚡️ Rails')
 
 // Example: Load Rails libraries in Vite.
 //
-// import * as Turbo from '@hotwired/turbo'
-// Turbo.start()
-//
 // import ActiveStorage from '@rails/activestorage'
 // ActiveStorage.start()
 //
@@ -25,10 +22,13 @@ console.log('Vite ⚡️ Rails')
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 
+import { start as startTurbo } from '@hotwired/turbo'
 import $ from 'jquery';
 import ReactRailsUJS from 'react_ujs';
 
 import "../stylesheets/application.scss";
+
+// startTurbo();
 
 (window as any).$ = (window as any).jQuery = $;
 
