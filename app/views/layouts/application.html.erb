@@ -35,7 +35,9 @@
   <body>
     <%= react_component('common/NavigationBar') %>
 
-    <%= yield %>
+    <div class="ot-body-wrap">
+      <%= yield %>
+    </div>
   </body>
 
   <script>
