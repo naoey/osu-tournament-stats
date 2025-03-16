@@ -3,6 +3,7 @@ x-app: &x-app
     context: .
   volumes:
     - .:/app
+    - node_modules:/app/node_modules
   env_file: .env
 
 services:
@@ -13,16 +14,14 @@ services:
       - ${APPLICATION_PORT}:3000
     depends_on:
       - ots_db
-    command: "serve"
+    command: "rails"
 
-  ots_webpack:
+  ots_vite:
     <<: *x-app
-    container_name: ots_webpack
-    environment:
-      - WEBPACK_DEV_SERVER_HOST=0.0.0.0
-    command: "wds"
+    container_name: ots_vite
+    command: "vite"
     ports:
-      - '127.0.0.1:3035:3035'
+      - '127.0.0.1:3036:3036'
 
   ots_db:
     container_name: ots_db
@@ -38,3 +37,4 @@ services:
 
 volumes:
   ots_database:
+  node_modules:
