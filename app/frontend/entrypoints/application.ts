@@ -32,33 +32,14 @@ import "../stylesheets/application.scss";
 
 (window as any).$ = (window as any).jQuery = $;
 
-export const reactUJSConstructor = function (reqCtx) {
-  const fromRequireContext = function (reqCtx) {
-    return function (className) {
-      const parts = className.split(".");
-      const filename = className.split('.').join('/')
-      const keys = parts;
-      // Load the module:
-      const componentPath = Object.keys(reqCtx).find((path => path.search(filename) > 0));
+const importContext = import.meta.glob("../components/**/*.{js,ts,tsx,jsx}", { eager: true });
+const componentsContext = {};
 
-      let component = reqCtx[componentPath];
-      component = Object.values(component)[0];
-      return component;
-    }
-  }
+Object.entries(importContext).forEach(([filename, component]) => {
+  let cleanName = filename
+    .replace("../components/", "")
+    .replace(/\.\w+$/, ""); // Strips the file extension
+  componentsContext[cleanName] = Object.values(component)[0];
+});
 
-  const fromCtx = fromRequireContext(reqCtx);
-  return function (className) {
-    let component;
-    try {
-      // `require` will raise an error if this className isn't found:
-      component = fromCtx(className);
-    } catch (firstErr) {
-      console.error(firstErr);
-    }
-    return component;
-  }
-}
-
-const importContext = import.meta.glob("../components/**/*.{js,ts,jsx,tsx}", { eager: true });
-ReactRailsUJS.getConstructor = reactUJSConstructor(importContext);
+ReactRailsUJS.getConstructor = (name) => componentsContext[name] || componentsContext[`${name}/index`];
