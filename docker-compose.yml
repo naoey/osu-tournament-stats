@@ -15,13 +15,17 @@ services:
     depends_on:
       - ots_db
     command: "rails"
+    environment:
+      VITE_RUBY_HOST: ots_vite
 
   ots_vite:
     <<: *x-app
     container_name: ots_vite
     command: "vite"
     ports:
-      - '127.0.0.1:3036:3036'
+      - '3036:3036'
+    environment:
+      VITE_RUBY_HOST: 0.0.0.0
 
   ots_db:
     container_name: ots_db
