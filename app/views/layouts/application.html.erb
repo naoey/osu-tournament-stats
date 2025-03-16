@@ -15,7 +15,6 @@
     <%= csp_meta_tag %>
 
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%= vite_client_tag %>
@@ -35,7 +34,7 @@
   <body>
     <%= react_component('common/NavigationBar') %>
 
-    <div class="ot-body-wrap">
+    <div id="body-wrap" class="ot-body-wrap">
       <%= yield %>
     </div>
   </body>
@@ -44,7 +43,7 @@
     (function() {
       let atEnd = false;
 
-      document.body.addEventListener("scroll", function (e) {
+      document.getElementById('body-wrap').addEventListener("scroll", function (e) {
         if (e.target.scrollHeight - e.target.clientHeight - e.target.scrollTop < 100) {
           if (!atEnd) {
             document.dispatchEvent(new CustomEvent("ots.page_end_reached"));
