@@ -22,6 +22,6 @@ fi
 
 case "$command" in
     rails) ./bin/rails s -b 0.0.0.0;;
-    vite) DISCORD_ENABLED=0 ./bin/vite dev "$@";;
+    vite) DISCORD_ENABLED=0 ./bin/vite dev;;
     *) "$command" "$@";;
 esac

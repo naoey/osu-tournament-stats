@@ -1,4 +1,4 @@
-import { User } from "./app/assets/javascripts/models/User";
+import { User } from "./app/frontend/models/User";
 
 declare global {
   interface Window {
