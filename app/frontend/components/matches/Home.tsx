@@ -10,7 +10,8 @@ type HomeProps = {
 export function Home(props: HomeProps) {
   return (
     <div className="h-100">
-      <AddMatchButton />
+      {/* TODO: enable after proper ACL is implemented since everyone can login now */}
+      {/*<AddMatchButton />*/}
       <MatchListTable initialData={props.data} />
     </div>
   );
