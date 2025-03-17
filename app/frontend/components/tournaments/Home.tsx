@@ -52,7 +52,8 @@ export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeS
         <Col sm={24} md={14} className="p-3">
           <Row>
             <Col xs={isAuthenticated ? 1 : 0}>
-              <AddButton />
+              {/* TODO: restore after ACL is implemented since everyone can login now */}
+              {/*<AddButton />*/}
             </Col>
             <Col xs={isAuthenticated ? 23 : 24} className="px-2">
               <DebouncedSearchField onSearch={this.onSearch} placeholder="Search tournaments..." />
