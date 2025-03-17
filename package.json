@@ -57,8 +57,7 @@
     "sass": "^1.71.1",
     "sass-loader": "^14.1.1",
     "typescript": "^5.3.3",
-    "uuid": "^9.0.1",
-    "yarn": "^1.22.22"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
