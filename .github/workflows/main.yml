@@ -38,6 +38,8 @@ jobs:
         with:
           bundler-cache: true
 
+      - uses: pnpm/action-setup@v4
+
       - name: Get pnpm cache directory path
         id: pnpm-cache-dir-path
         run: echo "::set-output name=dir::$(pnpm store path)"
