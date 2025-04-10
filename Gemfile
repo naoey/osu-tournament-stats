@@ -15,6 +15,7 @@ gem 'puma', '~> 6.6.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
 gem 'vite_rails'
+gem "dotenv"
 gem "amazing_print"
 gem "rails_semantic_logger"
 
@@ -61,7 +62,6 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem "prettier", "~> 4.0"
-  gem "dotenv"
 end
 
 group :development do
