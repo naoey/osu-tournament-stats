@@ -15,6 +15,8 @@ gem 'puma', '~> 6.6.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
 gem 'vite_rails'
+gem "amazing_print"
+gem "rails_semantic_logger"
 
 gem 'devise'
 gem 'devise_invitable'
@@ -68,6 +70,10 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem "prettier_print"
+  gem "syntax_tree"
+  gem "syntax_tree-haml"
+  gem "syntax_tree-rbs"
 end
 
 group :test do

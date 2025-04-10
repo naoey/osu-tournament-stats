@@ -8,18 +8,26 @@ class Register < CommandBase
   def handle_response
     user = @event.interaction.user
 
-    return @event.respond(content: "Server configuration is incorrect!") if @server.verified_role_id.nil?
+    Rails.logger.debug("Began registration player={}", user)
+
+    if @server.verified_role_id.nil?
+      Rails.logger.warn("Server configuration is missing verified_role_id server={}", server)
+
+      return @event.respond(content: "Server configuration is incorrect!")
+    end
 
     discord_auth = PlayerAuth.find_by(uid: user.id, provider: :discord)
     osu_auth = discord_auth.nil? ? nil : discord_auth.player.identities.find_by(provider: :osu)
 
     if osu_auth
-      if osu_auth.player.ban_status_no_ban?
+      if osu_auth.player.ban_status == "no_ban"
         # This osu! account is already linked to a Discord account, provide role and finish registration
         user.add_role(@server.verified_role_id)
         user.add_role(@server.guest_role_id) unless @server.guest_role_id.nil? || discord_auth.player.country_code.nil? || discord_auth.player.country_code == 'IN'
+        Rails.logger.info("Granting already registered user access player={}", osu_auth.player)
         @event.respond(content: "Verification complete!", ephemeral: true)
-      elsif osu_auth.player.ban_status_soft?
+      elsif osu_auth.player.ban_status == "soft"
+        Rails.logger.info("Banned player tried to register player={}", osu_auth.player)
         user.pm(
           "You are soft banned on #{@event.server.name}, which means you cannot get the \"member\" role but you may access roles from #self-assign-roles"
         )
