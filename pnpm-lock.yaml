@@ -62,9 +62,6 @@ importers:
       moment:
         specifier: ^2.30.1
         version: 2.30.1
-      prettier:
-        specifier: ^3.2.5
-        version: 3.5.3
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -93,6 +90,9 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
+      '@prettier/plugin-ruby':
+        specifier: ^4.0.4
+        version: 4.0.4(prettier@3.5.3)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.14(@types/node@22.13.10)(sass@1.85.1)(terser@5.39.0))
@@ -105,6 +105,9 @@ importers:
       postcss-preset-env:
         specifier: ^10.1.5
         version: 10.1.5(postcss@8.5.3)
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
       vite:
         specifier: ^5.0.0
         version: 5.4.14(@types/node@22.13.10)(sass@1.85.1)(terser@5.39.0)
@@ -835,6 +838,11 @@ packages:
   '@pkgr/core@0.1.1':
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@prettier/plugin-ruby@4.0.4':
+    resolution: {integrity: sha512-lCpvfS/dQU5WrwN3AQ5vR8qrvj2h5gE41X08NNzAAXvHdM4zwwGRcP2sHSxfu6n6No+ljWCVx95NvJPFTTjCTg==}
+    peerDependencies:
+      prettier: ^3.0.0
 
   '@rc-component/async-validator@5.0.4':
     resolution: {integrity: sha512-qgGdcVIF604M9EqjNF0hbUTz42bz/RDtxWdWuU5EQe3hi7M8ob54B6B35rOsvX5eSvIHIzT9iH1R3n+hk3CGfg==}
@@ -4134,6 +4142,10 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.1.1': {}
+
+  '@prettier/plugin-ruby@4.0.4(prettier@3.5.3)':
+    dependencies:
+      prettier: 3.5.3
 
   '@rc-component/async-validator@5.0.4':
     dependencies:
