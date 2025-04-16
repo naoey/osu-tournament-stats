@@ -118,7 +118,6 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (3.1.7)
     drb (2.2.1)
     dry-cli (1.2.0)
     erubi (1.13.1)
@@ -454,7 +453,6 @@ DEPENDENCIES
   devise
   devise_invitable
   discordrb
-  dotenv
   factory_bot_rails
   jbuilder (~> 2.13)
   jsbundling-rails

@@ -15,7 +15,7 @@ gem 'puma', '~> 6.6.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
 gem 'vite_rails'
-gem "dotenv"
+# gem "dotenv"
 gem "amazing_print"
 gem "rails_semantic_logger"
 
