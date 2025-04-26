@@ -118,7 +118,6 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (3.1.8)
     drb (2.2.1)
     dry-cli (1.2.0)
     erubi (1.13.1)
@@ -210,6 +209,8 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.3)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.18.3-x86_64-darwin)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -444,8 +445,8 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
-  ruby
   x64-mingw32
+  x86_64-darwin-23
 
 DEPENDENCIES
   amazing_print
@@ -454,7 +455,6 @@ DEPENDENCIES
   devise
   devise_invitable
   discordrb
-  dotenv
   factory_bot_rails
   jbuilder (~> 2.13)
   jsbundling-rails
