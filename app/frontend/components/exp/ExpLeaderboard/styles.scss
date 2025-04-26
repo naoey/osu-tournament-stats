@@ -1,0 +1,24 @@
+.leaderboard-wrapper {
+  .ant-table-wrapper {
+    max-width: 720px;
+    margin: auto;
+  }
+
+  .spin-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    h4 {
+      margin-top: 0;
+      font-style: normal;
+    }
+  }
+}

@@ -1,8 +1,8 @@
-import { User } from "./app/assets/javascripts/models/User";
+import { Player } from "./app/frontend/models/Player";
 
 declare global {
   interface Window {
-    currentUser: User;
+    currentUser: Player;
   }
 }
 

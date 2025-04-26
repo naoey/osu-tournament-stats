@@ -25,7 +25,7 @@ class DiscordController < ApplicationController
         .includes(%i[player])
         .page(params[:page])
         .per(params[:limit])
-        .to_json(include: :player)
+        .to_json(include: { player: { include: :identities }})
 
     respond_to do |format|
       format.html do

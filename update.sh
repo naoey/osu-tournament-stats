@@ -36,9 +36,9 @@ git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 echo "Running bundle install..."
 ~/.rbenv/shims/bundle install || exit_failure 1
 
-# Step 3: Run yarn install
-echo "Running yarn install..."
-/usr/bin/yarn install || exit_failure 1
+# Step 3: Run pnpm install
+echo "Running pnpm install..."
+/usr/bin/pnpm install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."

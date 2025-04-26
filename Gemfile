@@ -11,11 +11,12 @@ gem 'rails', '~> 8.0.2'
 gem 'mysql2'
 # Use Puma as the app server
 gem 'puma', '~> 6.6.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 6.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
+gem 'vite_rails'
+gem "amazing_print"
+gem "rails_semantic_logger"
 
 gem 'devise'
 gem 'devise_invitable'
@@ -60,6 +61,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem "prettier", "~> 4.0"
+  gem 'dotenv'
 end
 
 group :development do
@@ -68,6 +70,10 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem "prettier_print"
+  gem "syntax_tree"
+  gem "syntax_tree-haml"
+  gem "syntax_tree-rbs"
 end
 
 group :test do

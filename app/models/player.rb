@@ -48,7 +48,21 @@ class Player < ApplicationRecord
   def self.from_omniauth(auth, state: nil)
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    raise ArgumentError, "Only osu! provider is allowed for new user sign ups!" if identity.nil? && auth.provider != "osu"
+    if identity.nil? && auth.provider != "osu"
+      # If the logging in account doesn't already exist we will have to create it, but we don't support registering
+      # with anything except osu!, so reject anything else right away.
+      Sentry.add_breadcrumb(
+        Sentry::Breadcrumb.new(
+          category: "omniauth.from_omniauth",
+          type: "info",
+          message: "new non-osu OmniAuth",
+          level: "info",
+          data: { auth: },
+        )
+      )
+
+      raise ArgumentError, "Only osu! provider is allowed for new user sign ups!"
+    end
 
     # Sometimes osu! identities may already exist even if the user never actually registered due to having been
     # created for the sake of match imports. In this case we just re-use the same identity. In the case the Player
@@ -57,7 +71,7 @@ class Player < ApplicationRecord
     should_notify_linkage = false
 
     if player.nil?
-      # This is a brand new user; create a Player for them
+      # This is a brand new user
       player = Player.create do |p|
         p.password = Devise.friendly_token[0, 20]
         p.name = auth.info.username
@@ -91,12 +105,34 @@ class Player < ApplicationRecord
   # Links additional Omniauth identities to this Player. Primarily intended for users to link their
   # Discord account after the fact without invoking the Discord bot.
   def add_additional_account(auth)
-    # for now we only support adding discord accounts, so it's just thrown in here
+    Sentry.add_breadcrumb(
+      Sentry::Breadcrumb.new(
+        category: "omniauth.add_additional_account",
+        type: "info",
+        message: "Adding secondary account",
+        level: "info",
+        data: { auth: },
+      )
+    )
+
+    # for now we only support adding discord accounts as additional, so it's just thrown in here because idk
     raise ArgumentError, "Only Discord is supported as an additional account" if auth.provider != "discord"
 
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    raise "Discord is already linked. Unlink it first to link a different account." unless identity.nil?
+    unless identity&.player.player_auths.find_by_provider(:osu).nil?
+      Sentry.add_breadcrumb(
+        Sentry::Breadcrumb.new(
+          category: "omniauth.add_additional_account",
+          type: "info",
+          message: "Discord ID is already linked to an osu!",
+          level: "info",
+          data: { auth: },
+        )
+      )
+    end
+
+    raise "Discord is already linked. Unlink it first to link a different account." unless identity.nil? || identity.player.player_auths.find_by_provider(:osu).nil?
 
     identity = PlayerAuth.create_with_omniauth(auth)
     identity.player = self
@@ -147,7 +183,7 @@ class Player < ApplicationRecord
 
     saved_state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
 
-    raise OsuAuthErrors::TimeoutError if saved_state.empty?
+    raise OsuAuthErrors::TimeoutError if saved_state.nil?
 
     discord_user = saved_state["user"]
     osu_user = auth.info
@@ -163,12 +199,12 @@ class Player < ApplicationRecord
       identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
     else
       ActiveRecord::Base.transaction do
-        old_player = discord_identity.player
+        transient_player = discord_identity.player
         discord_identity.player = self
         discord_identity.save!
-        self.discord_exp = old_player.discord_exp
+        self.discord_exp = transient_player.discord_exp
         self.save!
-        old_player.destroy!
+        transient_player.destroy!
       end
     end
 

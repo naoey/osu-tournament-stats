@@ -35,6 +35,8 @@ class TournamentsController < ApplicationController
   end
 
   def add
+    return render(json: { error: "Adding tournaments is currently not supported", code: "E_NOT_SUPPORTED" }, status: :forbidden)
+
     tournament = Tournament.new(add_params)
 
     tournament.host_player = ApiServices::OsuApi.new.get_or_load_player(current_player.osu_id)
