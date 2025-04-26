@@ -13,6 +13,8 @@ require "action_view/railtie"
 require "action_cable/engine"
 require "rails/test_unit/railtie"
 
+require_relative '../lib/structured_logger'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -27,6 +29,8 @@ module OsuTournamentStats
     config.cache_store = :memory_store, { size: 64.megabytes }
 
     config.after_initialize do
+      Rails.logger = StructuredLogger.new(Rails.logger)
+
       if ENV["DISCORD_ENABLED"] == "1"
         require_relative "../lib/discord/bot"
 
