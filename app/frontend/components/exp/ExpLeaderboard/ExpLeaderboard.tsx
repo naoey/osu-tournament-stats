@@ -51,6 +51,21 @@ export function ExpLeaderboard() {
     };
   }, [page]);
 
+  const getRoleName = (exp: DiscordExp): string => {
+    if (exp.exp >= 1899250)
+      return "Spam God";
+    if (exp.exp >= 835275)
+      return "Pls Stop";
+    if (exp.exp >= 268375)
+      return "Hyper Active";
+    if (exp.exp >= 42000)
+      return "Very Active"
+    if (exp.exp >= 4675)
+      return "Active";
+
+    return "";
+  };
+
   return (
     <div className="leaderboard-wrapper">
       <Table dataSource={data} pagination={false} rowKey={r => r.id} sticky>
@@ -79,7 +94,7 @@ export function ExpLeaderboard() {
                     )
                     : record.player.name || record.player.discord_id
                 }
-                description={record.level >= 100 ? "Spam God" : ""}
+                description={getRoleName(record)}
               />
             </List.Item>
           )}

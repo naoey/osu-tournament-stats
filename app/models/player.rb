@@ -131,7 +131,7 @@ class Player < ApplicationRecord
         )
       )
     end
-    
+
     raise "Discord is already linked. Unlink it first to link a different account." unless identity.nil? || identity.player.player_auths.find_by_provider(:osu).nil?
 
     identity = PlayerAuth.create_with_omniauth(auth)
@@ -183,7 +183,7 @@ class Player < ApplicationRecord
 
     saved_state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
 
-    raise OsuAuthErrors::TimeoutError if saved_state.empty?
+    raise OsuAuthErrors::TimeoutError if saved_state.nil?
 
     discord_user = saved_state["user"]
     osu_user = auth.info

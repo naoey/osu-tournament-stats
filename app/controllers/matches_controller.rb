@@ -29,6 +29,8 @@ class MatchesController < ApplicationController
   end
 
   def add
+    return render(json: { error: "Adding matches is currently not supported", code: "E_NOT_SUPPORTED" }, status: :forbidden)
+    
     unless params[:tournament_id].nil?
       t = Tournament.find(params[:tournament_id])
 
