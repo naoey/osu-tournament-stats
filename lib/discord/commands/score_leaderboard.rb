@@ -41,7 +41,7 @@ class ScoreLeaderboard < CommandBase
 
       nil
     rescue StandardError => e
-      Rails.logger.tagged(self.class.name) { Rails.logger.error e }
+      logger.error e
       "Error retrieving stats"
     end
   end

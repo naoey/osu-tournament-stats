@@ -24,7 +24,7 @@ class DiscordExp < ApplicationRecord
 
       self.save!
 
-      Rails.logger.info("player #{self.player.discord.uid} levelled up to #{self.level} carrying over #{self.detailed_exp[0]} exp")
+      logger.info("player levelled up to #{self.level} carrying over #{self.detailed_exp[0]} exp", player: self.player)
 
       ActiveSupport::Notifications.instrument("player.discord_level_up", { exp: self })
     else

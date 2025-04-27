@@ -27,6 +27,8 @@ class Player < ApplicationRecord
 
   enum :ban_status, { no_ban: 0, soft: 1, hard: 2 }
 
+  SENSITIVE_ATTRIBUTES = %i[email encrypted_password reset_password_token confirmation_token unlock_token invitation_token].freeze
+
   def discord
     identities.find_by_provider(:discord)
   end
@@ -169,11 +171,20 @@ class Player < ApplicationRecord
   end
 
   def as_json(*)
-    hash = super.as_json(include: %i[discord_exp ban_history])
+    hash = super(include: %i[discord_exp ban_history]).except(*SENSITIVE_ATTRIBUTES.map(&:to_s))
     hash["identities"] = identities.as_json(include: :auth_provider, except: :raw_info)
     hash["ban_history"] = ban_history.as_json(include: :banned_by)
     hash["discord_exp"] = discord_exp.as_json(include: :discord_server)
     hash
+  end
+
+  def inspect
+    # if ENV.fetch('RAILS_ENV') == 'development'
+    #   return super.inspect
+    # end
+
+    visible_attributes = attributes.except(*SENSITIVE_ATTRIBUTES.map(&:to_s))
+    "#<#{self.class.name} #{visible_attributes.map { |k, v| "#{k}=#{v.inspect}" }.join(", ")}>"
   end
 
   # Creates a pair of Discord and osu! PlayerAuths for the completion of an Discord x osu! linkage initiated
@@ -218,7 +229,7 @@ class Player < ApplicationRecord
     begin
       ActiveSupport::Notifications.instrument("player.discord_linked", { player: self })
     rescue StandardError => e
-      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+      logger.error("Notification handler error", e)
     end
   end
 
@@ -226,7 +237,7 @@ class Player < ApplicationRecord
     begin
       ActiveSupport::Notifications.instrument("player.alt_link", { player: self, other_player: })
     rescue StandardError => e
-      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+      logger.error("Notification handler error", e)
     end
   end
 end

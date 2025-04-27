@@ -14,11 +14,7 @@ class SetVerifiedRole < CommandBase
   end
 
   def make_response
-    Rails
-      .logger
-      .tagged(self.class.name) do
-        Rails.logger.debug("New set channel request #{@event.message.author.defined_permission?(:administrator)}")
-      end
+    logger.debug("New set channel request #{@event.message.author.defined_permission?(:administrator)}")
 
     return @event.respond("Role ID is required!") if @options[:role].nil?
 

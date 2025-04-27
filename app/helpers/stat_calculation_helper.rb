@@ -1,14 +1,12 @@
 module StatCalculationHelper
+  include SemanticLogger::Loggable
+
   def self.calculate_accuracy(score)
     # https://osu.ppy.sh/help/wiki/Accuracy
     d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
     if d.zero?
-      Rails
-        .logger
-        .tagged(self.class.name) do
-          Rails.logger.debug "Denominator for accuracy calculation of score #{score} is zero, using zero acc instead."
-        end
+      logger.warn("Denominator for accuracy calculation of score score is zero, using zero acc instead.", score: score)
       return 0
     end
 

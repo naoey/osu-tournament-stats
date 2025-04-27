@@ -2,6 +2,8 @@ module StatisticsServices
   ##
   # Service that provides functionality for various player statistics related operations.
   class PlayerStatistics_Legacy
+    include SemanticLogger::Loggable
+
     def get_all_player_stats_for_tournament(tournament_id, round_name_search = "")
       @data = []
 
@@ -74,11 +76,7 @@ module StatisticsServices
       d = 300 * (score.count_miss + score.count_50 + score.count_100 + score.count_300)
 
       if d.zero?
-        Rails
-          .logger
-          .tagged(self.class.name) do
-            Rails.logger.debug "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead."
-          end
+        logger.debug "Denominator for accuracy calculation of score #{score.as_json} is zero, using zero acc instead."
         return 0
       end
 
