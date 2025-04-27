@@ -10,7 +10,7 @@ class Register < CommandBase
   def handle_response
     user = @event.interaction.user
 
-    logger.info("Began registration", player: user)
+    logger.info("Began registration", member: user)
 
     if @server.verified_role_id.nil?
       logger.warn("Server configuration is missing verified_role_id", server: server)
