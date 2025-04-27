@@ -26,6 +26,8 @@ module OsuTournamentStats
 
     config.cache_store = :memory_store, { size: 64.megabytes }
 
+    config.rails_semantic_logger.format = StructuredFormatter.new
+
     config.after_initialize do
       if ENV["DISCORD_ENABLED"] == "1"
         require_relative "../lib/discord/bot"

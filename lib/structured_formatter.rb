@@ -9,6 +9,10 @@ class StructuredFormatter < SemanticLogger::Formatters::Default
     interpolate_named_placeholders(log.message, log.payload)
   end
 
+  def payload
+    log.payload.map { |k, v| [k, v.inspect] }.to_s
+  end
+
   def interpolate_named_placeholders(message, payload)
     message.gsub(/\{(\w+)\}/) do |_|
       key = Regexp.last_match(1).to_sym
