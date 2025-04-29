@@ -18,6 +18,7 @@ class DiscordExp < ApplicationRecord
 
     if current + exp > to_next_level
       self.detailed_exp[0] = (current + exp) - to_next_level
+      # TODO: this should probably check exp_to_next_level?(self.level + 1)??
       self.detailed_exp[1] = DiscordHelper.exp_to_next_level?(self.level)
       self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp
       self.level += 1
@@ -37,32 +38,51 @@ class DiscordExp < ApplicationRecord
 
   ## Merges another DiscordExp into this one and recalculates levels.
   def merge(other)
+    exp_to_add = other.detailed_exp[2]
+    level = self.level
+    final_exp = self.detailed_exp.clone
     current = self.detailed_exp[0]
     to_next_level = self.detailed_exp[1]
-    remaining_other_exp = other.detailed_exp[2]
 
-    while remaining_other_exp > 0 do
-      if current + remaining_other_exp > to_next_level
-        delta = remaining_other_exp - to_next_level
-        remaining_other_exp -= to_next_level
+    while exp_to_add > 0 do
+      # First check if total incoming exp will not cause a level increase, in that case we just add the progress
+      # and quit
+      if current + exp_to_add < to_next_level
+        self.detailed_exp[0] += exp_to_add
+        self.detailed_exp[2] = self.exp = self.detailed_exp[2] + exp_to_add
 
-        self.detailed_exp[0] = (current + delta) - to_next_level
-        self.detailed_exp[1] = DiscordHelper.exp_to_next_level?(self.level)
-        self.detailed_exp[2] = self.exp = self.detailed_exp[2] + delta
-        self.level += 1
-      else
-        self.detailed_exp[0] += remaining_other_exp
-        self.detailed_exp[2] = self.exp = self.detailed_exp[2] + remaining_other_exp
+        exp_to_add -= exp_to_add
 
-        self.save!
+        break
       end
 
-      self.save!
+      # Otherwise, gradually drain exp_to_add by increments of the amount required for next levels and level up one by one until we hit <0
+      # or the above condition in the next loop
+      remaining_current_level_exp = to_next_level - current # 30
 
-      logger.info("Exp levelled up to carrying over #{self.detailed_exp[0]} exp", { exp: self, user: self.player.discord })
-      ApplicationHelper::Notifications.notify("player.discord_level_up", { exp: self })
+      if remaining_current_level_exp > exp_to_add
+        # Ain't no way we're here because it should be taken care of by the above check
+        logger.error("Level recalculation error", { exp: self, other: })
+        raise RuntimeError, "Something is messed up in merging levels"
+      end
+
+      self.detailed_exp[0] = (current + remaining_current_level_exp) - to_next_level # Should be 0
+      self.detailed_exp[1] = DiscordHelper.exp_to_next_level?(level)
+      self.detailed_exp[2] = self.exp = self.detailed_exp[2] + remaining_current_level_exp
+      self.level += 1
+
+      # Prepare for next iteration
+      exp_to_add -= remaining_current_level_exp
+      level = self.level
+      current = self.detailed_exp[0]
+      to_next_level = self.detailed_exp[1]
     end
 
+    self.message_count += other.message_count
+
+    self.save!
+
+    return self
   end
 
   ##

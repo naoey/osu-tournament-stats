@@ -246,14 +246,12 @@ class Player < ApplicationRecord
       transient_player = discord_auth.player
       discord_auth.player = osu_auth.player
       discord_auth.save!
-      self.discord_exp.merge(transient_player.discord_exp)
+      player.discord_exp.merge(transient_player.discord_exp)
       self.save!
       transient_player.destroy!
     end
 
     ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
-
-
   end
 
   private
