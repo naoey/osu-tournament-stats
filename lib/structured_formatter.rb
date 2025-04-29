@@ -10,7 +10,7 @@ class StructuredFormatter < SemanticLogger::Formatters::Default
   end
 
   def payload
-    log.payload.map { |k, v| [k, v.inspect] }.to_s
+    log.payload&.map { |k, v| [k, v.inspect] }.to_s
   end
 
   def interpolate_named_placeholders(message, payload)
