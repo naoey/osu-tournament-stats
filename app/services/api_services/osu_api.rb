@@ -8,6 +8,8 @@ module ApiServices
   ##
   # Service class to load game data with fallback to the osu! API.
   class OsuApi
+    include SemanticLogger::Loggable
+
     ##
     # Loads a new match and adds it to the database. It differs from +load_match+ in that it accepts an optional third argument
     # which is an array of indices which indicate which game indexes to discard while parsing the match.
@@ -22,12 +24,10 @@ module ApiServices
     )
       referees = (referees || []).reject { |r| r.nil? || r.empty? }.map { |r| get_or_load_player(r) }.map(&:osu_id)
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info "Fetch details for match id #{osu_match_id} from osu! API" }
+      logger.info "Fetch details for match id #{osu_match_id} from osu! API"
 
       unless Match.find_by_online_id(osu_match_id).nil?
-        Rails
-          .logger
-          .tagged(self.class.name) { Rails.logger.info "Match #{osu_match_id} already exists in database, skipping API load" }
+        logger.info "Match #{osu_match_id} already exists in database, skipping API load"
         raise OsuApiParserExceptions::MatchExistsError, "Match #{osu_match_id} already exists in database"
       end
 
@@ -70,11 +70,11 @@ module ApiServices
 
       team_names = correct_match_name(json["match"]["name"], osu_match_id).split(/:/)
 
-      Rails.logger.tagged { Rails.logger.debug "Determining team names from match name part 1 #{team_names}" }
+      logger.debug "Determining team names from match name part 1 #{team_names}"
 
       blue_team_name, red_team_name = team_names[1]&.split(/\s?vs?.?\s?/i)
 
-      Rails.logger.tagged { Rails.logger.debug "Determining team names from match name part 2 #{team_names}" }
+      logger.debug "Determining team names from match name part 2 #{team_names}"
 
       ActiveRecord::Base.transaction do
         begin
@@ -101,7 +101,7 @@ module ApiServices
           db_match.save!
 
           # we need to discard games at the given indexes for whatever reason
-          Rails.logger.tagged(self.class.name) { Rails.logger.info "Discarding games #{discard_list}" }
+          logger.info "Discarding games #{discard_list}"
 
           games_after_discard = []
 
@@ -119,20 +119,14 @@ module ApiServices
 
           parse_match_games(games_after_discard, db_match, red_team: red_team, blue_team: blue_team, referees: referees)
 
-          Rails.logger.tagged(self.class.name) { Rails.logger.debug("Finished parsing games, determining winner") }
+          logger.debug("Finished parsing games, determining winner")
 
           db_match.winner = match_winner?(games_after_discard, red_team, blue_team, osu_match_id, referees: referees)
           db_match.save!
 
           db_match
         rescue StandardError => e
-          Rails
-            .logger
-            .tagged(self.class.name) do
-              Rails.logger.error("Error while parsing match. Internal error:")
-              Rails.logger.error(e.backtrace.join('\n'))
-            end
-
+          logger.error("Error while parsing match. Internal error:", e)
           raise ActiveRecord::Rollback
         end
       end
@@ -147,7 +141,7 @@ module ApiServices
     #
     # @return [Player]
     def get_or_load_player(username, force_update: false)
-      Rails.logger.tagged(self.class.name) { Rails.logger.debug("Fetching player information for player #{username}") }
+      logger.debug("Fetching player information for player #{username}")
 
       player = Player.where("LOWER(name) = ?", username.to_s.downcase).or(Player.where(osu_id: username))
 
@@ -167,14 +161,10 @@ module ApiServices
       player = Player.find_by_osu_id(api_player["user_id"].to_i)
 
       if !player.nil? && player.name != api_player["username"]
-        Rails
-          .logger
-          .tagged(self.class.name) do
-            Rails.logger.warn(
-              "Player with ID #{api_player["username"]} already exists but name doesn't match, " \
-                "updating #{player.name} => #{api_player["username"]}"
-            )
-          end
+        logger.warn(
+          "Player with ID #{api_player["username"]} already exists but name doesn't match, " \
+            "updating #{player.name} => #{api_player["username"]}"
+        )
         player.name = api_player["username"]
       elsif player.nil?
         player = Player.create(name: api_player["username"], osu_id: api_player["user_id"].to_i)
@@ -202,14 +192,14 @@ module ApiServices
       http = Net::HTTP.new("osu.ppy.sh", 443)
       http.use_ssl = true
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.debug "Fetching details for beatmap #{beatmap_id} from API" }
+      logger.debug "Fetching details for beatmap #{beatmap_id} from API"
 
       resp = http.get("/api/get_beatmaps?k=#{ENV["OSU_API_KEY"]}&b=#{beatmap_id}")
 
       json = JSON.parse(resp.body)
 
       if json.length.zero?
-        Rails.logger.warn "Beatmap with ID #{beatmap_id} doesn't exist on osu server, using dummy beatmap"
+        logger.warn "Beatmap with ID #{beatmap_id} doesn't exist on osu server, using dummy beatmap"
         dummy = Beatmap.find_by_online_id(-1)
 
         if dummy.nil?
@@ -240,8 +230,8 @@ module ApiServices
 
     def get_captain(json, team_id)
       json["games"].select { |g| g["team_type"] == "2" && !g["scores"].empty? }.first["scores"]
-        .select { |s| s["team"] == team_id.to_s }
-        .first[
+                   .select { |s| s["team"] == team_id.to_s }
+                   .first[
         "user_id"
       ].to_i
     end
@@ -289,7 +279,7 @@ module ApiServices
 
         red_team.save!
 
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug "Red player scores saved" }
+        logger.debug "Red player scores saved"
 
         blue_team_scores.each do |score|
           s =
@@ -316,7 +306,7 @@ module ApiServices
 
         blue_team.save!
 
-        Rails.logger.tagged(self.class.name) { Rails.logger.debug "Blue player scores saved" }
+        logger.debug "Blue player scores saved"
       end
 
       scores_in_db = MatchScore.where(match_id: match.id).count(:all)
@@ -324,7 +314,7 @@ module ApiServices
       return unless scores_in_db != total_score_count
 
       raise OsuApiParserExceptions::MatchParseFailedError,
-            "Match parse failed. Found #{scores_in_db} scores parsed, expected #{total_score_count}"
+        "Match parse failed. Found #{scores_in_db} scores parsed, expected #{total_score_count}"
     end
 
     def create_match_score(match, game, player_score, is_win, is_fc)
@@ -357,10 +347,10 @@ module ApiServices
         return blue_team if winners[match_id] == "blue"
 
         raise OsuApiParserExceptions::MatchParseFailedError,
-              "Match #{match_id} has entry in winner overrides but is an unrecognised value"
+          "Match #{match_id} has entry in winner overrides but is an unrecognised value"
       end
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info("Determining winner from #{match_games.length} match games") }
+      logger.info("Determining winner from #{match_games.length} match games")
 
       blue_wins = 0
       red_wins = 0
@@ -372,14 +362,14 @@ module ApiServices
           g["scores"]
             .select { |s| s["pass"] == "1" && !referees.include?(s["user_id"].to_i) }
             .each do |s|
-              s["score"] = s["score"].to_i
+            s["score"] = s["score"].to_i
 
-              if s["team"] == "1"
-                s["team"] = "blue"
-              elsif s["team"] == "2"
-                s["team"] = "red"
-              end
+            if s["team"] == "1"
+              s["team"] = "blue"
+            elsif s["team"] == "2"
+              s["team"] = "red"
             end
+          end
 
         team_totals = team_totals.group_by { |s| s["team"] }
 
@@ -388,13 +378,13 @@ module ApiServices
 
         if team_totals["red"].empty? && team_totals["blue"].empty?
           raise OsuApiParserExceptions::MatchParseFailedError,
-                "Impossible situation where map with beatmap id #{g["beatmap_id"]} has no passes at all"
+            "Impossible situation where map with beatmap id #{g["beatmap_id"]} has no passes at all"
         end
 
         red_total = team_totals["red"].map { |s| s["score"] }.reduce(:+) || 0
         blue_total = team_totals["blue"].map { |s| s["score"] }.reduce(:+) || 0
 
-        Rails.logger.tagged(self.class.name) { Rails.logger.info("Wins are red: #{red_wins}, blue: #{blue_wins}") }
+        logger.info("Wins are red: #{red_wins}, blue: #{blue_wins}")
 
         if red_total == blue_total
           raise OsuApiParserExceptions::MatchParseFailedError, "Impossible situation where red and blue teams have identical score"
@@ -411,11 +401,9 @@ module ApiServices
         raise OsuApiParserExceptions::MatchParseFailedError, "Impossible situation where red and blue have equal wins in a match"
       end
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info("Winner determined") }
+      winner = red_wins > blue_wins ? red_team : blue_team
 
-      return red_team if red_wins > blue_wins
-
-      blue_team
+      logger.info("Winner for game determined", match: g, winner: winner)
     end
 
     def correct_match_name(name, match_id)
@@ -423,7 +411,7 @@ module ApiServices
       corrections = YAML.load_file(File.join(Rails.root, "config", "match_winner_corrections.yml"))
 
       if corrections.key?(match_id)
-        Rails.logger.tagged(self.class.name) { Rails.logger.warn("Correcting match name #{name} => #{corrections[match_id]}") }
+        logger.warn("Correcting match name #{name} => #{corrections[match_id]}")
         corrections[match_id]
       else
         name
