@@ -106,10 +106,12 @@ exp_table = [
   [100, 55_100]
 ]
 
-describe "ExpHelper tests" do
-  it "calculates exp for each level correctly" do
+describe "ExpHelperSpec" do
+  logger = SemanticLogger['ExpHelperSpec']
+
+  it "calculates exp_to_next_level correctly" do
     exp_table.each do |e|
-      puts("Testing level #{e[0]}")
+      logger.info("Testing level", level: e)
       expect(DiscordHelper.exp_to_next_level?(e[0])).to equal(e[1])
     end
   end

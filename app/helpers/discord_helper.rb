@@ -6,7 +6,7 @@ module DiscordHelper
   # @param [Integer] current_level
   # @param [Integer] current_exp
   def self.exp_to_next_level?(current_level, current_exp = 0)
-    5 * (current_level**2) + (50 * current_level) + 100 - current_exp
+    5 * (current_level ** 2) + (50 * current_level) + 100 - current_exp
   end
 
   def self.sanitise_username(name)

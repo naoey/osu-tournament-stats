@@ -37,6 +37,12 @@ class DiscordController < ApplicationController
     end
   end
 
+  def invite
+    link = ENV.fetch("DISCORD_INVITE_LINK", false)
+
+    link ? redirect_to(link) : render(file: "#{Rails.root}/public/404.html", layout: false, status: 404)
+  end
+
   private
 
   def update_config_params

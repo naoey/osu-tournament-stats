@@ -29,6 +29,9 @@ module OsuTournamentStats
     config.rails_semantic_logger.format = StructuredFormatter.new
 
     config.after_initialize do
+      # https://github.com/omniauth/omniauth/issues/872
+      Hashie.logger = Logger.new(nil)
+
       if ENV["DISCORD_ENABLED"] == "1"
         require_relative "../lib/discord/bot"
 

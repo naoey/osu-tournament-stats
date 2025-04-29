@@ -61,12 +61,12 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem "prettier", "~> 4.0"
-  gem 'dotenv'
+  gem 'dotenv-rails'
 end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'rubocop', '~> 1.71.1', require: false
+  gem 'rubocop', '~> 1.75.3', require: false
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
