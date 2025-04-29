@@ -37,7 +37,7 @@ class Register < CommandBase
     end
 
     # manually extracting probably useful values since to_json runs into a stack too deep error
-    link = Player.get_osu_verification_link(DiscordHelper::identity_from_user(user))
+    link = Player.get_osu_verification_link(DiscordHelper::identity_from_user(user), @server.as_json)
 
     begin
       user.pm(
