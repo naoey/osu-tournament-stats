@@ -27,6 +27,8 @@ class Player < ApplicationRecord
 
   enum :ban_status, { no_ban: 0, soft: 1, hard: 2 }
 
+  SENSITIVE_ATTRIBUTES = %i[email encrypted_password reset_password_token confirmation_token unlock_token invitation_token].freeze
+
   def discord
     identities.find_by_provider(:discord)
   end
@@ -158,7 +160,7 @@ class Player < ApplicationRecord
   end
 
   def as_json(*)
-    hash = super.as_json(include: %i[discord_exp ban_history])
+    hash = super(include: %i[discord_exp ban_history]).except(*SENSITIVE_ATTRIBUTES.map(&:to_s))
     hash["identities"] = identities.as_json(include: :auth_provider, except: :raw_info)
     hash["ban_history"] = ban_history.as_json(include: :banned_by)
     hash["discord_exp"] = discord_exp.as_json(include: :discord_server)

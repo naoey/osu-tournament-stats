@@ -6,11 +6,11 @@ require_relative '../../app/helpers/discord_helper'
 namespace :exp do
   desc 'Load MEE6 JSON into database'
   task :load, %i[json_path] => [:environment] do |task, args|
-    Rails.logger = Logger.new(STDOUT)
+    logger = SemanticLogger["exp.rake"]
 
     json = JSON.parse(File.read(args[:json_path]))
 
-    Rails.logger.info("Found #{json.count} entries in JSON file")
+    logger.info("Found #{json.count} entries in JSON file")
 
     bar = RakeProgressbar.new(json.count)
 
@@ -47,7 +47,7 @@ namespace :exp do
 
     assert DiscordExp.count == json.count, 'All JSON records entered'
 
-    Rails.logger.info("Inserted #{DiscordExp.count} records")
+    logger.info("Inserted #{DiscordExp.count} records")
 
     bar.finished
   end

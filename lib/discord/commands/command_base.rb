@@ -1,6 +1,8 @@
 require "optparse"
 
 class CommandBase
+  include SemanticLogger::Loggable
+
   def initialize(bot, event, *args)
     @bot = bot
     @event = event

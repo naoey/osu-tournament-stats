@@ -21,7 +21,7 @@ module Discord
     attr_reader :client
 
     def initialize!
-      Rails.logger.tagged(self.class.name) { Rails.logger.info "Initialising Discord bot..." }
+      logger.info "Initialising Discord bot..."
 
       @client = Discordrb::Commands::CommandBot.new token: ENV["DISCORD_BOT_TOKEN"], prefix: ENV["DISCORD_BOT_PREFIX"]
 
@@ -44,7 +44,7 @@ module Discord
       ApplicationHelper::Notifications.subscribe("player.discord_linked") { |d| osu_verification_completed(d) }
       ApplicationHelper::Notifications.subscribe("player.alt_link") { |d| osu_verification_alt(d) }
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info "Osu Discord bot is running" }
+      logger.info "Osu Discord bot is running"
     end
 
     def close!
@@ -53,7 +53,7 @@ module Discord
       @client&.stop
       @client = nil
 
-      Rails.logger.tagged(self.class.name) { Rails.logger.info "Osu Discord bot has stopped" }
+      logger.info "Osu Discord bot has stopped"
     end
 
     private
@@ -96,7 +96,7 @@ module Discord
 
         nil
       rescue StandardError => e
-        Rails.logger.tagged(self.class.name) { Rails.logger.error e }
+        logger.error e
         "Error retrieving stats"
       end
     end
@@ -208,7 +208,7 @@ module Discord
 
       begin
         if Rails.env.production? && !last_spoke.nil? && (Time.now - last_spoke) < 60.seconds
-          Rails.logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
+          logger.debug("discord user #{author_id} has recently cached last spoke; skipping update")
 
           return
         end
@@ -239,13 +239,11 @@ module Discord
 
         delta_roles.each do |r|
           t = roles.find { |rl| rl[1] == r }
-          Rails.logger.info("adding role #{r} for user #{author_id} for threshold #{t}")
+          logger.info("adding role #{r} for user #{author_id} for threshold #{t}")
           event.message.author.add_role(r, "Exp threshold #{t} reached with #{exp.detailed_exp}")
         end
       rescue RuntimeError => e
-        Rails.logger.error("failed to process message updates for #{author_id}")
-        Rails.logger.error(e.message)
-        Rails.logger.error(e.backtrace.join("\r\n"))
+        logger.error("failed to process message updates for #{author_id}", e)
       end
     end
 
