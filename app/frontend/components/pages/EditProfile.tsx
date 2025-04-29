@@ -45,7 +45,7 @@ export default function EditProfile({ user }: EditProfileProps) {
   const renderAdditionalAccountOptions = () => {
     const options = [];
 
-    if (editingUser.identities.length < 2) {
+    if (!editingUser.identities.some(i => i.provider === IdentityProvider.Discord)) {
       options.push(
         <form method="post" action="/auth/discord">
           <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
@@ -60,9 +60,31 @@ export default function EditProfile({ user }: EditProfileProps) {
           />
         </form>,
       );
-    } else {
-      return null;
     }
+
+    if (!editingUser.identities.some(i => i.provider === IdentityProvider.Osu)) {
+      options.push(
+        <>
+          <p>To link your osu! account, join the <a href="/discord">osu!india Discord server</a> first.</p>
+        </>
+      )
+      // options.push(
+      //   <form method="post" action="/auth/osu">
+      //     <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
+      //     <Button
+      //       icon={<DiscordOutlined />}
+      //       type="primary"
+      //       style={{ backgroundColor: '#5865F2' }}
+      //       htmlType="submit"
+      //       shape="circle"
+      //       value="submit"
+      //       data-turbo="false"
+      //     />
+      //   </form>,
+      // );
+    }
+
+    if (options.length === 0) return null;
 
     return (
       <Flex align="center" gap="small">

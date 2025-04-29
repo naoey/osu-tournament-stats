@@ -111,7 +111,7 @@ class Player < ApplicationRecord
 
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    unless identity&.player.player_auths.find_by_provider(:osu).nil?
+    unless identity&.player.identities.find_by_provider(:osu).nil?
       Sentry.add_breadcrumb(
         Sentry::Breadcrumb.new(
           category: "omniauth.add_additional_account",
