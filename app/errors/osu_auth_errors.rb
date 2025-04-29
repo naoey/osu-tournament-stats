@@ -10,4 +10,7 @@ module OsuAuthErrors
 
   class UnauthorisedError < OsuAuthError
   end
+
+  class AltAccountError < OsuAuthError
+  end
 end

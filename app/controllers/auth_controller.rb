@@ -47,15 +47,18 @@ class AuthController < Devise::OmniauthCallbacksController
         else
           player = Player.from_omniauth(auth)
         end
+
+        sign_in player, event: :authentication
+
+        redirect_to authorise_success_path(player:, code: flow)
       rescue OsuAuthErrors::TimeoutError
         return render plain: "Timeout"
       rescue OsuAuthErrors::UnauthorisedError
         raise ActionController::BadRequest
+      rescue OsuAuthErrors::AltAccountError
+        @error_code = 1
+        raise ActionController::BadRequest
       end
-
-      sign_in player, event: :authentication
-
-      redirect_to authorise_success_path(player:, code: flow)
     rescue StandardError => e
       logger.error("⚠️osu! OAuth handling failed", e)
       @oauth_error = e

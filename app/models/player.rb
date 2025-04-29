@@ -219,7 +219,7 @@ class Player < ApplicationRecord
         "player.alt_link",
         { player:, guild:, alt_discord: discord_user }
       )
-      raise OsuAuthErrors::UnauthorisedError, "osu! account is already linked to another Discord user."
+      raise OsuAuthErrors::AltAccountError, "osu! account is already linked to another Discord user."
     end
 
     discord_auth = PlayerAuth.find_by_uid(discord_user["id"])
