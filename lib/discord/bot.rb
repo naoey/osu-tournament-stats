@@ -111,22 +111,24 @@ module Discord
         return
       end
 
-      server = @client.server(data[:guild][:id])
-      db_server = data[:guild][:id]
+      server = @client.server(data[:guild][:discord_id])
+      db_server = data[:guild]
       player = data[:player]
       alt_discord = data[:alt_discord]
 
-      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
-        embed.title = player.name
-        embed.url = "https://osu.ppy.sh/users/#{player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu_id}")
-        embed.color = EMBED_RED
-        embed.description = "Alt verification attempt"
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{alt_discord["id"]}>"),
-          Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{player.discord.uid}>")
-        ]
-      end
+      @client
+        .channel(db_server.verification_log_channel_id, server)
+        .send_embed do |embed|
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+          embed.color = EMBED_RED
+          embed.description = "Alt verification attempt"
+          embed.fields = [
+            Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{alt_discord["id"]}>"),
+            Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{player.discord.uid}>")
+          ]
+        end
     end
 
     def osu_verification_banned(auth_request)
