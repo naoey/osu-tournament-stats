@@ -13,7 +13,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 require "rails/test_unit/railtie"
 
-require_relative '../lib/structured_logger'
+require_relative '../lib/structured_formatter'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -24,12 +24,11 @@ module OsuTournamentStats
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
-    config.react.server_renderer_extensions = %w[jsx js tsx ts]
-
     config.cache_store = :memory_store, { size: 64.megabytes }
 
+    config.rails_semantic_logger.format = StructuredFormatter.new
+
     config.after_initialize do
-      Rails.logger = StructuredLogger.new(Rails.logger)
       # https://github.com/omniauth/omniauth/issues/872
       Hashie.logger = Logger.new(nil)
 
