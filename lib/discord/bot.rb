@@ -16,6 +16,7 @@ EMBED_PURPLE = 10_181_046
 module Discord
   class OsuDiscordBot
     include Singleton
+    include SemanticLogger::Loggable
 
     attr_reader :client
 
@@ -40,9 +41,8 @@ module Discord
 
       @client.run true
 
-      ActiveSupport::Notifications.subscribe("player.discord_linked") do |_name, _started, _finished, _unique_id, data|
-        osu_verification_completed(data)
-      end
+      ApplicationHelper::Notifications.subscribe("player.discord_linked") { |d| osu_verification_completed(d) }
+      ApplicationHelper::Notifications.subscribe("player.alt_link") { |d| osu_verification_alt(d) }
 
       Rails.logger.tagged(self.class.name) { Rails.logger.info "Osu Discord bot is running" }
     end
@@ -105,20 +105,30 @@ module Discord
       StatisticsServices::PlayerStatistics_Legacy.new
     end
 
-    def osu_verification_alt(auth_request, original_player)
-      server = @client.server(auth_request.discord_server.discord_id)
-
-      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
-        embed.title = original_player.name
-        embed.url = "https://osu.ppy.sh/users/#{original_player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{original_player.osu_id}")
-        embed.color = EMBED_RED
-        embed.description = "Alt verification attempt"
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{auth_request.player.discord_id}>"),
-          Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{original_player.discord_id}>")
-        ]
+    def osu_verification_alt(data)
+      if data[:guild].nil?
+        logger.warn("Received alt verification event with no guild", data: data)
+        return
       end
+
+      server = @client.server(data[:guild][:discord_id])
+      db_server = data[:guild]
+      player = data[:player]
+      alt_discord = data[:alt_discord]
+
+      @client
+        .channel(db_server.verification_log_channel_id, server)
+        .send_embed do |embed|
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+          embed.color = EMBED_RED
+          embed.description = "Alt verification attempt"
+          embed.fields = [
+            Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{alt_discord["id"]}>"),
+            Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{player.discord.uid}>")
+          ]
+        end
     end
 
     def osu_verification_banned(auth_request)

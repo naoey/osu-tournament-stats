@@ -16,18 +16,7 @@ class AuthController < Devise::OmniauthCallbacksController
       raw_user = auth["extra"]["raw_info"]
       player = nil
 
-      begin
-        player = Player.from_omniauth(
-          auth,
-          state: params["s"]
-        )
-      rescue OsuAuthErrors::TimeoutError
-        return render plain: "Timeout"
-      rescue OsuAuthErrors::UnauthorisedError
-        raise ActionController::BadRequest
-      end
-
-      flow_code =
+      flow =
         if !params['f'].nil? && !params["f"].empty? && params["f"] == "bot" && !params["s"].empty?
           AuthController::FLOW_CODE["discord_bot"]
         elsif !player&.persisted?
@@ -36,7 +25,7 @@ class AuthController < Devise::OmniauthCallbacksController
           AuthController::FLOW_CODE["login"]
         end
 
-      logger.debug("⚠️began osu! OAuth handling for flow type #{flow_code}")
+      logger.debug("⚠️began osu! OAuth handling for flow type #{flow}")
 
       Sentry.add_breadcrumb(
         Sentry::Breadcrumb.new(
@@ -45,17 +34,33 @@ class AuthController < Devise::OmniauthCallbacksController
           message: "began osu! OAuth callback",
           level: "info",
           data: {
-            flow_code:,
+            flow:,
             state: params,
             raw_user:
           }
         )
       )
 
-      sign_in player, event: :authentication
-      redirect_to authorise_success_path(player:, code: flow_code)
+      begin
+        if flow == AuthController::FLOW_CODE["discord_bot"]
+          player = Player.from_bot_link(auth, params["s"])
+        else
+          player = Player.from_omniauth(auth)
+        end
+
+        sign_in player, event: :authentication
+
+        redirect_to authorise_success_path(player:, code: flow)
+      rescue OsuAuthErrors::TimeoutError
+        return render plain: "Timeout"
+      rescue OsuAuthErrors::UnauthorisedError
+        raise ActionController::BadRequest
+      rescue OsuAuthErrors::AltAccountError
+        @error_code = 1
+        raise ActionController::BadRequest
+      end
     rescue StandardError => e
-      logger.error("⚠️osu! OAuth handling failed")
+      logger.error("⚠️osu! OAuth handling failed", e)
       @oauth_error = e
       process(:failure)
     end
@@ -142,8 +147,7 @@ class AuthController < Devise::OmniauthCallbacksController
 
     return redirect_to root_path if exception.nil?
 
-    logger.error(exception)
-    logger.error(exception.backtrace.join('\n'))
+    logger.error("Failed to complete OmniAuth login", exception)
     Sentry.capture_exception(exception)
 
     render template: "auth/failure"

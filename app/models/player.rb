@@ -45,7 +45,7 @@ class Player < ApplicationRecord
     false
   end
 
-  def self.from_omniauth(auth, state: nil)
+  def self.from_omniauth(auth)
     identity = PlayerAuth.find_with_omniauth(auth)
 
     if identity.nil? && auth.provider != "osu"
@@ -68,21 +68,11 @@ class Player < ApplicationRecord
     # created for the sake of match imports. In this case we just re-use the same identity. In the case the Player
     # has never been imported through a match, then it's a completely fresh user so we just create it as normal.
     player = identity&.player
-    should_notify_linkage = false
 
     if player.nil?
       # This is a brand new user
-      player = Player.create do |p|
-        p.password = Devise.friendly_token[0, 20]
-        p.name = auth.info.username
-        p.country_code = auth.info[:country_code]
-        p.avatar_url = auth.info[:avatar_url]
-        p.skip_confirmation!
-        p.save!
-
-        p.link_osu_discord_identities(auth, state) unless state.nil?
-      end
-    elsif auth.provider == 'osu'
+      player = Player.from_osu_auth(auth)
+    else
       # Update name from osu! logins even for existing users
       player.name = auth.info.username
       player.country_code = auth.info[:country_code]
@@ -99,7 +89,8 @@ class Player < ApplicationRecord
     end
 
     player.save!
-    player
+
+    return player
   end
 
   # Links additional Omniauth identities to this Player. Primarily intended for users to link their
@@ -120,7 +111,7 @@ class Player < ApplicationRecord
 
     identity = PlayerAuth.find_with_omniauth(auth)
 
-    unless identity&.player.player_auths.find_by_provider(:osu).nil?
+    unless identity&.player.identities.find_by_provider(:osu).nil?
       Sentry.add_breadcrumb(
         Sentry::Breadcrumb.new(
           category: "omniauth.add_additional_account",
@@ -131,8 +122,6 @@ class Player < ApplicationRecord
         )
       )
     end
-
-    raise "Discord is already linked. Unlink it first to link a different account." unless identity.nil? || identity.player.player_auths.find_by_provider(:osu).nil?
 
     identity = PlayerAuth.create_with_omniauth(auth)
     identity.player = self
@@ -156,11 +145,11 @@ class Player < ApplicationRecord
   # Creates a special link to complete osu! verification and OAuth registration with implicit Discord verification
   # by virtue of beginning the process through the Discord bot. This link has an expiry duration of 5 minutes to complete
   # the osu! registration.
-  def self.get_osu_verification_link(discord_user)
+  def self.get_osu_verification_link(discord_user, guild)
     guid = SecureRandom.uuid
     Rails.cache.write(
       "discord_bot/osu_verification_links/#{discord_user["id"]}",
-      { guid:, user: discord_user }.stringify_keys,
+      { guid:, user: discord_user, guild: }.stringify_keys,
       expires_in: 5.minutes
     )
 
@@ -176,57 +165,117 @@ class Player < ApplicationRecord
     hash
   end
 
-  # Creates a pair of Discord and osu! PlayerAuths for the completion of an Discord x osu! linkage initiated
-  # through the bot. Throws if the link session has expired or the initiating user or hash mismatches
-  def link_osu_discord_identities(auth, state)
+  # Links a pair of osu! x Discord IDs, concluding the flow started by `get_osu_verification_link`. This is a different
+  # process than a regular login using either service and will fail if the osu! account is found to already be linked
+  # to another Discord account, and notify the server from which the verification request was started.
+  def self.from_bot_link(omniauth, state)
     discord_id, guid = Base64.decode64(state).split("|")
+    cache_key = "discord_bot/osu_verification_links/#{discord_id}"
+    saved_state = Rails.cache.read(cache_key)
 
-    saved_state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
+    raise OsuAuthErrors::TimeoutError, "Verification timed out" if saved_state.nil?
 
-    raise OsuAuthErrors::TimeoutError if saved_state.nil?
+    Rails.cache.delete(cache_key)
 
-    discord_user = saved_state["user"]
-    osu_user = auth.info
+    guild = DiscordServer.find_by_discord_id(saved_state["guild"]["discord_id"])
 
-    raise OsuAuthErrors::UnauthorisedError if saved_state["guid"] != guid
-    raise OsuAuthErrors::UnauthorisedError if discord_user["id"] != discord_id.to_i
-
-    discord_identity = PlayerAuth.find_by_uid(discord_user["id"])
-
-    identities.build(provider: :osu, uid: osu_user["id"], uname: osu_user["username"], raw: osu_user).save!
-
-    if discord_identity.nil?
-      identities.build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user).save!
-    else
-      ActiveRecord::Base.transaction do
-        transient_player = discord_identity.player
-        discord_identity.player = self
-        discord_identity.save!
-        self.discord_exp = transient_player.discord_exp
-        self.save!
-        transient_player.destroy!
-      end
+    if guild.nil?
+      logger.error("Guild is nil for bot link request completion", osu_auth: omniauth, state: state, cached_state: saved_state)
+      raise OsuAuthErrors::OsuAuthError, "Something is wrong. Contact the server admins."
     end
 
-    notify_osu_discord_linkage
-    nil
+    discord_user = saved_state["user"]
+    osu_auth = PlayerAuth.find_by(provider: :osu, uid: omniauth.uid)
+
+    raise OsuAuthErrors::UnauthorisedError, "Something is wrong. Contact the server admins." if saved_state["guid"] != guid
+    raise OsuAuthErrors::UnauthorisedError, "Something is wrong. Contact the server admins." if discord_user["id"] != discord_id.to_i
+
+    if osu_auth.nil?
+      # This osu! user doesn't exist in our system, handle linkage normally
+      logger.info("osu account is not found; handling linkage normally")
+
+      player = Player.from_osu_auth(omniauth)
+
+      player.identities
+            .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
+            .save!
+
+      ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
+
+      return
+    end
+
+    player = osu_auth.player
+
+    if !player.discord.nil? && player.discord.uid == discord_id.to_i
+      # We should never be here because this should have already been handled by the bot before initiating the flow
+      logger.warn("Someone is messing about; player re-link attempt", { player:, osu_auth:, saved_state: })
+      raise OsuAuthErrors::UnauthorisedError, "What are you trying to do?"
+    end
+
+    if !player.discord.nil? && player.discord.uid != discord_id.to_i
+      logger.warn("Alt verification attempt", { osu_auth:, state:, cached_state: saved_state })
+      ApplicationHelper::Notifications.notify(
+        "player.alt_link",
+        { player:, guild:, alt_discord: discord_user }
+      )
+      raise OsuAuthErrors::AltAccountError, "osu! account is already linked to another Discord user."
+    end
+
+    discord_auth = PlayerAuth.find_by_uid(discord_user["id"])
+
+    if discord_auth.nil?
+      # The Discord ID hasn't been claimed by anyone; create the identity and link it to the osu player
+      logger.info('Discord ID not found; handling linkage normally')
+
+      osu_auth
+        .player
+        .identities
+        .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
+        .save!
+
+      ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
+
+      return player
+    end
+
+    # Now the troublesome one where osu and Discord are linked to different players, and neither of them have
+    # the other identity. In this case, fold the player owning the Discord ID into the player owning the osu! ID
+    logger.info("Merging Discord player into current osu player", { discord_player: discord_auth.player, osu_player: osu_auth.player })
+    ActiveRecord::Base.transaction do
+      transient_player = discord_auth.player
+      discord_auth.player = osu_auth.player
+      discord_auth.save!
+      player.discord_exp.merge(transient_player.discord_exp)
+      player.save!
+      transient_player.destroy!
+    end
+
+    ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
+
+    return player
   end
 
   private
 
-  def notify_osu_discord_linkage
-    begin
-      ActiveSupport::Notifications.instrument("player.discord_linked", { player: self })
-    rescue StandardError => e
-      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+  def self.from_osu_auth(auth)
+    if auth.provider != 'osu'
+      raise RuntimeError "Attempting to create user from osu auth but provider is not osu -- #{auth.inspect}"
     end
-  end
 
-  def notify_alt_account_link(other_player)
-    begin
-      ActiveSupport::Notifications.instrument("player.alt_link", { player: self, other_player: })
-    rescue StandardError => e
-      Rails.logger.error("Notification handler error\n#{e.backtrace.join('\r\n')}")
+    player = PlayerAuth.find_by(provider: :osu, uid: auth.uid)&.player
+
+    if player.nil?
+      player = Player.create do |p|
+        p.password = Devise.friendly_token[0, 20]
+        p.name = auth.info.username
+        p.country_code = auth.info[:country_code]
+        p.avatar_url = auth.info[:avatar_url]
+        p.skip_confirmation!
+        p.save!
+      end
     end
+
+    return player
   end
 end

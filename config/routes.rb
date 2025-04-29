@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   get "beatmaps", to: "beatmaps#search"
   get "beatmaps/:id", to: "beatmaps#show"
 
+  get "discord", to: "discord#invite"
   get "discord/servers", to: "discord#show"
   get "discord/servers/:id", to: "discord#show_server"
   get "discord/servers/:server_id/exp", to: "discord#show_exp_leaderboard"

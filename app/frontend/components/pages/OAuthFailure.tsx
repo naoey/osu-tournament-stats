@@ -3,6 +3,7 @@ import { Content } from "antd/es/layout/layout";
 
 enum FailureCode {
   OnlyOsuAllowed,
+  AltDiscord,
 }
 
 type OauthFailedProps = {
@@ -25,6 +26,15 @@ export default function OAuthFailure({ service, code }: OauthFailedProps) {
           </p>
         );
 
+      case FailureCode.AltDiscord:
+        return (
+          <p>
+            Your osu! account is already linked to another Discord account. Multiple Discord accounts are not allowed.
+
+            Contact the server admins if you have a valid reason for using a different Discord account.
+          </p>
+        )
+
       default:
         return <p>Something broke when trying to log you in with your {service} account.</p>;
     }
@@ -32,7 +42,7 @@ export default function OAuthFailure({ service, code }: OauthFailedProps) {
 
   return (
     <Content>
-      <h1>login failed!</h1>
+      <h1>failed!</h1>
 
       {getMessage()}
       <p>Click <a href="/login">here</a> to go back to the login page.</p>
