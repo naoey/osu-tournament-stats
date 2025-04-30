@@ -10,8 +10,8 @@ class Exp < CommandBase
   protected
 
   def handle_response
-    user_option = @event.options["user"]&.to_i
-    player = user_option ? Player.joins(:identities).find_by(identities: { provider: :discord, uid: user_option }) : @player
+    user_id = @event.options["user"]&.to_i
+    player = user_id ? Player.joins(:identities).find_by(identities: { provider: :discord, uid: user_id }) : @player
     exp = DiscordExp.find_by(player: player, discord_server: @server)
 
     return @event.respond(content: "User is not registered") if player.nil? || exp.nil?

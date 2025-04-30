@@ -40,7 +40,6 @@ class DiscordExp < ApplicationRecord
   def merge(other)
     exp_to_add = other.detailed_exp[2]
     level = self.level
-    final_exp = self.detailed_exp.clone
     current = self.detailed_exp[0]
     to_next_level = self.detailed_exp[1]
 
@@ -81,6 +80,7 @@ class DiscordExp < ApplicationRecord
     self.message_count += other.message_count
 
     self.save!
+    other.destroy!
 
     return self
   end

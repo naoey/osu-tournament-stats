@@ -96,6 +96,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.4)
     date (3.4.1)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -216,6 +217,8 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-darwin)
       racc (~> 1.4)
@@ -457,6 +460,7 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
+  arm64-darwin-24
   x64-mingw32
   x86_64-darwin-23
   x86_64-linux
@@ -465,6 +469,7 @@ DEPENDENCIES
   amazing_print
   bootsnap (>= 1.1.0)
   byebug
+  csv (~> 3.3)
   devise
   devise_invitable
   discordrb
@@ -504,7 +509,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.4.2p28
 
 BUNDLED WITH
    2.6.7

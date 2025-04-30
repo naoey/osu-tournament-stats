@@ -71,6 +71,32 @@ RSpec.describe DiscordExp do
     expect(result.player_id).to equal(exp1.player.id)
   end
 
+  it "should delete the other exp after merging" do
+    exp1 = DiscordExp.new(
+      exp: 40,
+      detailed_exp: [40, 100, 40],
+      level: 0,
+      message_count: 3,
+      player: create(:player),
+      discord_server: test_server,
+    )
+    exp2 = DiscordExp.new(
+      exp: 765,
+      detailed_exp: [290, 295, 765],
+      level: 3,
+      message_count: 100,
+      player: create(:player),
+      discord_server: test_server,
+    )
+
+    expect(exp2).to receive(:destroy!)
+
+    result = exp1.merge(exp2)
+
+    # sanity check to verify merge still happened
+    expect(result.exp).to equal(805)
+  end
+
   xit "should merge exp correctly with random exp case" do
     exp1 = DiscordExp.new(
       exp: 3_589_402,
