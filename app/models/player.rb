@@ -211,23 +211,11 @@ class Player < ApplicationRecord
         old_discord_player = discord_auth.player
         discord_auth.player = player
 
-        player.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: player.id) do |e|
-          if old_discord_player.discord_exp.nil?
-            # The temporary player also doesn't have any exp, create a new one
-            e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
-            e.exp = 0
-            e.level = 0
-            e.message_count = 0
-            e.save!
-          else
-            e.merge(old_discord_player.discord_exp)
-          end
-        end
+        Player.verify_exp_exist_and_merge(player, old_discord_player)
 
         discord_auth.save!
         old_discord_player.destroy!
       end
-
 
       ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
 
@@ -276,19 +264,7 @@ class Player < ApplicationRecord
       discord_auth.player = osu_auth.player
       discord_auth.save!
 
-      player.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: osu_auth.player.id) do |e|
-        if transient_player.discord_exp.nil?
-          # The temporary player also doesn't have any exp, create a new one
-          e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
-          e.exp = 0
-          e.level = 0
-          e.message_count = 0
-          e.player = osu_auth.player
-          e.save!
-        else
-          e.merge(transient_player.discord_exp)
-        end
-      end
+      Player.verify_exp_exist_and_merge(player, transient_player)
 
       player.save!
       transient_player.destroy!
@@ -300,6 +276,25 @@ class Player < ApplicationRecord
   end
 
   private
+
+  ##
+  # DONT FLIP THE PLAYER1 and 2 ORDER
+  def self.verify_exp_exist_and_merge(player1, player2)
+    exp = player1.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: osu_auth.player.id) do |e|
+      e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
+    end
+
+    if player2.discord_exp.nil?
+      # The temporary player also doesn't have any exp, initialise a new one
+      exp.exp = 0
+      exp.level = 0
+      exp.message_count = 0
+      exp.player = osu_auth.player
+      exp.save!
+    else
+      exp.merge(player2.discord_exp.find_by(discord_server_id: guild.id))
+    end
+  end
 
   def self.from_osu_auth(auth)
     if auth.provider != 'osu'
