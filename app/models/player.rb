@@ -198,9 +198,26 @@ class Player < ApplicationRecord
 
       player = Player.from_osu_auth(omniauth)
 
-      player.identities
-            .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
-            .save!
+      # If the Discord identity already exists (it probably should due to exp thingo), fold it into this newly created
+      # osu! auth owner
+      discord_auth = PlayerAuth.find_by(provider: :discord, uid: discord_id.to_i)
+
+      if discord_auth.nil?
+        # If for some reason it doesn't exist, create it
+        player.identities
+              .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
+              .save!
+      else
+        old_discord_player = discord_auth.player
+        discord_auth.player = player
+        player.discord_exp
+          .find_by_discord_server_id(guild.id)
+          .merge(old_discord_player.discord_exp)
+
+        discord_auth.save!
+        old_discord_player.destroy!
+      end
+
 
       ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
 
@@ -248,7 +265,9 @@ class Player < ApplicationRecord
       transient_player = discord_auth.player
       discord_auth.player = osu_auth.player
       discord_auth.save!
-      player.discord_exp.merge(transient_player.discord_exp)
+      player.discord_exp
+        .find_by_discord_server_id(guild.id)
+        .merge(transient_player.discord_exp)
       player.save!
       transient_player.destroy!
     end
