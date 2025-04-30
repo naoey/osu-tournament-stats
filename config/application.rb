@@ -28,6 +28,8 @@ module OsuTournamentStats
 
     config.rails_semantic_logger.format = StructuredFormatter.new
 
+    config.active_support.to_time_preserves_timezone = :zone
+
     config.after_initialize do
       # https://github.com/omniauth/omniauth/issues/872
       Hashie.logger = Logger.new(nil)

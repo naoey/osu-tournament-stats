@@ -211,7 +211,7 @@ class Player < ApplicationRecord
         old_discord_player = discord_auth.player
         discord_auth.player = player
 
-        Player.verify_exp_exist_and_merge(player, old_discord_player)
+        Player.verify_exp_exist_and_merge(player, old_discord_player, guild)
 
         discord_auth.save!
         old_discord_player.destroy!
@@ -248,7 +248,12 @@ class Player < ApplicationRecord
       osu_auth
         .player
         .identities
-        .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
+        .build(
+          provider: :discord,
+          uid: discord_user["id"],
+          uname: discord_user["username"],
+          raw: discord_user
+        )
         .save!
 
       ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
@@ -264,7 +269,7 @@ class Player < ApplicationRecord
       discord_auth.player = osu_auth.player
       discord_auth.save!
 
-      Player.verify_exp_exist_and_merge(player, transient_player)
+      Player.verify_exp_exist_and_merge(player, transient_player, guild)
 
       player.save!
       transient_player.destroy!
@@ -279,8 +284,8 @@ class Player < ApplicationRecord
 
   ##
   # DONT FLIP THE PLAYER1 and 2 ORDER
-  def self.verify_exp_exist_and_merge(player1, player2)
-    exp = player1.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: osu_auth.player.id) do |e|
+  def self.verify_exp_exist_and_merge(player1, player2, guild)
+    exp = player1.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: player1.id) do |e|
       e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
     end
 
@@ -289,7 +294,7 @@ class Player < ApplicationRecord
       exp.exp = 0
       exp.level = 0
       exp.message_count = 0
-      exp.player = osu_auth.player
+      exp.player = player1
       exp.save!
     else
       exp.merge(player2.discord_exp.find_by(discord_server_id: guild.id))
@@ -315,5 +320,9 @@ class Player < ApplicationRecord
     end
 
     return player
+  end
+
+  def notify_discord_linked
+
   end
 end

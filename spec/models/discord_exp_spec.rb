@@ -89,9 +89,12 @@ RSpec.describe DiscordExp do
       discord_server: test_server,
     )
 
-    exp1.merge(exp2)
-
     expect(exp2).to receive(:destroy!)
+
+    result = exp1.merge(exp2)
+
+    # sanity check to verify merge still happened
+    expect(result.exp).to equal(805)
   end
 
   xit "should merge exp correctly with random exp case" do

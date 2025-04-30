@@ -6,8 +6,24 @@ RSpec.describe Player do
 
   mock_discord_user = { id: 1, name: 'test' }.stringify_keys!
 
-  before(:all) do
+  before(:each) do
+    DiscordExp.destroy_all
+    DiscordServer.destroy_all
+    Player.destroy_all
+
     @mock_server = create(:discord_server)
+  end
+
+  def get_state_guid_from_link(link)
+    url = URI.parse(link)
+    params = CGI.parse(url.query)
+    _, guid = Base64.decode64(params['s'].first).split('|')
+
+    return params['s'].first, guid
+  end
+
+  def create_omniauth(provider: nil, uid: nil, **args)
+    double("OmniAuth::Strategies::Osu", uid:, provider:, **args)
   end
 
   describe "get_osu_verification_link" do
@@ -23,7 +39,33 @@ RSpec.describe Player do
   end
 
   describe 'from_bot_link' do
-    it "should correctly handle a completely fresh user" do
+    # When registering having never sent a message and hence not having a record in DB
+    xit "should correctly handle a completely fresh user" do
+      osu_id = 69
+
+      link = Player.get_osu_verification_link(mock_discord_user, @mock_server)
+
+      # User shouldn't be created at this point yet
+      expect(PlayerAuth.exists?(uid: mock_discord_user["id"])).to eq(false)
+
+      omniauth = create_omniauth(provider: "osu", uid: osu_id)
+
+      state, guid = get_state_guid_from_link(link)
+
+      allow(Rails.cache).to receive(:read)
+        .with("discord_bot/osu_verification_links/#{mock_discord_user["id"]}")
+        .and_return({ guild: @mock_server.as_json, user: mock_discord_user, guid: }.stringify_keys!)
+      allow(omniauth).to receive(:info)
+        .and_return({ username: "test" })
+
+      Player.from_bot_link(omniauth, state)
+
+      expect(PlayerAuth.exists?(uid: osu_id)).to eq(true)
+      expect(PlayerAuth.exists?(uid: mock_discord_user["id"])).to eq(true)
+    end
+
+    # When registering after having sent some messages, and having only a Discord user in the DB with some exp
+    it "should correctly handle a fresh user who has accumulated exp" do
 
     end
 
@@ -59,22 +101,25 @@ RSpec.describe Player do
         { id: @mock_server.id, name: 'test_server' }
       )
 
-      url = URI.parse(link)
-      params = CGI.parse(url.query)
-      _, guid = Base64.decode64(params['s'].first).split('|')
+      state, guid = get_state_guid_from_link(link)
 
       logger.info("Mocking callback for GUID", { guid: })
-
-      omniauth = double("OmniAuth::Strategies::Osu", uid: osu_id)
 
       allow(Rails.cache).to receive(:read)
         .with("discord_bot/osu_verification_links/#{mock_discord_user["id"]}")
         .and_return({ guild: @mock_server.as_json, user: mock_discord_user, guid: }.stringify_keys!)
 
-      Player.from_bot_link(omniauth, params['s'].first)
+      omniauth = create_omniauth(uid: osu_id, provider: "osu")
 
       expect_any_instance_of(DiscordExp).to receive(:merge)
-        .with(discord_player.discord_exp)
+        .with(
+          discord_player.discord_exp.find_by(
+            player_id: discord_player.id, discord_server_id: @mock_server.id
+          )
+        )
+
+      Player.from_bot_link(omniauth, state)
+
       expect(osu_player.identities.exists?(provider: :discord)).to eq(true)
       expect(Player.exists?(id: discord_player.id)).to eq(false)
     end
