@@ -210,9 +210,19 @@ class Player < ApplicationRecord
       else
         old_discord_player = discord_auth.player
         discord_auth.player = player
-        player.discord_exp
-          .find_by_discord_server_id(guild.id)
-          .merge(old_discord_player.discord_exp)
+
+        player.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: player.id) do |e|
+          if old_discord_player.discord_exp.nil?
+            # The temporary player also doesn't have any exp, create a new one
+            e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
+            e.exp = 0
+            e.level = 0
+            e.message_count = 0
+            e.save!
+          else
+            e.merge(old_discord_player.discord_exp)
+          end
+        end
 
         discord_auth.save!
         old_discord_player.destroy!
@@ -265,9 +275,21 @@ class Player < ApplicationRecord
       transient_player = discord_auth.player
       discord_auth.player = osu_auth.player
       discord_auth.save!
-      player.discord_exp
-        .find_by_discord_server_id(guild.id)
-        .merge(transient_player.discord_exp)
+
+      player.discord_exp.find_or_create_by(discord_server_id: guild.id, player_id: osu_auth.player.id) do |e|
+        if transient_player.discord_exp.nil?
+          # The temporary player also doesn't have any exp, create a new one
+          e.detailed_exp = DiscordHelper::INITIAL_EXP.clone
+          e.exp = 0
+          e.level = 0
+          e.message_count = 0
+          e.player = osu_auth.player
+          e.save!
+        else
+          e.merge(transient_player.discord_exp)
+        end
+      end
+
       player.save!
       transient_player.destroy!
     end
