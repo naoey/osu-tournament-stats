@@ -219,7 +219,7 @@ class Player < ApplicationRecord
 
       ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
 
-      return
+      return player
     end
 
     player = osu_auth.player
