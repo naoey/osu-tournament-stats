@@ -70,7 +70,36 @@ RSpec.describe Player do
     end
 
     it "should correctly handle a user who has a discord auth but no osu auth" do
+      osu_id = 69
 
+      discord_player = create(:player, identities: []) do |p|
+        p.discord_exp = [create(:discord_exp, discord_server: @mock_server, player: p)]
+        p.identities.build(provider: :discord, uid: mock_discord_user["id"], uname: 'test')
+        p.save!
+      end
+
+      link = Player.get_osu_verification_link(
+        mock_discord_user,
+        { id: @mock_server.id, name: 'test_server' }
+      )
+
+      state, guid = get_state_guid_from_link(link)
+
+      logger.info("Mocking callback for GUID", { guid: })
+
+      omniauth = create_omniauth(uid: osu_id, provider: "osu")
+
+      allow(Rails.cache).to receive(:read)
+        .with("discord_bot/osu_verification_links/#{mock_discord_user["id"]}")
+        .and_return({ guild: @mock_server.as_json, user: mock_discord_user, guid: }.stringify_keys!)
+      allow(omniauth).to receive(:info)
+        .and_return({ username: "test", country_code: "IN" })
+
+      Player.from_bot_link(omniauth, state)
+
+      final_player = PlayerAuth.find_by_uid(osu_id).player
+
+      expect(final_player.osu.uid).to eq(osu_id)
     end
 
     it "should correctly handle a user who has an osu auth but no discord auth" do
