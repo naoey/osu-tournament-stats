@@ -268,7 +268,7 @@ class Player < ApplicationRecord
 
     # Now the troublesome one where osu and Discord are linked to different players, and neither of them have
     # the other identity. In this case, fold the player owning the Discord ID into the player owning the osu! ID
-    logger.info("Merging Discord player into current osu player", { discord_player: discord_auth.player, osu_player: osu_auth.player })
+    logger.info("Merging Discord player into current osu player", { discord_player: discord_auth.player.id, osu_player: osu_auth.player.id })
     ActiveRecord::Base.transaction do
       transient_player = discord_auth.player
       discord_auth.player = osu_auth.player
