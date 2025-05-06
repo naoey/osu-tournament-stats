@@ -76,11 +76,11 @@ class Player < ApplicationRecord
       player = Player.from_osu_auth(auth)
     else
       # Update name from osu! logins even for existing users
-      player.name = auth.info.username
+      player.name = auth.info[:username]
       player.country_code = auth.info[:country_code]
       player.avatar_url = auth.info[:avatar_url]
 
-      player.identities.where(provider: :osu).update(uname: auth.info.username, raw: auth.info)
+      player.identities.where(provider: :osu).update(uname: auth.info[:username], raw: auth.info)
     end
 
     unless player.confirmed?
@@ -204,6 +204,7 @@ class Player < ApplicationRecord
 
       if discord_auth.nil?
         # If for some reason it doesn't exist, create it
+        logger.info("Discord auth doesn't exist; creating")
         player.identities
               .build(provider: :discord, uid: discord_user["id"], uname: discord_user["username"], raw: discord_user)
               .save!
@@ -215,7 +216,11 @@ class Player < ApplicationRecord
 
         discord_auth.save!
         old_discord_player.destroy!
+
+        logger.info("Finished folding Discord auth into osu! auth", player.identities.inspect)
       end
+
+      player.save!
 
       ApplicationHelper::Notifications.notify("player.discord_linked", { player: })
 
@@ -311,10 +316,16 @@ class Player < ApplicationRecord
     if player.nil?
       player = Player.create do |p|
         p.password = Devise.friendly_token[0, 20]
-        p.name = auth.info.username
+        p.name = auth.info[:username]
         p.country_code = auth.info[:country_code]
         p.avatar_url = auth.info[:avatar_url]
         p.skip_confirmation!
+        p.identities.build(
+          provider: :osu,
+          uid: auth.uid,
+          uname: auth.info[:username],
+          raw: auth.info
+        )
         p.save!
       end
     end
