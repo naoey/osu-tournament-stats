@@ -148,6 +148,12 @@ class Player < ApplicationRecord
   # by virtue of beginning the process through the Discord bot. This link has an expiry duration of 5 minutes to complete
   # the osu! registration.
   def self.get_osu_verification_link(discord_user, guild)
+    player = PlayerAuth.find_by(provider: :discord, uid: discord_user["id"])&.player
+
+    if player && player.identities.exists?(provider: :osu)
+      raise RuntimeError, "Player is already registered"
+    end
+
     guid = SecureRandom.uuid
     Rails.cache.write(
       "discord_bot/osu_verification_links/#{discord_user["id"]}",
