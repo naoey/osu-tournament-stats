@@ -97,9 +97,10 @@ RSpec.describe Player do
 
       Player.from_bot_link(omniauth, state)
 
-      final_player = PlayerAuth.find_by_uid(osu_id).player
+      final_player = PlayerAuth.find_by_uid(mock_discord_user["id"]).player
 
       expect(final_player.osu.uid).to eq(osu_id)
+      expect { discord_player.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "should correctly handle a user who has an osu auth but no discord auth" do
