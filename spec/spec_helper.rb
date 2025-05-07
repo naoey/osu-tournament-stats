@@ -100,11 +100,10 @@ RSpec.configure do |config|
     # Clear existing appenders if any (good for re-running specs)
     SemanticLogger.appenders.clear
 
-    # Add a nice console appender
-    SemanticLogger.add_appender(io: $stdout, formatter: :color)
-
-    # Set global minimum log level
-    SemanticLogger.default_level = :info
+    if ENV.fetch("CI", nil).nil?
+      SemanticLogger.add_appender(io: $stdout, formatter: :color)
+      SemanticLogger.default_level = :info
+    end
 
     begin
       AuthProvider.create([
