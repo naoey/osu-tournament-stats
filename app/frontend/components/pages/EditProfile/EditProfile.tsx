@@ -5,12 +5,13 @@ import moment from "moment";
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
 import AppearanceSection from "./AppearanceSection";
 import usePlayer from "../../../hooks/usePlayer";
-import LoadingTracker from "../../common/LoadingTracker";
+import LoadingTracker, { useLoadingTracker } from "../../common/LoadingTracker";
+import PageRoot from "../../common/PageRoot";
 
-export default function EditProfile() {
-  const { player, toLoginPage } = usePlayer();
+export default PageRoot(function EditProfile() {
+  const { player, toLoginPage, deleteIdentity: apiDeleteIdentity } = usePlayer();
   const [editingPlayer, setEditingPlayer] = useState<Player>(player);
-  const [deleteIdLoadingKeys, setDeleteLoadingKeys] = useState<IdentityProvider[]>([]);
+  const loadingTracker = useLoadingTracker();
 
   useEffect(() => {
     if (!player) toLoginPage();
@@ -19,15 +20,18 @@ export default function EditProfile() {
   if (!player) return null;
 
   const deleteIdentity = async (id: Identity) => {
+    const loadingKey = `deleteIdentity_${id.provider}`;
+
     try {
-      setDeleteLoadingKeys(k => [...k, id.provider]);
-      setEditingPlayer(await editingPlayer.deleteIdentity(id));
-      setDeleteLoadingKeys(k => k.filter(i => i !== id.provider));
+      const identities = await apiDeleteIdentity(id);
+      loadingTracker.addLoadingKey(loadingKey);
+      setEditingPlayer(p => ({ ...p, identities }));
       message.success("Removed Discord connection");
     } catch (e) {
       console.error(e);
-      setDeleteLoadingKeys(k => k.filter(i => i !== id.provider));
       message.error("Something went wrong!");
+    } finally {
+      loadingTracker.removeLoadingKey(loadingKey);
     }
   };
 
@@ -42,8 +46,8 @@ export default function EditProfile() {
       <Button
         onClick={() => deleteIdentity(id)}
         type="primary" danger icon={<DeleteOutlined />}
-        disabled={id.provider === IdentityProvider.Osu || deleteIdLoadingKeys.includes(id.provider)}
-        loading={deleteIdLoadingKeys.includes(id.provider)}
+        disabled={id.provider === IdentityProvider.Osu || loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
+        loading={loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
       />
     </Flex>
   ));
@@ -72,7 +76,7 @@ export default function EditProfile() {
       options.push(
         <>
           <p>To link your osu! account, join the <a href="/discord">osu!india Discord server</a> first.</p>
-        </>
+        </>,
       )
       // options.push(
       //   <form method="post" action="/auth/osu">
@@ -100,7 +104,7 @@ export default function EditProfile() {
   };
 
   return (
-    <LoadingTracker>
+    <>
       <Flex align="center" gap="large">
         <Avatar src={editingPlayer.avatar_url} size={75} />
         <h1>{editingPlayer.name}</h1>
@@ -124,6 +128,6 @@ export default function EditProfile() {
 
       {renderLinkedAccounts()}
       {renderAdditionalAccountOptions()}
-    </LoadingTracker>
+    </>
   );
-}
+})
