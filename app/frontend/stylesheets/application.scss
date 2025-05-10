@@ -30,6 +30,25 @@ body {
 
 .ot-body-wrap {
   height: calc(100% - 40px);
-  padding: 15px;
   overflow: scroll;
+
+  // react-rails div
+  & > div {
+    height: 100%;
+    width: 100%;
+
+    // antd <App /> div
+    & > div {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.ot-page-root {
+  height: 100%;
+  width: 100%;
+  padding: 15px;
+  background-color: var(--ant-color-bg-base);
+  color: var(--ant-color-text-base);
 }
