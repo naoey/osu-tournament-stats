@@ -1,14 +1,18 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, ReactNode } from "react";
 
 type LoadingTrackerContext = {
-  isKeyLoading: (key: string) => void;
+  isKeyLoading: (key: string) => boolean;
   addLoadingKey: (key: string) => void;
   removeLoadingKey: (key: string) => void;
 }
 
-const LoadingContext = createContext<LoadingTrackerContext>({});
+const LoadingContext = createContext<LoadingTrackerContext | null>(null);
 
-export default function LoadingTracker({ children }) {
+type LoadingTrackerProps = {
+  children: ReactNode,
+};
+
+export default function LoadingTracker({ children }: LoadingTrackerProps) {
   const [loadingKeys, setLoadingKeys] = useState<string[]>([]);
 
   const isKeyLoading = (key: string) => loadingKeys.includes(key);
@@ -24,4 +28,11 @@ export default function LoadingTracker({ children }) {
   );
 }
 
-export const useLoadingTracker = () => useContext(LoadingContext);
+export const useLoadingTracker = () => {
+  const context = useContext(LoadingContext);
+
+  if (context === null)
+    throw new Error("`useLoadingTracker` can't be used outside a loading context");
+
+  return context;
+};

@@ -5,6 +5,7 @@ import { PreferredColourScheme } from "../../../models/Player";
 import { useLoadingTracker } from "../../common/LoadingTracker";
 import EnumHelper from "../../../helpers/EnumHelper";
 import { UserEvents } from "../../../events/UserEvents";
+import NotificationHelper from "../../../helpers/NotificationHelper";
 
 const loading_key = 'preferredColourScheme';
 
@@ -16,12 +17,13 @@ export default function AppearanceSection() {
   if (!player) return null;
 
   const handleColourSchemeChange = async (scheme: PreferredColourScheme) => {
-
     try {
       loadingTracker.addLoadingKey(loading_key);
-      await updateUiConfig({ ...player.ui_config, preferred_colour_scheme: scheme });
-      $(document).trigger(UserEvents.SettingsUpdated)
-    } catch {
+      const newConfig = { ...player.ui_config, preferred_colour_scheme: scheme };
+      await updateUiConfig(newConfig);
+      NotificationHelper.dispatch(UserEvents.SettingsUpdated, newConfig);
+    } catch (e) {
+      console.error("Failed to update colour scheme", e);
       message.open({ type: "error", content: "Something went wrong!" });
     } finally {
       loadingTracker.removeLoadingKey(loading_key);

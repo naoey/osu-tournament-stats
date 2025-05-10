@@ -17,8 +17,9 @@ export enum PreferredColourScheme {
   Dark,
 }
 
-type Identity = {
+export type Identity = {
   provider: IdentityProvider;
+  auth_provider: { display_name: string };
   raw: any;
   uid: number;
   uname: string;
