@@ -10,6 +10,7 @@ import AddMatchButton from "./AddMatchButton";
 import { MatchListTable } from "../matches/MatchListTable";
 import PlayerStatsListTable from "../matches/PlayerStatsListTable";
 import TournamentContext from "./TournamentContext";
+import PageRoot from "../common/PageRoot";
 
 export interface ITournamentDetailsProps {
   tournament: Tournament;
@@ -23,6 +24,7 @@ interface ITournamentDetailsState {
 
 const DATE_DISPLAY_FORMAT = "DD MMM YYYY";
 
+@PageRoot
 export default class TournamentDetails extends React.Component<ITournamentDetailsProps, ITournamentDetailsState> {
   public state = {
     activeTab: "matches",

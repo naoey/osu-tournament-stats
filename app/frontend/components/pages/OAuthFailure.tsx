@@ -1,5 +1,6 @@
 import React from "react";
 import { Content } from "antd/es/layout/layout";
+import PageRoot from "../common/PageRoot";
 
 enum FailureCode {
   OnlyOsuAllowed,
@@ -11,7 +12,7 @@ type OauthFailedProps = {
   code?: FailureCode;
 };
 
-export default function OAuthFailure({ service, code }: OauthFailedProps) {
+export default PageRoot(function OAuthFailure({ service, code }: OauthFailedProps) {
   console.log('code', code, FailureCode.OnlyOsuAllowed);
   const getMessage = () => {
     switch (code) {
@@ -48,4 +49,4 @@ export default function OAuthFailure({ service, code }: OauthFailedProps) {
       <p>Click <a href="/login">here</a> to go back to the login page.</p>
     </Content>
   );
-}
+})

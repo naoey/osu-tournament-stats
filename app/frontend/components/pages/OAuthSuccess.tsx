@@ -1,5 +1,6 @@
 import React from "react";
 import { Content } from "antd/es/layout/layout";
+import PageRoot from "../common/PageRoot";
 
 enum AuthFlowCode {
   DiscordBotRegistration,
@@ -12,7 +13,7 @@ type OsuLoginSuccessProps = {
   code: AuthFlowCode;
 }
 
-export default function OAuthSuccess({ code }: OsuLoginSuccessProps) {
+export default PageRoot(function OAuthSuccess({ code }: OsuLoginSuccessProps) {
   const getMessage = () => {
     switch (code) {
       case AuthFlowCode.DirectRegistration:
@@ -39,4 +40,4 @@ export default function OAuthSuccess({ code }: OsuLoginSuccessProps) {
       {getMessage()}
     </Content>
   )
-}
+})

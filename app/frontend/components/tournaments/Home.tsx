@@ -8,6 +8,7 @@ import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common/DebouncedSearchField";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
+import PageRoot from "../common/PageRoot";
 
 interface ITournamentHomeProps {
   list: Tournament[];
@@ -21,6 +22,7 @@ interface ITournamentHomeState {
   searchQuery?: string;
 }
 
+@PageRoot
 export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeState> {
   constructor(props: ITournamentHomeProps) {
     super(props);

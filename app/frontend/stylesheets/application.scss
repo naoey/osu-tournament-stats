@@ -28,8 +28,27 @@ body {
   height: 100%;
 }
 
+body {
+  @media (prefers-color-scheme: dark) {
+    background-color: #000;
+    color: #FFF;
+  }
+}
+
 .ot-body-wrap {
   height: calc(100% - 40px);
-  padding: 15px;
   overflow: scroll;
+  padding: 15px;
+
+  // react-rails div
+  & > div {
+    height: 100%;
+    width: 100%;
+
+    // antd <App /> div
+    & > div {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

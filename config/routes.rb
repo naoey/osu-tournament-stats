@@ -1,9 +1,11 @@
 Rails.application.routes.default_url_options[:host] = ENV.fetch("HOST_URL")
 
 Rails.application.routes.draw do
+  get "users/:id", to: "users#show"
   get "users/:id/edit", to: "users#show_edit_profile"
   delete "users/:id/connection", to: "users#delete_identity"
   get "/users/register_discord", to: "users#show_link_osu_discord"
+  put "/users/me/ui_config", to: "users#update_ui_config"
 
   get "beatmaps/get"
   get "matches", to: "matches#show"
