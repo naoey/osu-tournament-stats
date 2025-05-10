@@ -3,6 +3,7 @@ import { Identity, IdentityProvider, Player } from "../../models/Player";
 import { Avatar, Button, Divider, Flex, message } from "antd";
 import moment from "moment";
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
+import CsrfHelper from "../../helpers/CsrfHelper";
 
 type EditProfileProps = {
   user: Player;
@@ -48,7 +49,7 @@ export default function EditProfile({ user }: EditProfileProps) {
     if (!editingUser.identities.some(i => i.provider === IdentityProvider.Discord)) {
       options.push(
         <form method="post" action="/auth/discord">
-          <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
+          <input type="hidden" name="authenticity_token" value={CsrfHelper.getCsrfToken()} />
           <Button
             icon={<DiscordOutlined />}
             type="primary"
