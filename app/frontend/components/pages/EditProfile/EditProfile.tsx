@@ -7,6 +7,7 @@ import AppearanceSection from "./AppearanceSection";
 import usePlayer from "../../../hooks/usePlayer";
 import LoadingTracker, { useLoadingTracker } from "../../common/LoadingTracker";
 import PageRoot from "../../common/PageRoot";
+import CsrfHelper from "../../helpers/CsrfHelper";
 
 export default PageRoot(function EditProfile() {
   const { player, toLoginPage, deleteIdentity: apiDeleteIdentity } = usePlayer();
@@ -58,7 +59,7 @@ export default PageRoot(function EditProfile() {
     if (!editingPlayer.identities.some(i => i.provider === IdentityProvider.Discord)) {
       options.push(
         <form method="post" action="/auth/discord">
-          <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
+          <input type="hidden" name="authenticity_token" value={CsrfHelper.getCsrfToken()} />
           <Button
             icon={<DiscordOutlined />}
             type="primary"
