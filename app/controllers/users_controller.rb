@@ -3,6 +3,19 @@ require "base64"
 class UsersController < ApplicationController
   before_action :authenticate_player!, except: %i[show_link_osu_discord]
 
+  def show
+    player = if params[:id] == "me"
+      current_player
+    else
+      Player.find(params[:id])
+    end
+
+    return render(
+      status: player.nil? ? 404 : 200,
+      json: player,
+    )
+  end
+
   def show_edit_profile
     return render status: 404 if params[:id] != "me"
 
@@ -42,6 +55,20 @@ class UsersController < ApplicationController
         end
 
         render json: current_player.identities.as_json(include: :auth_provider, except: :raw)
+      end
+    end
+  end
+
+  def update_ui_config
+    respond_to do |format|
+      format.json do
+        return render status: :bad_request if params.nil?
+
+        current_player.ui_config = current_player.ui_config
+          .merge(params.permit(:preferred_colour_scheme).to_h)
+        current_player.save!
+
+        return render(json: current_player.ui_config)
       end
     end
   end
