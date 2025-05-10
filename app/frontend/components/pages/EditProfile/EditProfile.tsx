@@ -7,7 +7,7 @@ import AppearanceSection from "./AppearanceSection";
 import usePlayer from "../../../hooks/usePlayer";
 import LoadingTracker, { useLoadingTracker } from "../../common/LoadingTracker";
 import PageRoot from "../../common/PageRoot";
-import CsrfHelper from "../../helpers/CsrfHelper";
+import CsrfHelper from "../../../helpers/CsrfHelper";
 
 export default PageRoot(function EditProfile() {
   const { player, toLoginPage, deleteIdentity: apiDeleteIdentity } = usePlayer();
