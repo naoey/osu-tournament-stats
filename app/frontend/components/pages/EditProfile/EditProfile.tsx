@@ -1,21 +1,27 @@
-import React, { useState } from "react";
-import { Identity, IdentityProvider, Player } from "../../models/Player";
-import { Avatar, Button, Divider, Flex, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Identity, IdentityProvider, Player } from "../../../models/Player";
+import { Avatar, Button, Divider, Flex, message, Select } from "antd";
 import moment from "moment";
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
+import AppearanceSection from "./AppearanceSection";
+import usePlayer from "../../../hooks/usePlayer";
+import LoadingTracker from "../../common/LoadingTracker";
 
-type EditProfileProps = {
-  user: Player;
-};
-
-export default function EditProfile({ user }: EditProfileProps) {
-  const [editingUser, setEditingUser] = useState<Player>(user);
+export default function EditProfile() {
+  const { player, toLoginPage } = usePlayer();
+  const [editingPlayer, setEditingPlayer] = useState<Player>(player);
   const [deleteIdLoadingKeys, setDeleteLoadingKeys] = useState<IdentityProvider[]>([]);
+
+  useEffect(() => {
+    if (!player) toLoginPage();
+  }, [player]);
+
+  if (!player) return null;
 
   const deleteIdentity = async (id: Identity) => {
     try {
       setDeleteLoadingKeys(k => [...k, id.provider]);
-      setEditingUser(await editingUser.deleteIdentity(id));
+      setEditingPlayer(await editingPlayer.deleteIdentity(id));
       setDeleteLoadingKeys(k => k.filter(i => i !== id.provider));
       message.success("Removed Discord connection");
     } catch (e) {
@@ -25,7 +31,7 @@ export default function EditProfile({ user }: EditProfileProps) {
     }
   };
 
-  const renderLinkedAccounts = () => editingUser.identities.map(id => (
+  const renderLinkedAccounts = () => editingPlayer.identities.map(id => (
     <Flex align="center" gap="middle" key={id.provider}>
       <p>
         <b>{id.auth_provider.display_name}</b>: {id.uname} [{id.uid}]
@@ -45,7 +51,7 @@ export default function EditProfile({ user }: EditProfileProps) {
   const renderAdditionalAccountOptions = () => {
     const options = [];
 
-    if (!editingUser.identities.some(i => i.provider === IdentityProvider.Discord)) {
+    if (!editingPlayer.identities.some(i => i.provider === IdentityProvider.Discord)) {
       options.push(
         <form method="post" action="/auth/discord">
           <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
@@ -62,7 +68,7 @@ export default function EditProfile({ user }: EditProfileProps) {
       );
     }
 
-    if (!editingUser.identities.some(i => i.provider === IdentityProvider.Osu)) {
+    if (!editingPlayer.identities.some(i => i.provider === IdentityProvider.Osu)) {
       options.push(
         <>
           <p>To link your osu! account, join the <a href="/discord">osu!india Discord server</a> first.</p>
@@ -94,10 +100,10 @@ export default function EditProfile({ user }: EditProfileProps) {
   };
 
   return (
-    <>
+    <LoadingTracker>
       <Flex align="center" gap="large">
-        <Avatar src={editingUser.avatar_url} size={75} />
-        <h1>{editingUser.name}</h1>
+        <Avatar src={editingPlayer.avatar_url} size={75} />
+        <h1>{editingPlayer.name}</h1>
       </Flex>
 
       <Divider />
@@ -105,8 +111,12 @@ export default function EditProfile({ user }: EditProfileProps) {
       <h2>Basic</h2>
 
       <p>
-        <b>Registered: </b> {moment(editingUser.created_at).toLocaleString()}
+        <b>Registered: </b> {moment(editingPlayer.created_at).toLocaleString()}
       </p>
+
+      <Divider />
+
+      <AppearanceSection />
 
       <Divider />
 
@@ -114,6 +124,6 @@ export default function EditProfile({ user }: EditProfileProps) {
 
       {renderLinkedAccounts()}
       {renderAdditionalAccountOptions()}
-    </>
+    </LoadingTracker>
   );
 }
