@@ -35,10 +35,6 @@ export function ExpLeaderboard() {
     fetchRecords();
   }, []);
 
-  const formattedData = useMemo(() => {
-    return data.map(d => ({ ...data, player: new Player(d.player) }));
-  }, [data]);
-
   useEffect(() => {
     const onPageEndReached = () => {
       fetchRecords(page + 1);
