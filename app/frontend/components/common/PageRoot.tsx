@@ -45,15 +45,19 @@ export default function PageRoot(Component: React.ComponentType) {
       }
     }, [theme]);
 
+    useEffect(() => {
+      // FIXME: hack hack hack
+      document.body.style.color = antdThemeAlgorithm === antdTheme.defaultAlgorithm ? "#000" : "#FFF";
+      document.body.style.backgroundColor = antdThemeAlgorithm === antdTheme.darkAlgorithm ? "#000" : "#FFF";
+    }, [antdThemeAlgorithm]);
+
     return (
       <ConfigProvider
         theme={{ algorithm: antdThemeAlgorithm, cssVar: true }}
       >
         <App>
           <LoadingTracker>
-            <div className="ot-page-root">
-              <Component {...props} />
-            </div>
+            <Component {...props} />
           </LoadingTracker>
         </App>
       </ConfigProvider>
