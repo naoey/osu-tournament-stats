@@ -4,6 +4,7 @@ import { Select, message } from "antd";
 import { PreferredColourScheme } from "../../../models/Player";
 import { useLoadingTracker } from "../../common/LoadingTracker";
 import EnumHelper from "../../../helpers/EnumHelper";
+import { UserEvents } from "../../../events/UserEvents";
 
 const loading_key = 'preferredColourScheme';
 
@@ -19,6 +20,7 @@ export default function AppearanceSection() {
     try {
       loadingTracker.addLoadingKey(loading_key);
       await updateUiConfig({ ...player.ui_config, preferred_colour_scheme: scheme });
+      $(document).trigger(UserEvents.SettingsUpdated)
     } catch {
       message.open({ type: "error", content: "Something went wrong!" });
     } finally {
