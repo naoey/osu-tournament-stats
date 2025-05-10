@@ -14,7 +14,7 @@ class StructuredFormatter < SemanticLogger::Formatters::Color
   end
 
   def interpolate_named_placeholders(message, payload)
-    message.gsub(/\{(\w+)\}/) do |_|
+    message&.gsub(/\{(\w+)\}/) do |_|
       key = Regexp.last_match(1).to_sym
       if payload.key?(key)
         self.safe_inspect(payload[key])
