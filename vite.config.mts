@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import RubyPlugin from 'vite-plugin-ruby';
 import react from '@vitejs/plugin-react';
+import checker from "vite-plugin-checker";
 
 export default defineConfig({
   server: {
@@ -13,5 +14,6 @@ export default defineConfig({
   plugins: [
     react(),
     RubyPlugin(),
+    // checker({ typescript: true }),
   ],
 })

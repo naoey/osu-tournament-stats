@@ -38,7 +38,7 @@
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "add": "^2.0.6",
-    "antd": "^5.14.1",
+    "antd": "^5.25.1",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
@@ -66,6 +66,7 @@
     "postcss-preset-env": "^10.1.5",
     "prettier": "^3.5.3",
     "vite": "^5.4.19",
+    "vite-plugin-checker": "^0.9.3",
     "vite-plugin-ruby": "^5.1.0"
   },
   "engines": {
