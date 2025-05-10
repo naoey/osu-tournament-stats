@@ -27,6 +27,8 @@ class Player < ApplicationRecord
 
   enum :ban_status, { no_ban: 0, soft: 1, hard: 2 }
 
+  before_create :set_new_defaults
+
   SENSITIVE_ATTRIBUTES = %i[email encrypted_password reset_password_token confirmation_token unlock_token invitation_token].freeze
 
   def discord
@@ -339,7 +341,7 @@ class Player < ApplicationRecord
     return player
   end
 
-  def notify_discord_linked
-
+  def set_new_defaults
+    self.ui_config ||= {}
   end
 end
