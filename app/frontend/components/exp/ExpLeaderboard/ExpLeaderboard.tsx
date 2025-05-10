@@ -5,10 +5,11 @@ import Api from "../../../api/Api";
 import moment from "moment";
 import { Player } from "../../../models/Player";
 import { DiscordExp } from "../../../models/Discord";
+import PageRoot from "../../common/PageRoot";
 
 import "./styles.scss";
 
-export function ExpLeaderboard() {
+export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
   const [isLoading, setLoading] = useState(false);
   const [data, setData] = useState<DiscordExp[]>([]);
   const [page, setPage] = useState(1);
@@ -120,4 +121,4 @@ export function ExpLeaderboard() {
       </div>
     </div>
   );
-}
+})

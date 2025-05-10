@@ -1,12 +1,13 @@
 import React from "react";
 import { Button, Flex } from "antd";
+import PageRoot from "../common/PageRoot";
 
 type LinkOsuDiscordProps = {
   username: string;
   query: string;
 }
 
-export default function LinkOsuDiscord({ username, query }: LinkOsuDiscordProps) {
+export default PageRoot(function LinkOsuDiscord({ username, query }: LinkOsuDiscordProps) {
   return (
     <Flex align="center" justify="center" style={{ textAlign: 'center' }} vertical>
       <h1>Hello, {username}!</h1>
@@ -26,4 +27,4 @@ export default function LinkOsuDiscord({ username, query }: LinkOsuDiscordProps)
       </form>
     </Flex>
   )
-}
+})
