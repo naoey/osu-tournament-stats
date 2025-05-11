@@ -4,6 +4,9 @@ WEBHOOK_URL=$OTS_NOTIFICATIONS_WEBHOOK_URL
 TAG=$1
 WORKING_BRANCH=release/$TAG
 
+RBENV_PATH=$(which rbenv)
+FNM_PATH=$(which fnm)
+
 # Function to send a webhook notification
 send_webhook() {
   local message="$1"
@@ -32,17 +35,21 @@ echo "Checking out tag $TAG..."
 git fetch --tags
 git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 
-# Step 2: Run bundle install
+# Step 2: Set up Ruby version and run bundle install
+eval $RBENV_PATH install -s
+eval $RBENV_PATH local
 echo "Running bundle install..."
 ~/.rbenv/shims/bundle install || exit_failure 1
 
-# Step 3: Run pnpm install
+# Step 3: Set up Node version and run pnpm install
+eval $FNM_PATH install
+eval $FNM_PATH use
 echo "Running pnpm install..."
 /usr/bin/pnpm install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
-./bin/rails assets:precompile || exit_failure 1
+$(grep -v '^#' .env | xargs) ./bin/rails assets:precompile || exit_failure 1
 
 # Step 5: Restart the Rails server
 echo "Restarting Rails server..."
