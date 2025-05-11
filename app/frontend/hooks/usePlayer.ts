@@ -24,8 +24,9 @@ export default function usePlayer() {
   };
 
   const reload = async () => {
-    const response = await Api.performRequest<Player>(UserRequests.get("me"));
-    setPlayer(response);
+    // const response = await Api.performRequest<Player>(UserRequests.
+    // get("me"));
+    // setPlayer(response);
   };
 
   return {
