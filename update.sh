@@ -6,6 +6,7 @@ WORKING_BRANCH=release/$TAG
 
 RBENV_PATH=$(which rbenv)
 FNM_PATH=$(which fnm)
+PNPM_PATH=$(which pnpm)
 
 # Function to send a webhook notification
 send_webhook() {
@@ -45,7 +46,7 @@ echo "Running bundle install..."
 eval $FNM_PATH install
 eval $FNM_PATH use
 echo "Running pnpm install..."
-/usr/bin/pnpm install || exit_failure 1
+eval $PNPM_PATH install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
@@ -66,7 +67,8 @@ if [ -f $PID_FILE ]; then
     # Wait a moment to ensure the process has been stopped
     sleep 1
   else
-    echo "No running server found with PID: $PID. The PID file might be stale."
+    echo "No running server found with PID: $PID. The PID file might be stale. Deleting."
+    rm $PID_FILE
   fi
 else
   echo "No PID file found. Assuming no server is running."
