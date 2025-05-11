@@ -416,3 +416,5 @@ node_modules
 *.local
 
 .pnpm-store/v10
+
+config/credentials.yml.enc
