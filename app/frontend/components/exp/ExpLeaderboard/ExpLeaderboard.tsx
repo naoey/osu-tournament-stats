@@ -89,7 +89,7 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
                         {record.player.name || record.player.discordId}
                       </a>
                     )
-                    : record.player.name || record.player.discord_id
+                    : record.player.name || record.player.discordId
                 }
                 description={getRoleName(record)}
               />
