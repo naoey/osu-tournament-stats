@@ -114,7 +114,8 @@ module Discord
       server = @client.server(data[:guild][:discord_id])
       db_server = data[:guild]
       player = data[:player]
-      alt_discord = data[:alt_discord]
+      original_member = server.member(player.discord.uid)
+      alt_member = server.member(data[:alt_discord]["id"])
 
       @client
         .channel(db_server.verification_log_channel_id, server)
@@ -125,8 +126,8 @@ module Discord
           embed.color = EMBED_RED
           embed.description = "Alt verification attempt"
           embed.fields = [
-            Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{alt_discord["id"]}>"),
-            Discordrb::Webhooks::EmbedField.new(name: "Original user", value: "<@#{player.discord.uid}>")
+            Discordrb::Webhooks::EmbedField.new(name: "New user", value: alt_member&.mention || "<???>"),
+            Discordrb::Webhooks::EmbedField.new(name: "Original user", value: original_member&.mention || "<AWOL>")
           ]
         end
     end
@@ -159,7 +160,7 @@ module Discord
 
         member = @client.member(server.discord_id, player.discord.uid)
 
-        next if guild.nil? || member.nil? # Bot probably removed from server
+        next if guild.nil? # Bot probably removed from server
 
         begin
           unless server.verified_role_id.nil?
@@ -170,8 +171,8 @@ module Discord
           unless server.guest_role_id.nil? || player.country_code.nil? || player.country_code == 'IN'
             member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
           end
-        rescue
-          # This can fail if trying to set nicknames on admins so we just ignore it
+        rescue => e
+          logger.error("Failed to grant roles on successful registration", e)
         end
 
         @client
@@ -182,7 +183,7 @@ module Discord
           embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
           embed.color = EMBED_GREEN
           embed.description = "Verification completed"
-          embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member.mention || "<User not in server>")]
+          embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member&.mention || "<???>")]
         end
       end
     end
