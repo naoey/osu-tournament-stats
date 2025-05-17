@@ -4,9 +4,24 @@ WEBHOOK_URL=$OTS_NOTIFICATIONS_WEBHOOK_URL
 TAG=$1
 WORKING_BRANCH=release/$TAG
 
-RBENV_PATH=$(which rbenv)
-FNM_PATH=$(which fnm)
-PNPM_PATH=$(which pnpm)
+# rbenv
+echo "Setting up rbenv"
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# fnm
+echo "Setting up fnm"
+export PATH="/home/naoey/.local/share/fnm:$PATH"
+eval "`fnm env`"
+
+# pnpm
+echo "Setting up pnpm"
+export PNPM_HOME="/home/naoey/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
 # Function to send a webhook notification
 send_webhook() {
@@ -37,20 +52,21 @@ git fetch --tags
 git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 
 # Step 2: Set up Ruby version and run bundle install
-eval $RBENV_PATH install -s
-eval $RBENV_PATH local
+rbenv install -s
+rbenv local
+echo "Finished setting up ruby=$(ruby -v)"
 echo "Running bundle install..."
-~/.rbenv/shims/bundle install || exit_failure 1
+bundle install || exit_failure 1
 
 # Step 3: Set up Node version and run pnpm install
-eval $FNM_PATH install
-eval $FNM_PATH use
+fnm use --install-if-missing --version-file-strategy local
+echo "Finished setting up node=$(node -v)"
 echo "Running pnpm install..."
-eval $PNPM_PATH install || exit_failure 1
+pnpm install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
-$(grep -v '^#' .env | xargs) ./bin/rails assets:precompile || exit_failure 1
+env $(grep -v '^#' .env | xargs) DISCORD_ENABLED=0 ./bin/rails assets:precompile || exit_failure 1
 
 # Step 5: Restart the Rails server
 echo "Restarting Rails server..."
