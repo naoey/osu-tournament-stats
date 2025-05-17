@@ -3,7 +3,10 @@ import RubyPlugin from "vite-plugin-ruby";
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : undefined,
+  },
   server: {
     host: "0.0.0.0",
     allowedHosts: true,
@@ -16,4 +19,4 @@ export default defineConfig({
     RubyPlugin()
     // checker({ typescript: true }),
   ]
-});
+}));
