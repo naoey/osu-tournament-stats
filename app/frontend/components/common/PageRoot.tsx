@@ -1,5 +1,5 @@
 import usePlayer from "../../hooks/usePlayer";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { UserEvents } from "../../events/UserEvents";
 import { PreferredColourScheme, UiConfig } from "../../models/Player";
 import { App, ConfigProvider, theme as antdTheme } from "antd";
@@ -14,23 +14,34 @@ import LoadingTracker from "./LoadingTracker";
  */
 export default function PageRoot(Component: React.ComponentType) {
   return function(props: React.ComponentProps<typeof Component>) {
-    const { player, reload } = usePlayer();
-    const [theme, setTheme] = useState<PreferredColourScheme>(player?.ui_config.preferred_colour_scheme ?? PreferredColourScheme.System);
+    const { player } = usePlayer();
+    const colourSchemeMediaQueryRef = useRef(window.matchMedia("(prefers-color-scheme: dark)"));
+    const [activeTheme, setActiveTheme] = useState<PreferredColourScheme>(
+      player?.ui_config.preferred_colour_scheme ?? PreferredColourScheme.System,
+    );
 
     useEffect(() => {
       const onSettingsUpdated = (config: UiConfig) => {
-        setTheme(config.preferred_colour_scheme!);
+        setActiveTheme(config.preferred_colour_scheme!);
+      };
+
+      const onMediaQueryChanged = (e: MediaQueryListEvent) => {
+        setActiveTheme(e.matches ? PreferredColourScheme.Dark : PreferredColourScheme.Light);
       };
 
       NotificationHelper.subscribe(UserEvents.SettingsUpdated, onSettingsUpdated);
 
+      colourSchemeMediaQueryRef.current.addEventListener('change', onMediaQueryChanged);
+
       return () => {
         NotificationHelper.unsubscribe(UserEvents.SettingsUpdated, onSettingsUpdated);
+
+        colourSchemeMediaQueryRef.current.removeEventListener('change', onMediaQueryChanged);
       };
     }, []);
 
     const antdThemeAlgorithm = useMemo(() => {
-      switch (theme) {
+      switch (activeTheme) {
         case PreferredColourScheme.Light:
           return antdTheme.defaultAlgorithm;
 
@@ -39,11 +50,11 @@ export default function PageRoot(Component: React.ComponentType) {
 
         default:
         case PreferredColourScheme.System:
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
+          return colourSchemeMediaQueryRef.current.matches
             ? antdTheme.darkAlgorithm
             : antdTheme.defaultAlgorithm;
       }
-    }, [theme]);
+    }, [activeTheme]);
 
     useEffect(() => {
       // FIXME: hack hack hack
