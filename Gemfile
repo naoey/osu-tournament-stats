@@ -12,9 +12,6 @@ gem 'mysql2'
 # Use Puma as the app server
 gem 'puma', '~> 6.6.0'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-gem 'jsbundling-rails'
-gem 'vite_rails'
 gem "amazing_print"
 gem "rails_semantic_logger"
 
@@ -23,10 +20,16 @@ gem 'devise_invitable'
 gem 'omniauth-oauth2'
 gem 'omniauth-discord'
 gem 'omniauth-rails_csrf_protection'
-
-gem 'markdown-tables'
 gem 'kaminari'
-gem 'react-rails'
+
+gem "csv", "~> 3.3"
+gem 'markdown-tables'
+
+gem 'uglifier', '>= 1.3.0'
+gem 'jsbundling-rails'
+gem 'vite_rails'
+gem 'react_on_rails'
+gem "package_json", "~> 0.1.0"
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
@@ -85,5 +88,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem "csv", "~> 3.3"

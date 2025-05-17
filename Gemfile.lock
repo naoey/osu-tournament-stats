@@ -77,10 +77,6 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     amazing_print (1.8.0)
     ast (2.4.3)
-    babel-source (5.8.35)
-    babel-transpiler (0.7.0)
-      babel-source (>= 4.0, < 6)
-      execjs (~> 2.0)
     base64 (0.2.0)
     bcrypt (3.1.20)
     benchmark (0.4.0)
@@ -246,6 +242,7 @@ GEM
     opus-ruby (1.0.1)
       ffi
     orm_adapter (0.5.0)
+    package_json (0.1.0)
     parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
@@ -320,12 +317,12 @@ GEM
       abbrev
     rdoc (6.13.1)
       psych (>= 4.0.0)
-    react-rails (3.2.1)
-      babel-transpiler (>= 0.7.0)
+    react_on_rails (14.2.1)
+      addressable
       connection_pool
-      execjs
-      railties (>= 3.2)
-      tilt
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
@@ -484,13 +481,14 @@ DEPENDENCIES
   omniauth-discord
   omniauth-oauth2
   omniauth-rails_csrf_protection
+  package_json (~> 0.1.0)
   prettier (~> 4.0)
   prettier_print
   puma (~> 6.6.0)
   rails (~> 8.0.2)
   rails_semantic_logger
   rake-progressbar
-  react-rails
+  react_on_rails
   rest-client
   rspec-rails
   rubocop (~> 1.75.6)

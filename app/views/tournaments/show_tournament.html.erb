@@ -1,2 +1,2 @@
 <%= content_for :title, @tournament[:name] %>
-<%= react_component('tournaments/TournamentDetails', {tournament: @tournament}) %>
+<%= react_component('tournaments/TournamentDetails', { props: @react_props }) %>
