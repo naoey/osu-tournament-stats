@@ -24,7 +24,7 @@ console.log('Vite ⚡️ Rails')
 
 import { start as startTurbo } from '@hotwired/turbo'
 import $ from 'jquery';
-import ReactRailsUJS from 'react_ujs';
+import ReactOnRails from 'react-on-rails';
 
 import "../stylesheets/application.scss";
 
@@ -42,4 +42,4 @@ Object.entries(importContext).forEach(([filename, component]) => {
   componentsContext[cleanName] = Object.values(component)[0];
 });
 
-ReactRailsUJS.getConstructor = (name) => componentsContext[name] || componentsContext[`${name}/index`];
+ReactOnRails.register(componentsContext);
