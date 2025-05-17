@@ -33,6 +33,7 @@ console.log("Vite ⚡️ Rails");
 
 (window as any).$ = (window as any).jQuery = $;
 
+// @ts-ignore
 const importContext = import.meta.glob("../components/**/*.{js,ts,tsx,jsx}", { eager: true });
 const componentsContext: Record<string, ReactComponentOrRenderFunction> = {};
 
