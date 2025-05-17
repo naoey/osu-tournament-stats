@@ -54,17 +54,19 @@ git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 # Step 2: Set up Ruby version and run bundle install
 rbenv install -s
 rbenv local
+echo "Finished setting up ruby=$(ruby -v)"
 echo "Running bundle install..."
 bundle install || exit_failure 1
 
 # Step 3: Set up Node version and run pnpm install
-fnm use --install-if-missing
+fnm use --install-if-missing --version-file-strategy local
+echo "Finished setting up node=$(node -v)"
 echo "Running pnpm install..."
 pnpm install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
-$(grep -v '^#' .env | xargs) ./bin/rails assets:precompile || exit_failure 1
+env $(grep -v '^#' .env | xargs) DISCORD_ENABLED=0 ./bin/rails assets:precompile || exit_failure 1
 
 # Step 5: Restart the Rails server
 echo "Restarting Rails server..."
