@@ -4,9 +4,7 @@ WEBHOOK_URL=$OTS_NOTIFICATIONS_WEBHOOK_URL
 TAG=$1
 WORKING_BRANCH=release/$TAG
 
-RBENV_PATH=$(which rbenv)
-FNM_PATH=$(which fnm)
-PNPM_PATH=$(which pnpm)
+source ~/.bashrc
 
 # Function to send a webhook notification
 send_webhook() {
@@ -37,16 +35,15 @@ git fetch --tags
 git checkout tags/$TAG -b "$WORKING_BRANCH" || exit_failure 1
 
 # Step 2: Set up Ruby version and run bundle install
-eval $RBENV_PATH install -s
-eval $RBENV_PATH local
+rbenv install -s
+rbenv local
 echo "Running bundle install..."
-~/.rbenv/shims/bundle install || exit_failure 1
+bundle install || exit_failure 1
 
 # Step 3: Set up Node version and run pnpm install
-eval $FNM_PATH install
-eval $FNM_PATH use
+fnm use --install-if-missing
 echo "Running pnpm install..."
-eval $PNPM_PATH install || exit_failure 1
+pnpm install || exit_failure 1
 
 # Step 4: Precompile assets
 echo "Precompiling assets..."
