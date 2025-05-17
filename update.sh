@@ -4,7 +4,24 @@ WEBHOOK_URL=$OTS_NOTIFICATIONS_WEBHOOK_URL
 TAG=$1
 WORKING_BRANCH=release/$TAG
 
-source ~/.bashrc
+# rbenv
+echo "Setting up rbenv"
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# fnm
+echo "Setting up fnm"
+export PATH="/home/naoey/.local/share/fnm:$PATH"
+eval "`fnm env`"
+
+# pnpm
+echo "Setting up pnpm"
+export PNPM_HOME="/home/naoey/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
 # Function to send a webhook notification
 send_webhook() {
