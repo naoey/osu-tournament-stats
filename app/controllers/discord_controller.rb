@@ -2,7 +2,9 @@ class DiscordController < ApplicationController
   before_action :authenticate_player!
 
   def show
-    @data = DiscordServer.all
+    @react_props = {
+      data: DiscordServer.all
+    }
 
     respond_to do |format|
       format.html
@@ -29,7 +31,7 @@ class DiscordController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @data = data
+        @react_props = { data: }
         render status: :ok
       end
 

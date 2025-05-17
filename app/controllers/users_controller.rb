@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def show_edit_profile
     return render status: 404 if params[:id] != "me"
 
-    @user = current_player
+    @react_props = { user: current_player }
     render template: "users/show_edit_profile"
   end
 
@@ -32,8 +32,10 @@ class UsersController < ApplicationController
 
       return render plain: "Timeout" if state.nil?
 
-      @query = Base64.encode64(request.query_string)
-      @username = state["user"]["username"]
+      @react_props = {
+        username: state["user"]["username"],
+        query: Base64.encode64(request.query_string)
+      }
     rescue StandardError
       raise ActionController::BadRequest
     end
@@ -65,7 +67,7 @@ class UsersController < ApplicationController
         return render status: :bad_request if params.nil?
 
         current_player.ui_config = current_player.ui_config
-          .merge(params.permit(:preferred_colour_scheme).to_h)
+                                                 .merge(params.permit(:preferred_colour_scheme).to_h)
         current_player.save!
 
         return render(json: current_player.ui_config)

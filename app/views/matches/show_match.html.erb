@@ -1,7 +1,2 @@
 <%= content_for :title, @match.round_name %>
-<%= react_component('matches/MatchDetails', {
-    match: @match,
-    tableProps: {
-      hiddenColumns: %w[matches_played matches_won matches_won_percent]
-    }
-}) %>
+<%= react_component('matches/MatchDetails', { props: @react_props }) %>

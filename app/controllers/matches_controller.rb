@@ -4,7 +4,7 @@ class MatchesController < ApplicationController
   before_action :authenticate_player!, except: %i[show show_match]
 
   def show
-    @data = Match.all.where(tournament_id: params[:tournament_id])
+    @react_props = { data: Match.all.where(tournament_id: params[:tournament_id]) }
 
     respond_to do |format|
       format.html
@@ -15,7 +15,12 @@ class MatchesController < ApplicationController
   def show_match
     respond_to do |format|
       format.html do
-        @match = Match.find(params[:id])
+        @react_props = {
+          match: Match.all.where(tournament_id: params[:tournament_id]),
+          tableProps: {
+            hiddenColumns: %w[matches_played matches_won matches_won_percent]
+          }
+        }
 
         return render status: :not_found if @match.nil?
 
@@ -30,7 +35,7 @@ class MatchesController < ApplicationController
 
   def add
     return render(json: { error: "Adding matches is currently not supported", code: "E_NOT_SUPPORTED" }, status: :forbidden)
-    
+
     unless params[:tournament_id].nil?
       t = Tournament.find(params[:tournament_id])
 
