@@ -32,7 +32,7 @@
   </head>
 
   <body>
-    <%= react_component('common/NavigationBar') %>
+    <%= react_component('common/NavigationBar', { prerender: true }) %>
 
     <div id="body-wrap" class="ot-body-wrap">
       <%= yield %>
