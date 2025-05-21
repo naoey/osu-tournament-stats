@@ -3,7 +3,7 @@ require_relative '../command_base'
 class Exp < CommandBase
   def self.required_options
     [
-      [[6, "user", "The user to unregister. Has higher precedence than osu_id."], {}],
+      [[6, "user", "The user to show. Leave blank for self."], {}],
     ]
   end
 
