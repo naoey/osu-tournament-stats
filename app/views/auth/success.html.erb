@@ -1,2 +1,2 @@
 <%= content_for :title, 'success' %>
-<%= react_component('pages/OAuthSuccess', { code: @code }) %>
+<%= react_component('pages/OAuthSuccess', { props: { code: @code } }) %>

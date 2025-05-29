@@ -4,7 +4,9 @@ class TournamentsController < ApplicationController
   before_action :authenticate_player!, except: %i[show show_tournament]
 
   def show
-    @data = Tournament.where("name LIKE ?", "%#{params[:name]}%").all.map(&method(:create_tournament_json))
+    @react_props = {
+      data: Tournament.where("name LIKE ?", "%#{params[:name]}%").all.map(&method(:create_tournament_json))
+    }
 
     respond_to do |format|
       format.html
@@ -14,7 +16,9 @@ class TournamentsController < ApplicationController
 
   def show_tournament
     (@tournament = Tournament.find_by_id(params[:id])) || raise(ActionController::RoutingError, "Tournament not found")
-    @tournament = create_tournament_json(@tournament)
+    @react_props =  {
+      tournament: create_tournament_json(@tournament)
+    }
 
     respond_to do |format|
       format.html
