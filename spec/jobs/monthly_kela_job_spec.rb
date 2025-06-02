@@ -6,7 +6,7 @@ describe "MonthlyKelaJob" do
   it "should call kela! on bot" do
     mock_bot = double()
 
-    allow(mock_bot).to receive(:initialize!)
+    expect(mock_bot).to receive(:initialize!)
       .and_yield(mock_bot)
     expect(mock_bot).to receive(:kela!)
       .and_return(nil)
