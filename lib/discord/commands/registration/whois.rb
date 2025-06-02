@@ -2,13 +2,22 @@ require_relative "../command_base"
 
 class Whois < CommandBase
   def self.required_options
-    [[[6, "user", "The user whose info to show"], { required: true }]]
+    [
+      [[6, "user", "The user whose info to show."]],
+      [[10, "osu_id", "Lookup user by osu! ID. Can be used when the linked Discord account is unknown."]]
+    ]
   end
 
   protected
 
   def handle_response
-    player = PlayerAuth.find_by(provider: :discord, uid: @event.options["user"].to_i)&.player
+    player = if @event.options["user"]
+      PlayerAuth.find_by(provider: :discord, uid: @event.options["user"].to_i)&.player
+    elsif @event.options["osu_id"]
+      PlayerAuth.find_by(provider: :osu, uid: @event.options["osu_id"].to_i)&.player
+    else
+      return @event.respond(content: "One of user or osu_id is required.", ephemeral: true)
+    end
 
     return @event.respond(content: "User is not registered with KelaBot") if player.nil?
     return @event.respond(content: "User has no linked osu! ID") if player.osu.nil?
