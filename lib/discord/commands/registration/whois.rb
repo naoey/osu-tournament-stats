@@ -4,7 +4,7 @@ class Whois < CommandBase
   def self.required_options
     [
       [[6, "user", "The user whose info to show."]],
-      [[10, "osu_id", "Lookup user by osu! ID. Can be used when the linked Discord account is unknown."], {}]
+      [[10, "osu_id", "Lookup user by osu! ID. Can be used when the linked Discord account is unknown."]]
     ]
   end
 
