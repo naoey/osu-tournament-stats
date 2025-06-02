@@ -24,6 +24,7 @@ class Player < ApplicationRecord
   has_many :hosted_tournaments, foreign_key: "id", class_name: "Tournament"
   has_many :ban_history, foreign_key: "player_id"
   has_many :discord_exp
+  has_many :discord_server_memberships
 
   enum :ban_status, { no_ban: 0, soft: 1, hard: 2 }
 
