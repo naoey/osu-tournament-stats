@@ -166,16 +166,16 @@ module Discord
       @client
         .channel(db_server.verification_log_channel_id, server)
         .send_embed do |embed|
-        embed.title = player.name
-        embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
-        embed.color = EMBED_RED
-        embed.description = "Alt verification attempt"
-        embed.fields = [
-          Discordrb::Webhooks::EmbedField.new(name: "New user", value: alt_member&.mention || "<???>"),
-          Discordrb::Webhooks::EmbedField.new(name: "Original user", value: original_member&.mention || "<AWOL>")
-        ]
-      end
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+          embed.color = EMBED_RED
+          embed.description = "Alt verification attempt"
+          embed.fields = [
+            Discordrb::Webhooks::EmbedField.new(name: "New user", value: alt_member&.mention || "<???>"),
+            Discordrb::Webhooks::EmbedField.new(name: "Original user", value: original_member&.mention || "<AWOL>")
+          ]
+        end
     end
 
     def osu_verification_banned(auth_request)
