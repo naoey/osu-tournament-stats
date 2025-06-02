@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_072642) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_02_082834) do
   create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb3", force: :cascade do |t|
     t.string "display_name"
     t.boolean "enabled"
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_072642) do
     t.boolean "exp_enabled", default: false, null: false
     t.json "exp_roles_config"
     t.bigint "guest_role_id"
+    t.timestamp "last_pruned"
     t.index ["discord_id"], name: "index_discord_servers_on_discord_id", unique: true
   end
 
