@@ -70,7 +70,6 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "osu_tournament_stats_production"
   # config/environments/production.rb
   # Replace the default in-process and non-durable queuing backend for Active Job.

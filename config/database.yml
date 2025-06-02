@@ -26,5 +26,5 @@ production:
 
 queue:
   <<: *default
-  database: queue
+  database: ots_queue
   migrations_paths: db/queue_migrate
