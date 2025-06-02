@@ -45,15 +45,60 @@ module Discord
       ApplicationHelper::Notifications.subscribe("player.alt_link") { |d| osu_verification_alt(d) }
 
       logger.info "Osu Discord bot is running"
+
+      return self unless block_given?
+      yield self
+    ensure
+      self.close! if block_given?
     end
 
     def close!
       return if @client.nil?
 
-      @client&.stop
+      @client.stop
       @client = nil
 
       logger.info "Osu Discord bot has stopped"
+    end
+
+    def kela!
+      DiscordServer.all.each do |s|
+        logger.debug("Checking for monthly prune", { server: s })
+
+        begin
+          next if s.verified_role_id.nil? || @client.server(s.discord_id).nil?
+        rescue Discordrb::Errors::UnknownServer
+          # Maybe a server bot is no longer present in
+          logger.warn("UnknownServer error", { server: s })
+          next
+        end
+
+        logger.debug("Beginning monthly prune", { server: s })
+
+        @client
+          .server(s.discord_id)
+          .default_channel
+          .send_message("🍌🍌🍌#{Date.today.strftime("%B")} kela roulette🍌🍌🍌")
+
+        # TODO: remove direct API call when/if include_roles is added in the abstraction
+        # pruned = @client.server(s.discord_id)
+        #   .begin_prune(30, "Monthly roulette", include_roles: [s.verified_role_id])
+
+        response = Discordrb::API.request(
+          :guilds_sid_prune,
+          s.discord_id,
+          :post,
+          "#{Discordrb::API.api_base}/guilds/#{s.discord_id}/prune",
+          { days: 30, include_roles: [s.verified_role_id] },
+          Authorization: @client.token,
+          'X-Audit-Log-Reason': "Monthly roulette"
+        )
+
+        logger.info("Monthly member prune completed", { server: s, pruned: response["pruned"] })
+
+        s.last_pruned = DateTime.now
+        s.save
+      end
     end
 
     private
