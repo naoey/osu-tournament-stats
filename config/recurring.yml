@@ -1,4 +1,4 @@
 production:
   monthly_kela:
     class: MonthlyKelaJob
-    schedule: "first day of every month"
+    schedule: "0 12 1 * *"
