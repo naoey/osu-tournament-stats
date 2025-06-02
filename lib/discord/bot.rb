@@ -66,7 +66,6 @@ module Discord
         logger.debug("Checking for monthly prune", { server: s })
 
         begin
-          next if !s.last_pruned.nil? && s.last_pruned < 1.month.ago
           next if s.verified_role_id.nil? || @client.server(s.discord_id).nil?
         rescue Discordrb::Errors::UnknownServer
           # Maybe a server bot is no longer present in
@@ -82,8 +81,8 @@ module Discord
           .send_message("🍌🍌🍌#{Date.today.strftime("%B")} kela roulette🍌🍌🍌")
 
         # TODO: remove direct API call when/if include_roles is added in the abstraction
-        pruned = @client.server(s.discord_id)
-          .begin_prune(30, "Monthly roulette", include_roles: [s.verified_role_id])
+        # pruned = @client.server(s.discord_id)
+        #   .begin_prune(30, "Monthly roulette", include_roles: [s.verified_role_id])
 
         response = Discordrb::API.request(
           :guilds_sid_prune,
