@@ -11,7 +11,6 @@ require "action_mailer/railtie"
 # require 'action_text/engine'
 require "action_view/railtie"
 require "action_cable/engine"
-require "rails/test_unit/railtie"
 
 require_relative '../lib/structured_formatter'
 
@@ -29,6 +28,9 @@ module OsuTournamentStats
     config.rails_semantic_logger.format = StructuredFormatter.new
 
     config.active_support.to_time_preserves_timezone = :zone
+
+    # Don't generate system test files.
+    config.generators.system_tests = nil
 
     config.after_initialize do
       # https://github.com/omniauth/omniauth/issues/872
