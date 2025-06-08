@@ -34,10 +34,13 @@ module Discord
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
 
-      # todo: need to move all these registration steps into a different script since they need to be run only on change
-      # doesn't have to run on every startup
       RegistrationCommands.init(@client)
       ExpCommands.init(@client)
+
+      DiscordHelper::register_commands? do
+        RegistrationCommands.register(@client)
+        ExpCommands.register(@client)
+      end
 
       @client.run true
 
