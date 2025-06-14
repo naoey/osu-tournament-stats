@@ -66,17 +66,18 @@ module Discord
 
     def kela!
       DiscordServer.all.each do |s|
-        logger.debug("Checking for monthly prune", { server: s })
-
         begin
-          next if s.verified_role_id.nil? || @client.server(s.discord_id).nil?
+          if s.verified_role_id.nil? || @client.server(s.discord_id).nil?
+            logger.info("Skipping monthly prune because of no verified role configuration", { server: s })
+            next
+          end
         rescue Discordrb::Errors::UnknownServer
           # Maybe a server bot is no longer present in
-          logger.warn("UnknownServer error", { server: s })
+          logger.warn("Skipping monthly prune because server could not be found", { server: s })
           next
         end
 
-        logger.debug("Beginning monthly prune", { server: s })
+        logger.info("Beginning monthly prune", { server: s })
 
         @client
           .server(s.discord_id)
@@ -92,12 +93,12 @@ module Discord
           s.discord_id,
           :post,
           "#{Discordrb::API.api_base}/guilds/#{s.discord_id}/prune",
-          { days: 30, include_roles: [s.verified_role_id] },
+          { days: 30, include_roles: [s.verified_role_id], compute_prune_count: false }.to_json,
           Authorization: @client.token,
           'X-Audit-Log-Reason': "Monthly roulette"
         )
 
-        logger.info("Monthly member prune completed", { server: s, pruned: response["pruned"] })
+        logger.info("Monthly member prune completed", { server: s, response: })
 
         s.last_pruned = DateTime.now
         s.save
