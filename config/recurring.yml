@@ -2,3 +2,4 @@ production:
   monthly_kela:
     class: MonthlyKelaJob
     schedule: "0 12 1 * *"
+    args: ["Monthly roulette"]

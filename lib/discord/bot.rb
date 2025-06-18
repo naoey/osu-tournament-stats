@@ -64,7 +64,7 @@ module Discord
       logger.info "Osu Discord bot has stopped"
     end
 
-    def kela!
+    def kela(reason)!
       DiscordServer.all.each do |s|
         logger.debug("Checking for monthly prune", { server: s })
 
@@ -76,7 +76,7 @@ module Discord
           next
         end
 
-        logger.debug("Beginning monthly prune", { server: s })
+        logger.debug("Beginning prune", { server: s })
 
         @client
           .server(s.discord_id)
@@ -91,10 +91,10 @@ module Discord
           :guilds_sid_prune,
           s.discord_id,
           :post,
-          "#{Discordrb::API.api_base}/guilds/#{s.discord_id}/prune",
-          { days: 30, include_roles: [s.verified_role_id] },
+          "#{Discordrb::API.api_base}/guilds/#{s.discord_id}/prune?days=30&include_roles=#{s.verified_role_id}&compute_prune_count=false",
+          nil,
           Authorization: @client.token,
-          'X-Audit-Log-Reason': "Monthly roulette"
+          'X-Audit-Log-Reason': reason
         )
 
         logger.info("Monthly member prune completed", { server: s, pruned: response["pruned"] })
