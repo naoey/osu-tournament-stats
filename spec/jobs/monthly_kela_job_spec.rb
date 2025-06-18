@@ -14,6 +14,6 @@ describe "MonthlyKelaJob" do
     allow(Discord::OsuDiscordBot).to receive(:instance)
       .and_return(mock_bot)
 
-    MonthlyKelaJob.perform_now
+    MonthlyKelaJob.perform_now("Test")
   end
 end
