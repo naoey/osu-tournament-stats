@@ -64,7 +64,7 @@ module Discord
       logger.info "Osu Discord bot has stopped"
     end
 
-    def kela(reason)!
+    def kela!(reason)
       DiscordServer.all.each do |s|
         logger.debug("Checking for monthly prune", { server: s })
 
