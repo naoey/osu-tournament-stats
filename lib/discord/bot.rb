@@ -80,8 +80,8 @@ module Discord
 
         @client
           .server(s.discord_id)
-          .default_channel
-          .send_message("🍌🍌🍌#{Date.today.strftime("%B")} kela roulette🍌🍌🍌")
+          .system_channel
+          &.send_message("🍌🍌🍌#{Date.today.strftime("%B")} kela roulette🍌🍌🍌")
 
         # TODO: remove direct API call when/if include_roles is added in the abstraction
         # pruned = @client.server(s.discord_id)
