@@ -27,9 +27,9 @@ test:
 production:
   primary:
     <<: *default
-    url: <%= "#{ENV.fetch("DATABASE_URL", "")}" %>
+    url: <%= "#{ENV.fetch("DATABASE_URL_PRIMARY", "")}" %>
 
   queue:
     <<: *default
-    database: ots_queue
+    url: <%= "#{ENV.fetch("DATABASE_URL_QUEUE", "")}" %>
     migrations_paths: db/queue_migrate
