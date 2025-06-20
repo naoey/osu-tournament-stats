@@ -25,11 +25,9 @@ module Discord
 
       @client = Discordrb::Commands::CommandBot.new token: ENV["DISCORD_BOT_TOKEN"], prefix: ENV["DISCORD_BOT_PREFIX"]
 
-      @client.command %i[match_performance p], &method(:match_performance)
-
-      @client.message &method(:message)
-      @client.member_join &method(:member_join)
-      @client.ready &method(:ready)
+      @client.message(&method(:message))
+      @client.member_join(&method(:member_join))
+      @client.ready(&method(:ready))
 
       @client.include! LeaderboardCommands
       @client.include! MatchCommands
@@ -37,7 +35,7 @@ module Discord
       RegistrationCommands.init(@client)
       ExpCommands.init(@client)
 
-      DiscordHelper::register_commands? do
+      DiscordHelper.register_commands? do
         RegistrationCommands.register(@client)
         ExpCommands.register(@client)
       end
@@ -46,13 +44,14 @@ module Discord
 
       ApplicationHelper::Notifications.subscribe("player.discord_linked") { |d| osu_verification_completed(d) }
       ApplicationHelper::Notifications.subscribe("player.alt_link") { |d| osu_verification_alt(d) }
+      ApplicationHelper::Notifications.subscribe("player.banned_verify") { |d| osu_verification_banned(d) }
 
       logger.info "Osu Discord bot is running"
 
       return self unless block_given?
       yield self
     ensure
-      self.close! if block_given?
+      close! if block_given?
     end
 
     def close!
@@ -160,6 +159,9 @@ module Discord
       end
 
       server = @client.server(data[:guild][:discord_id])
+
+      return if server.nil?
+
       db_server = data[:guild]
       player = data[:player]
       original_member = server.member(player.discord.uid)
@@ -180,16 +182,23 @@ module Discord
         end
     end
 
-    def osu_verification_banned(auth_request)
-      server = @client.server(auth_request.discord_server.discord_id)
+    def osu_verification_banned(data)
+      player = data[:player]
+      server = @client.server(data[:guild])
 
-      get_server_log_channel(auth_request.discord_server, server)&.send_embed do |embed|
-        embed.title = auth_request.player.name
-        embed.url = "https://osu.ppy.sh/users/#{auth_request.player.osu_id}"
-        embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{auth_request.player.osu_id}")
-        embed.color = EMBED_RED
-        embed.description = "Banned account verification"
-        embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "New user", value: "<@#{auth_request.player.discord_id}>")]
+      return if server.nil?
+
+      member = server.member(player.discord.uid)
+
+      @client
+        .channel(server.verification_log_channel_id, server)
+        .send_embed do |embed|
+          embed.title = player.name
+          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+          embed.color = EMBED_RED
+          embed.description = "Banned account verification"
+          embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "New user", value: member&.mention || "<AWOL>")]
       end
     end
 
@@ -202,7 +211,7 @@ module Discord
       servers.each do |server|
         guild = begin
           @client.server(server.discord_id)
-        rescue
+        rescue StandardError
           next
         end
 
@@ -219,26 +228,26 @@ module Discord
           unless server.guest_role_id.nil? || player.country_code.nil? || player.country_code == 'IN'
             member.add_role(server.guest_role_id, "Linked account's country is #{player.country_code}")
           end
-        rescue => e
+        rescue StandardError => e
           logger.error("Failed to grant roles on successful registration", e)
         end
 
         @client
           .channel(server.verification_log_channel_id, guild)
           .send_embed do |embed|
-          embed.title = player.name
-          embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
-          embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
-          embed.color = EMBED_GREEN
-          embed.description = "Verification completed"
-          embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member&.mention || "<???>")]
+            embed.title = player.name
+            embed.url = "https://osu.ppy.sh/users/#{player.osu.uid}"
+            embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
+            embed.color = EMBED_GREEN
+            embed.description = "Verification completed"
+            embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member&.mention || "<???>")]
         end
       end
     end
 
     # Event handling
 
-    def ready(event)
+    def ready(_event)
       Rails.cache.write("discord_bot/servers", DiscordServer.all.as_json)
     end
 
@@ -276,13 +285,13 @@ module Discord
 
         exp = DiscordExp.create(player: player, discord_server_id: server["id"], detailed_exp: DiscordHelper::INITIAL_EXP) if exp.nil?
 
-        exp.add_exp()
+        exp.add_exp
 
         Rails.cache.write(last_spoke_cache_key, exp.updated_at)
 
-        roles = exp.get_role_ids()
+        roles = exp.get_role_ids
 
-        current_roles = event.message.author.roles.map { |r| r.id }
+        current_roles = event.message.author.roles.map(&:id)
         required_roles = roles.map { |r| r[1] }
         delta_roles = required_roles - current_roles
 
@@ -316,7 +325,7 @@ module Discord
                 avatar_id: event.user.avatar_id,
                 public_flags: event.user.public_flags
               },
-              uname: DiscordHelper::sanitise_username(event.user.username) }])
+              uname: DiscordHelper.sanitise_username(event.user.username) }])
           )
       end
 
