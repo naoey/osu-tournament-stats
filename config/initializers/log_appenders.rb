@@ -7,125 +7,13 @@ end
 
 require "date"
 
-# Forward all log messages to Elasticsearch.
-#
-# Example:
-#
-#   SemanticLogger.add_appender(
-#     appender: :elasticsearch,
-#     url:      'http://localhost:9200'
-#   )
+##
+# Copy of Semantic Logger's built in Elasticsearch appender tweaked to use an OpenSearch client instead.
 module SemanticLogger
   module Appender
     class Opensearch < SemanticLogger::Subscriber
       attr_accessor :url, :index, :date_pattern, :type, :client, :flush_interval, :timeout_interval, :batch_size,
                     :elasticsearch_args
-
-      # Create Elasticsearch appender over persistent HTTP(S)
-      #
-      # Parameters:
-      #   index: [String]
-      #     Prefix of the index to store the logs in Elasticsearch.
-      #     The final index appends the date so that indexes are used per day.
-      #       I.e. The final index will look like 'semantic_logger-YYYY.MM.DD'
-      #     Default: 'semantic_logger'
-      #
-      #   date_pattern: [String]
-      #     The time format used to generate the full index name. Useful
-      #       if you want monthly indexes ('%Y.%m') or weekly ('%Y.%W').
-      #     Default: '%Y.%m.%d'
-      #
-      #   type: [String]
-      #     Document type to associate with logs when they are written.
-      #     Deprecated in Elasticsearch 7.0.0.
-      #     Default: 'log'
-      #
-      #   level: [:trace | :debug | :info | :warn | :error | :fatal]
-      #     Override the log level for this appender.
-      #     Default: SemanticLogger.default_level
-      #
-      #   formatter: [Object|Proc|Symbol|Hash]
-      #     An instance of a class that implements #call, or a Proc to be used to format
-      #     the output from this appender
-      #     Default: :raw_json (See: #call)
-      #
-      #   filter: [Regexp|Proc]
-      #     RegExp: Only include log messages where the class name matches the supplied.
-      #     regular expression. All other messages will be ignored.
-      #     Proc: Only include log messages where the supplied Proc returns true
-      #           The Proc must return true or false.
-      #
-      #   host: [String]
-      #     Name of this host to appear in log messages.
-      #     Default: SemanticLogger.host
-      #
-      #   application: [String]
-      #     Name of this application to appear in log messages.
-      #     Default: SemanticLogger.application
-      #
-      # Elasticsearch Parameters:
-      #   url: [String]
-      #     Fully qualified address to the Elasticsearch service.
-      #     Default: 'http://localhost:9200'
-      #
-      #   hosts: [String|Hash|Array]
-      #     Single host passed as a String or Hash, or multiple hosts
-      #     passed as an Array; `host` or `url` keys are also valid.
-      #     Note:
-      #       :url above is ignored when supplying this option.
-      #
-      #   resurrect_after [Float]
-      #     After how many seconds a dead connection should be tried again.
-      #
-      #   reload_connections [true|false|Integer]
-      #     Reload connections after X requests.
-      #     Default: false
-      #
-      #   randomize_hosts [true|false]
-      #     Shuffle connections on initialization and reload.
-      #     Default: false
-      #
-      #   sniffer_timeout [Integer]
-      #     Timeout for reloading connections in seconds.
-      #     Default: 1
-      #
-      #   retry_on_failure [true|false|Integer]
-      #     Retry X times when request fails before raising and exception.
-      #     Default: false
-      #
-      #   retry_on_status [Array<Number>]
-      #     Retry when specific status codes are returned.
-      #
-      #   reload_on_failure [true|false]
-      #     Reload connections after failure.
-      #     Default: false
-      #
-      #   request_timeout [Integer]
-      #     The request timeout to be passed to transport in options.
-      #
-      #   adapter [Symbol]
-      #     A specific adapter for Faraday (e.g. `:patron`)
-      #
-      #   transport_options [Hash]
-      #     Options to be passed to the `Faraday::Connection` constructor.
-      #
-      #   transport_class [Constant]
-      #     A specific transport class to use, will be initialized by
-      #     the client and passed hosts and all arguments.
-      #
-      #   transport [Object]
-      #     A specific transport instance.
-      #
-      #   serializer_class [Constant]
-      #     A specific serializer class to use, will be initialized by
-      #     the transport and passed the transport instance.
-      #
-      #   selector [Elasticsearch::Transport::Transport::Connections::Selector::Base]
-      #     An instance of selector strategy derived from `Elasticsearch::Transport::Transport::Connections::Selector::Base`.
-      #
-      #   send_get_body_as [String]
-      #     Specify the HTTP method to use for GET requests with a body.
-      #     Default: 'GET'
       def initialize(url: "http://localhost:9200",
                      index: "semantic_logger",
                      date_pattern: "%Y.%m.%d",
@@ -217,7 +105,8 @@ module SemanticLogger
   end
 end
 
-
-SemanticLogger.add_appender(
-  appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
-)
+if Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false)
+  SemanticLogger.add_appender(
+    appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
+  )
+end
