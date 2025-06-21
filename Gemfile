@@ -89,3 +89,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem "csv", "~> 3.3"
 
 gem "solid_queue", "~> 1.1"
+
+gem "opensearch-ruby", "~> 3.4"

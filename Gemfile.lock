@@ -204,6 +204,7 @@ GEM
     mini_portile2 (2.8.9)
     minitest (5.25.5)
     msgpack (1.8.0)
+    multi_json (1.15.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
     mutex_m (0.3.0)
@@ -249,6 +250,9 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    opensearch-ruby (3.4.0)
+      faraday (>= 1.0, < 3)
+      multi_json (>= 1.0)
     opus-ruby (1.0.1)
       ffi
     orm_adapter (0.5.0)
@@ -499,6 +503,7 @@ DEPENDENCIES
   omniauth-discord
   omniauth-oauth2
   omniauth-rails_csrf_protection
+  opensearch-ruby (~> 3.4)
   prettier (~> 4.0)
   prettier_print
   puma (~> 6.6.0)
