@@ -21,7 +21,7 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
-      - DISABLE_SECURITY_PLUGIN=${DISABLE_SECURITY_PLUGIN}
+      - DISABLE_SECURITY_PLUGIN=${OPENSEARCH_DISABLE_SECURITY_PLUGIN}
     ulimits:
       memlock:
         soft: -1
@@ -47,7 +47,7 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
-      - DISABLE_SECURITY_PLUGIN=${DISABLE_SECURITY_PLUGIN}
+      - DISABLE_SECURITY_PLUGIN=${OPENSEARCH_DISABLE_SECURITY_PLUGIN}
     ulimits:
       memlock:
         soft: -1
@@ -66,7 +66,7 @@ services:
       - 5601:5601
     environment:
       OPENSEARCH_HOSTS: '["http://opensearch-node1:9200","http://opensearch-node2:9200"]'
-      DISABLE_SECURITY_DASHBOARDS_PLUGIN: ${DISABLE_SECURITY_DASHBOARDS_PLUGIN}
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: ${OPENSEARCH_DISABLE_SECURITY_DASHBOARDS_PLUGIN}
     networks:
       - opensearch-net
 
