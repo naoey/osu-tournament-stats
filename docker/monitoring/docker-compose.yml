@@ -8,6 +8,8 @@ services:
       - ${FLUENT_NGINX_LOG_DIR_PATH}:/var/log/nginx
     networks:
       - opensearch-net
+    ports:
+      - 2021:2021
   opensearch-node1:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
