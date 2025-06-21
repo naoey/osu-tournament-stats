@@ -1,4 +1,13 @@
 services:
+  fluent-bit:
+    container_name: fluent-bit
+    image: fluent/fluent-bit:latest
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./fluent-bit-parsers.conf:/fluent-bit/etc/parsers.conf
+      - ${FLUENT_NGINX_LOG_DIR_PATH}:/var/log/nginx
+    networks:
+      - opensearch-net
   opensearch-node1:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
