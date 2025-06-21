@@ -105,7 +105,7 @@ module SemanticLogger
   end
 end
 
-if Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false)
+if defined?(Rails::server) && (Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false))
   SemanticLogger.add_appender(
     appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
   )
