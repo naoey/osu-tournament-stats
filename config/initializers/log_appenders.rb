@@ -158,7 +158,7 @@ module SemanticLogger
           url: "http://localhost:9200",
           retry_on_failure: 5,
           request_timeout: 120,
-          log: true
+          log: false
         )
 
         client.cluster.health
