@@ -1,12 +1,3 @@
-begin
-  require "opensearch"
-rescue LoadError
-  raise LoadError,
-        'Gem opensearch-ruby is required for logging to Elasticsearch. Please add the gem "elasticsearch" to your Gemfile.'
-end
-
-require "date"
-
 ##
 # Copy of Semantic Logger's built in Elasticsearch appender tweaked to use an OpenSearch client instead.
 module SemanticLogger
@@ -14,6 +5,7 @@ module SemanticLogger
     class Opensearch < SemanticLogger::Subscriber
       attr_accessor :url, :index, :date_pattern, :type, :client, :flush_interval, :timeout_interval, :batch_size,
                     :elasticsearch_args
+
       def initialize(url: "http://localhost:9200",
                      index: "semantic_logger",
                      date_pattern: "%Y.%m.%d",
@@ -28,14 +20,14 @@ module SemanticLogger
                      **elasticsearch_args,
                      &block)
 
-        @url                         = url
-        @index                       = index
-        @date_pattern                = date_pattern
-        @type                        = type
-        @elasticsearch_args          = elasticsearch_args.dup
-        @elasticsearch_args[:url]    = url if url && !elasticsearch_args[:hosts]
+        @url = url
+        @index = index
+        @date_pattern = date_pattern
+        @type = type
+        @elasticsearch_args = elasticsearch_args.dup
+        @elasticsearch_args[:url] = url if url && !elasticsearch_args[:hosts]
         @elasticsearch_args[:logger] = logger
-        @data_stream                 = data_stream
+        @data_stream = data_stream
 
         super(level: level, formatter: formatter, filter: filter, application: application, environment: environment, host: host, metrics: false, &block)
         reopen
@@ -87,9 +79,9 @@ module SemanticLogger
 
       def bulk_index(log)
         expanded_index_name = log.time.strftime("#{index}-#{date_pattern}")
-        return {"create" => {}} if @data_stream
+        return { "create" => {} } if @data_stream
 
-        bulk_index = {"index" => {"_index" => expanded_index_name}}
+        bulk_index = { "index" => { "_index" => expanded_index_name } }
         bulk_index
       end
 
@@ -105,8 +97,12 @@ module SemanticLogger
   end
 end
 
-if defined?(Rails::server) && (Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false))
-  SemanticLogger.add_appender(
-    appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
-  )
+Puma::Plugin.create do
+  def start(*)
+    if Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false)
+      SemanticLogger.add_appender(
+        appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
+      )
+    end
+  end
 end
