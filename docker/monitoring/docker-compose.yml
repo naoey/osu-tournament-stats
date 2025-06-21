@@ -10,6 +10,9 @@ services:
       - opensearch-net
     ports:
       - 2021:2021
+    profiles:
+      - fluent
+      - full
   opensearch-node1:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
@@ -36,6 +39,9 @@ services:
       - 9600:9600
     networks:
       - opensearch-net
+    profiles:
+      - opensearch
+      - full
   opensearch-node2:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node2
@@ -59,6 +65,9 @@ services:
       - opensearch-data2:/usr/share/opensearch/data
     networks:
       - opensearch-net
+    profiles:
+      - opensearch
+      - full
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:latest
     container_name: opensearch-dashboards
@@ -69,6 +78,12 @@ services:
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: ${OPENSEARCH_DISABLE_SECURITY_DASHBOARDS_PLUGIN}
     networks:
       - opensearch-net
+    profiles:
+      - opensearch
+      - full
+    depends_on:
+      - opensearch-node1
+      - opensearch-node2
 
 volumes:
   opensearch-data1:
