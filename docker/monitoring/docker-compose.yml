@@ -13,6 +13,9 @@ services:
     profiles:
       - fluent
       - full
+    environment:
+      - FLUENT_OPENSEARCH_OUTPUT_HOST=${FLUENT_OPENSEARCH_OUTPUT_HOST}
+      - FLUENT_OPENSEARCH_OUTPUT_PORT=${FLUENT_OPENSEARCH_OUTPUT_PORT}
   opensearch-node1:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
