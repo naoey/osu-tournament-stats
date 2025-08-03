@@ -42,6 +42,6 @@ class Unregister < CommandBase
     player.remove_additional_account(:discord)
     member&.remove_role(@server.verified_role_id)
 
-    @event.respond(content: "Unlinked osu! user #{osu_account_name} from #{member&.name || "unknown user"}")
+    @event.respond(content: "Unlinked osu! user #{osu_account_name} from #{member&.mention || "unknown user"}")
   end
 end
