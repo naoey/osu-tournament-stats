@@ -10,7 +10,7 @@ gem 'rails', '~> 8.0.2'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
 # Use Puma as the app server
-gem 'puma', '~> 7.0.3'
+gem 'puma', '~> 7.0.4'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
