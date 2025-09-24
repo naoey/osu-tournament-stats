@@ -274,7 +274,7 @@ GEM
       date
       stringio
     public_suffix (6.0.1)
-    puma (7.0.3)
+    puma (7.0.4)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
@@ -507,7 +507,7 @@ DEPENDENCIES
   opensearch-ruby (~> 3.4)
   prettier (~> 4.0)
   prettier_print
-  puma (~> 7.0.3)
+  puma (~> 7.0.4)
   rails (~> 8.0.2)
   rails_semantic_logger
   rake-progressbar
