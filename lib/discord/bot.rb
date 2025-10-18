@@ -164,13 +164,15 @@ module Discord
     end
 
     def restart
-      @client.stop
-      sleep 5
-      @client.run(true)
+      @mutex.synchronize do
+        @client.stop
+        sleep 5
+        @client.run(true)
 
-      logger.info("Restarted Discord bot")
+        logger.info("Restarted Discord bot")
 
-      ApplicationHelper::Notifications.notify("discord.bot_force_restarted", nil)
+        ApplicationHelper::Notifications.notify("discord.bot_force_restarted", nil)
+      end
     end
 
     def match_performance(event, *args)
