@@ -20,6 +20,15 @@ module Discord
 
     attr_reader :client
 
+    def initialize
+      super
+
+      @mutex = Mutex.new
+      @last_heartbeat = Time.now
+      @last_connected_at = nil
+      @watchdog = nil
+    end
+
     def initialize!
       logger.info "Initialising Discord bot..."
 
@@ -40,7 +49,42 @@ module Discord
         ExpCommands.register(@client)
       end
 
-      @client.run true
+      @client.ready do
+        logger.info("Discord bot running")
+        @last_connected_at = Time.now
+      end
+
+      @client.heartbeat do
+        @last_heartbeat = Time.now
+      end
+
+      @client.disconnected do
+        logger.warn("⚠️Discord bot disconnected!")
+      end
+
+      @mutex.synchronize do
+        @client.run true
+
+        if @watchdog.nil?
+          @watchdog = Thread.new do
+            loop do
+              sleep 60
+
+              if healthy?
+                logger.debug("✅Discord bot is healthy")
+
+                next
+              end
+
+              logger.warn("⚠️Discord bot failed health check for more than 60s; attempting to restart...")
+
+              restart
+            end
+          end
+
+          logger.debug("🐕Discord bot watchdog created")
+        end
+      end
 
       ApplicationHelper::Notifications.subscribe("player.discord_linked") { |d| osu_verification_completed(d) }
       ApplicationHelper::Notifications.subscribe("player.alt_link") { |d| osu_verification_alt(d) }
@@ -55,12 +99,19 @@ module Discord
     end
 
     def close!
-      return if @client.nil?
+      @mutex.synchronize do
+        return if @client.nil?
 
-      @client.stop
-      @client = nil
+        @client.stop
+        @client = nil
 
-      logger.info "Osu Discord bot has stopped"
+        if @watchdog&.alive?
+          @watchdog.kill
+          @watchdog = nil
+        end
+
+        logger.info "Discord bot has stopped"
+      end
     end
 
     def kela!(reason)
@@ -104,6 +155,25 @@ module Discord
     end
 
     private
+
+    # Health monitoring
+    def healthy?
+      return false unless @client
+
+      @last_heartbeat && Time.now - @last_heartbeat < 60 && @client.connected?
+    end
+
+    def restart
+      @mutex.synchronize do
+        @client.stop
+        sleep 5
+        @client.run(true)
+
+        logger.info("Restarted Discord bot")
+
+        ApplicationHelper::Notifications.notify("discord.bot_force_restarted", nil)
+      end
+    end
 
     def match_performance(event, *args)
       begin

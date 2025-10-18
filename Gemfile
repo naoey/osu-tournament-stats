@@ -95,3 +95,5 @@ end
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem "opensearch-ruby", "~> 3.4"
+
+gem "prometheus-client", "~> 4.2"
