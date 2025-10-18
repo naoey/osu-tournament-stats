@@ -16,6 +16,8 @@ class CommandBase
 
     begin
       handle_response
+
+      ApplicationHelper::Notifications.notify("discord.command_handled", { command: self.class.name })
     rescue Discordrb::Errors::NoPermission
     end
   end
