@@ -272,6 +272,8 @@ GEM
     prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.6.0)
+    prometheus-client (4.2.5)
+      base64
     psych (5.2.6)
       date
       stringio
@@ -513,6 +515,7 @@ DEPENDENCIES
   openssl (~> 3.3.1)
   prettier (~> 4.0)
   prettier_print
+  prometheus-client (~> 4.2)
   puma (~> 7.0.4)
   rails (~> 8.0.3)
   rails_semantic_logger
