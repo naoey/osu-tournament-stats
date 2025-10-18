@@ -3,6 +3,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.4.5'
 
+# Required to work with openssl@3.6.0: https://www.rubyonmac.dev/certificate-verify-failed-unable-to-get-certificate-crl-openssl-ssl-sslerror
+gem "openssl", "~> 3.3.1"
+
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -24,8 +27,13 @@ gem 'omniauth-oauth2'
 gem 'omniauth-discord'
 gem 'omniauth-rails_csrf_protection'
 
+gem "solid_queue", "~> 1.2"
+
+gem "csv", "~> 3.3"
 gem 'markdown-tables'
+
 gem 'kaminari'
+
 gem 'react-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
@@ -85,9 +93,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem "csv", "~> 3.3"
-
-gem "solid_queue", "~> 1.2"
 
 gem "opensearch-ruby", "~> 3.4"
