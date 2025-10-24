@@ -9,7 +9,7 @@ gem "openssl", "~> 3.3.1"
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 8.0.3'
+gem 'rails', '~> 8.1.0'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
 # Use Puma as the app server
@@ -74,7 +74,7 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'rubocop', '~> 1.81.1', require: false
+  gem 'rubocop', '~> 1.81.6', require: false
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
