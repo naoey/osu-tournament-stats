@@ -34,7 +34,7 @@ module OsuTournamentStats
       # https://github.com/omniauth/omniauth/issues/872
       Hashie.logger = Logger.new(nil)
 
-      if ENV["DISCORD_ENABLED"] == "1"
+      if ENV.fetch("DISCORD_ENABLED", nil) == "1" and defined?(Rails::Server)
         require_relative "../lib/discord/bot"
 
         Discord::OsuDiscordBot.instance.initialize!
