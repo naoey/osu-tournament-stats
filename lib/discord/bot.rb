@@ -49,11 +49,6 @@ module Discord
         ExpCommands.register(@client)
       end
 
-      @client.ready do
-        logger.info("Discord bot running")
-        @last_connected_at = Time.now
-      end
-
       @client.heartbeat do
         @last_heartbeat = Time.now
       end
@@ -318,7 +313,10 @@ module Discord
     # Event handling
 
     def ready(_event)
+      logger.info("✅Discord bot running")
+
       Rails.cache.write("discord_bot/servers", DiscordServer.all.as_json)
+      @last_connected_at = Time.now
     end
 
     def message(event)

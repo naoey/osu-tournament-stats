@@ -34,12 +34,17 @@ module OsuTournamentStats
       # https://github.com/omniauth/omniauth/issues/872
       Hashie.logger = Logger.new(nil)
 
-      if ENV["DISCORD_ENABLED"] == "1"
+      if ENV.fetch("DISCORD_ENABLED") == "1" and defined?(Rails::Server)
         require_relative "../lib/discord/bot"
 
         Discord::OsuDiscordBot.instance.initialize!
 
         at_exit { Discord::OsuDiscordBot.instance.close! }
+      else
+        logger.info(
+          "Not starting Discord bot because it is disabled or Rails server isn't starting up",
+          { discord_enabled: ENV.fetch("DISCORD_ENABLED"), rails_server: defined?(Rails::Server) }
+        )
       end
     end
 
