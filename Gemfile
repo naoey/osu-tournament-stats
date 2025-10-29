@@ -9,7 +9,7 @@ gem "openssl", "~> 3.3.1"
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 8.1.0'
+gem 'rails', '~> 8.1.1'
 # Use sqlite3 as the database for Active Record
 gem 'mysql2'
 # Use Puma as the app server
