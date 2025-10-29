@@ -258,7 +258,7 @@ GEM
     opensearch-ruby (3.4.0)
       faraday (>= 1.0, < 3)
       multi_json (>= 1.0)
-    openssl (3.3.1)
+    openssl (3.3.2)
     opus-ruby (1.0.1)
       ffi
     orm_adapter (0.5.0)
@@ -515,7 +515,7 @@ DEPENDENCIES
   omniauth-oauth2
   omniauth-rails_csrf_protection
   opensearch-ruby (~> 3.4)
-  openssl (~> 3.3.1)
+  openssl (~> 3.3.2)
   prettier (~> 4.0)
   prettier_print
   prometheus-client (~> 4.2)
