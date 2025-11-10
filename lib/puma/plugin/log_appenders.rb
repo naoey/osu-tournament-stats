@@ -35,7 +35,7 @@ module SemanticLogger
 
       def reopen
         @client = ::OpenSearch::Client.new(
-          url: "http://localhost:9200",
+          url: ENV.fetch("OTS_OPENSEARCH_URL"),
           retry_on_failure: 5,
           request_timeout: 120,
           log: false
@@ -99,7 +99,7 @@ end
 
 Puma::Plugin.create do
   def start(*)
-    if Rails.env.production? || ENV.fetch("OTS_ENABLE_OPENSEARCH", false)
+    if Rails.env.production? || ENV.fetch("OTS_OPENSEARCH_ENABLED", false)
       SemanticLogger.add_appender(
         appender: SemanticLogger::Appender::Opensearch.new(index: 'ots'),
       )
