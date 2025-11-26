@@ -92,7 +92,7 @@ GEM
     builder (3.3.0)
     byebug (12.0.0)
     concurrent-ruby (1.3.5)
-    connection_pool (2.5.4)
+    connection_pool (2.5.5)
     crack (1.0.1)
       bigdecimal
       rexml
@@ -338,7 +338,7 @@ GEM
     rake-progressbar (0.0.5)
     rbs (3.9.5)
       logger
-    rdoc (6.15.1)
+    rdoc (6.16.0)
       erb
       psych (>= 4.0.0)
       tsort
@@ -401,9 +401,9 @@ GEM
     securerandom (0.4.1)
     semantic_logger (4.17.0)
       concurrent-ruby (~> 1.0)
-    sentry-rails (6.1.1)
+    sentry-rails (6.1.2)
       railties (>= 5.2.0)
-      sentry-ruby (~> 6.1.1)
+      sentry-ruby (~> 6.1.2)
     sentry-ruby (6.1.2)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
