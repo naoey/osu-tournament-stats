@@ -32,7 +32,7 @@
   "dependencies": {
     "@alduino/humanizer": "^1.1.0",
     "@ant-design/icons": "^5.3.0",
-    "@hotwired/turbo": "^8.0.13",
+    "@hotwired/turbo": "^8.0.21",
     "@types/jquery": "^3.5.29",
     "@types/lodash": "^4.14.202",
     "@types/react": "^18.2.56",
