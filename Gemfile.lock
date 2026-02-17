@@ -286,7 +286,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.4)
+    rack (3.2.5)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
@@ -356,12 +356,6 @@ GEM
       actionpack (>= 7.0)
       railties (>= 7.0)
     rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
-    rest-client (2.1.0-x64-mingw32)
-      ffi (~> 1.9)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -492,7 +486,7 @@ GEM
 PLATFORMS
   arm64-darwin-24
   arm64-darwin-25
-  x64-mingw32
+  x64-mingw-ucrt
   x86_64-darwin-23
   x86_64-darwin-24
   x86_64-linux
