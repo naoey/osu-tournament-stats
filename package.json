@@ -46,7 +46,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.33.2",
     "jquery": "^3.7.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.30.1",
     "prop-types": "^15.8.1",
     "query-string": "^8.2.0",
