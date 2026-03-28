@@ -15,11 +15,10 @@ RSpec.describe Player do
   end
 
   def get_state_guid_from_link(link)
-    url = URI.parse(link)
-    params = CGI.parse(url.query)
-    _, guid = Base64.decode64(params['s'].first).split('|')
+    params = Rack::Utils.parse_query(URI.parse(link).query)
+    _, guid = Base64.decode64(params['s']).split('|')
 
-    return params['s'].first, guid
+    return params['s'], guid
   end
 
   def create_omniauth(provider: nil, uid: nil, **args)
