@@ -1,23 +1,13 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master, v2-next ]
+    branches: [ master ]
   pull_request:
-    branches: [ master , v2-next]
+    branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     services:
@@ -27,24 +17,22 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=ots_test
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 #6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: '^22'
-      - uses: ruby/setup-ruby@v1
+          node-version-file: .node-version
+      - uses: ruby/setup-ruby@ba696adf55506673e48342a66e30f1f53cadeae0 # v1.299.0
         with:
           bundler-cache: true
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@6b87c4621a21f802115d27ffcbfb44e28abd1387 # v5.0.0
 
       - name: Get pnpm cache directory path
         id: pnpm-cache-dir-path
         run: echo "::set-output name=dir::$(pnpm store path)"
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         id: pnpm-cache # use this to check for `cache-hit` (`steps.pnpm-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.pnpm-cache-dir-path.outputs.dir }}
