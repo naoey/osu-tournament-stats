@@ -73,16 +73,18 @@ class Player < ApplicationRecord
     # has never been imported through a match, then it's a completely fresh user so we just create it as normal.
     player = identity&.player
 
-    if player.nil?
+    if auth.provider == 'osu' && player.nil?
       # This is a brand new user
       player = Player.from_osu_auth(auth)
-    else
+    elsif auth.provider == 'osu'
       # Update name from osu! logins even for existing users
       player.name = auth.info[:username]
       player.country_code = auth.info[:country_code]
       player.avatar_url = auth.info[:avatar_url]
 
       player.identities.where(provider: :osu).update(uname: auth.info[:username], raw: auth.info)
+    else
+      player.identities.where(provider: auth.provider).update(uname: auth.info[:username] || auth.info[:name], raw: auth.info)
     end
 
     unless player.confirmed?
