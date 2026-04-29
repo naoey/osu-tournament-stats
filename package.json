@@ -65,9 +65,9 @@
     "postcss-import": "^16.1.0",
     "postcss-preset-env": "^10.1.5",
     "prettier": "^3.5.3",
-    "vite": "^6.4.2",
+    "vite": "^8.0.10",
     "vite-plugin-checker": "^0.9.3",
-    "vite-plugin-ruby": "^5.1.0"
+    "vite-plugin-ruby": "^5.2.1"
   },
   "engines": {
     "node": "^24"
