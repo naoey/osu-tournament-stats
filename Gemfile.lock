@@ -422,7 +422,7 @@ GEM
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
     solid_assert (1.1.0)
-    solid_queue (1.2.4)
+    solid_queue (1.4.0)
       activejob (>= 7.1)
       activerecord (>= 7.1)
       concurrent-ruby (>= 1.3.1)
@@ -535,7 +535,7 @@ DEPENDENCIES
   sentry-ruby
   simplecov
   solid_assert
-  solid_queue (~> 1.2)
+  solid_queue (~> 1.4)
   spring
   syntax_tree
   syntax_tree-haml
