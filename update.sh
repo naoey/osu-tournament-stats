@@ -44,14 +44,12 @@ git fetch --tags
 git checkout "tags/$TAG" -b "$WORKING_BRANCH" || exit_failure
 
 echo "Step 2: Installing Ruby dependencies..."
-bundle install --deployment --without development test || exit_failure
+bundle install || exit_failure
 
 echo "Step 3: Installing Node dependencies..."
 pnpm install --frozen-lockfile || exit_failure
 
 echo "Step 4: Building assets and migrating..."
-export RAILS_ENV=production
-
 bundle exec rails assets:precompile || exit_failure
 bundle exec rails db:migrate || exit_failure
 
