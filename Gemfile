@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '4.0.2'
 
 # Required to work with openssl@3.6.0: https://www.rubyonmac.dev/certificate-verify-failed-unable-to-get-certificate-crl-openssl-ssl-sslerror
-gem "openssl", "~> 4.0.0"
+gem "openssl", "~> 4.0.1"
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
