@@ -1,0 +1,22 @@
+[Unit]
+Description=OSU Tournament Stats Rails Server
+After=network.target
+
+[Service]
+Type=simple
+User=naoey
+Group=naoey
+WorkingDirectory=/var/www/osu-tournament-stats
+
+EnvironmentFile=/var/www/osu-tournament-stats/.env
+Environment=RAILS_ENV=production
+
+Environment=PATH=/home/naoey/.local/share/fnm/aliases/default/bin:/home/naoey/.rbenv/shims:/home/naoey/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
+
+ExecStart=/home/naoey/.rbenv/shims/bundle exec rails server -b 0.0.0.0 -p 3000
+
+Restart=always
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
