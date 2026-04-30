@@ -37,4 +37,4 @@ plugin :tmp_restart
 
 plugin :solid_queue
 
-plugin :log_appenders
+# plugin :log_appenders
