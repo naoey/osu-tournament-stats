@@ -8,17 +8,11 @@ User=naoey
 Group=naoey
 WorkingDirectory=/var/www/osu-tournament-stats
 
-# Load environment variables from your .env file
 EnvironmentFile=/var/www/osu-tournament-stats/.env
 Environment=RAILS_ENV=production
 
-# PATH setup:
-# 1. fnm default node version bin
-# 2. rbenv shims for Ruby/Bundle
-# 3. pnpm home for JS tools
 Environment=PATH=/home/naoey/.local/share/fnm/aliases/default/bin:/home/naoey/.rbenv/shims:/home/naoey/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
 
-# Start command (Adjust port if 3000 is taken)
 ExecStart=/home/naoey/.rbenv/shims/bundle exec rails server -b 0.0.0.0 -p 3000
 
 Restart=always

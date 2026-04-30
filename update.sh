@@ -50,6 +50,7 @@ echo "Step 3: Installing Node dependencies..."
 pnpm install --frozen-lockfile || exit_failure
 
 echo "Step 4: Building assets and migrating..."
+sudo /usr/bin/systemctl stop ots.service
 bundle exec rails assets:precompile || exit_failure
 bundle exec rails db:migrate || exit_failure
 
@@ -57,7 +58,7 @@ echo "Step 4.5: Reloading systemd configuration..."
 sudo /usr/bin/systemctl daemon-reload
 
 echo "Step 5: Restarting systemd service..."
-sudo /usr/bin/systemctl restart ots.service
+sudo /usr/bin/systemctl start ots.service
 
 send_discord_webhook "✅ Release $TAG is live!"
 echo "Deployment successful."
