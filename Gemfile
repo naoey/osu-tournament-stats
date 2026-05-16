@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '4.0.2'
 
 # Required to work with openssl@3.6.0: https://www.rubyonmac.dev/certificate-verify-failed-unable-to-get-certificate-crl-openssl-ssl-sslerror
-gem "openssl", "~> 4.0.1"
+gem "openssl", "~> 4.0.2"
 
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 
@@ -75,7 +75,7 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'rubocop', '~> 1.86.1', require: false
+  gem 'rubocop', '~> 1.86.2', require: false
   gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
