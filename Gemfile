@@ -14,12 +14,11 @@ gem 'rails', '~> 8.1.3'
 gem 'mysql2'
 # Use Puma as the app server
 gem 'puma', '~> 8.0.2'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
 gem 'vite_rails'
 gem "amazing_print"
-gem "rails_semantic_logger"
+gem "rails_semantic_logger", github: 'reidmorrison/rails_semantic_logger', ref: 'fbfe1df23510ece3f611bdd1be9e6ced11e46b7c'
+gem "opensearch-ruby"
 
 gem 'devise'
 gem 'devise_invitable'
@@ -56,6 +55,7 @@ gem 'jbuilder', '~> 2.15'
 #
 gem "sentry-ruby"
 gem "sentry-rails"
+gem "prometheus-client", "~> 4.2"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -95,6 +95,3 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem "opensearch-ruby", "~> 3.4"
-
-gem "prometheus-client", "~> 4.2"

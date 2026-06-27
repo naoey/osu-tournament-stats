@@ -305,7 +305,14 @@ module Discord
             embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: "https://a.ppy.sh/#{player.osu.uid}")
             embed.color = EMBED_GREEN
             embed.description = "Verification completed"
-            embed.fields = [Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member&.mention || "<???>")]
+            embed.fields = [
+              Discordrb::Webhooks::EmbedField.new(name: "Discord user", value: member&.mention || "<???>"),
+              Discordrb::Webhooks::EmbedField.new(
+                name: "Country",
+                value: player.country_code.nil? ? ":alien:" : ":flag_#{player.country_code.downcase}:",
+                inline: true
+              ),
+            ]
         end
       end
     end

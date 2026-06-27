@@ -36,5 +36,3 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 plugin :tmp_restart
 
 plugin :solid_queue
-
-# plugin :log_appenders
