@@ -26,20 +26,29 @@ module OsuTournamentStats
 
     config.cache_store = :memory_store, { size: 64.megabytes }
 
-    config.rails_semantic_logger.format = StructuredFormatter.new
-
     config.active_support.to_time_preserves_timezone = :zone
 
     config.after_initialize do
-      # https://github.com/omniauth/omniauth/issues/872
-      Hashie.logger = Logger.new(nil)
-
       if ENV.fetch("DISCORD_ENABLED", nil) == "1" and defined?(Rails::Server)
         require_relative "../lib/discord/bot"
 
         Discord::OsuDiscordBot.instance.initialize!
 
         at_exit { Discord::OsuDiscordBot.instance.close! }
+      end
+    end
+
+    # Logging config
+    config.rails_semantic_logger.appenders do |appenders|
+      appenders.add(io: $stdout, formatter: :color)
+
+      if ENV.fetch("OTS_OPENSEARCH_ENABLED", false)
+        appenders.add(
+          appender: :opensearch,
+          url: ENV.fetch("OTS_OPENSEARCH_URL"),
+          index: ENV.fetch("OTS_OPENSEARCH_INDEX_PATTERN"),
+          data_stream: true,
+        )
       end
     end
 

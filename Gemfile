@@ -20,6 +20,7 @@ gem 'jsbundling-rails'
 gem 'vite_rails'
 gem "amazing_print"
 gem "rails_semantic_logger"
+gem "opensearch-ruby"
 
 gem 'devise'
 gem 'devise_invitable'
@@ -95,6 +96,5 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
-gem "opensearch-ruby", "~> 3.4"
 
 gem "prometheus-client", "~> 4.2"

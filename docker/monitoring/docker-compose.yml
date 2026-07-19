@@ -16,6 +16,7 @@ services:
     environment:
       - FLUENT_OPENSEARCH_OUTPUT_HOST=${FLUENT_OPENSEARCH_OUTPUT_HOST}
       - FLUENT_OPENSEARCH_OUTPUT_PORT=${FLUENT_OPENSEARCH_OUTPUT_PORT}
+
   opensearch-node1:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node1
@@ -45,6 +46,7 @@ services:
     profiles:
       - opensearch
       - full
+
   opensearch-node2:
     image: opensearchproject/opensearch:latest
     container_name: opensearch-node2
@@ -71,6 +73,7 @@ services:
     profiles:
       - opensearch
       - full
+
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:latest
     container_name: opensearch-dashboards
@@ -87,6 +90,13 @@ services:
     depends_on:
       - opensearch-node1
       - opensearch-node2
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-server
+    profiles:
+      - prometheus
+      - full
 
 volumes:
   opensearch-data1:
