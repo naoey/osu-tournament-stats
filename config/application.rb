@@ -46,7 +46,7 @@ module OsuTournamentStats
         appenders.add(
           appender: :opensearch,
           url: ENV.fetch("OTS_OPENSEARCH_URL"),
-          index: "ots-rails-log",
+          index: ENV.fetch("OTS_OPENSEARCH_INDEX_PATTERN"),
           data_stream: true,
         )
       end
