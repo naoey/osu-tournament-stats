@@ -36,7 +36,6 @@ gem 'markdown-tables'
 gem 'kaminari'
 
 # Need newer versions for connection_pool 3 but they haven't released to RubyGems yet: https://github.com/reactjs/react-rails/issues/1366#issuecomment-3764284540
-gem 'react-rails', github: 'reactjs/react-rails', ref: '93a5dc441f5ef59559c510c01cfb7a685ee5b21e'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
@@ -98,3 +97,5 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 
 
 gem "prometheus-client", "~> 4.2"
+
+gem "react-rails", "~> 3.3"
