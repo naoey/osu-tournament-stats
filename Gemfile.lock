@@ -130,7 +130,7 @@ GEM
     dry-cli (1.4.1)
     erb (6.0.6)
     erubi (1.13.1)
-    et-orbi (1.4.0)
+    et-orbi (1.4.1)
       tzinfo
     event_emitter (0.2.6)
     execjs (2.10.0)
@@ -416,7 +416,7 @@ GEM
       hashie (>= 0.1.0, < 6)
       version_gem (~> 1.1, >= 1.1.14)
     solid_assert (1.1.0)
-    solid_queue (1.5.0)
+    solid_queue (1.5.1)
       activejob (>= 7.1)
       activerecord (>= 7.1)
       concurrent-ruby (>= 1.3.1)
@@ -484,7 +484,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.8.2)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   arm64-darwin-24
