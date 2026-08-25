@@ -28,7 +28,7 @@ gem 'omniauth-oauth2'
 gem 'omniauth-discord'
 gem 'omniauth-rails_csrf_protection'
 
-gem "solid_queue", "~> 1.6"
+gem "solid_queue", "~> 1.7"
 
 gem "csv", "~> 3.3"
 gem 'markdown-tables'
