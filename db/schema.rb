@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_02_082834) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_02_130357) do
   create_table "auth_providers", primary_key: "name", id: :string, charset: "utf8mb3", force: :cascade do |t|
     t.string "display_name"
     t.boolean "enabled"
@@ -51,7 +51,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_02_082834) do
     t.index ["player_id"], name: "index_discord_exps_on_player_id"
   end
 
+  create_table "discord_server_memberships", charset: "utf8mb3", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "discord_server_id", null: false
+    t.bigint "player_id", null: false
+    t.json "roles"
+    t.datetime "updated_at", null: false
+    t.index ["discord_server_id"], name: "fk_rails_f86a74e000"
+    t.index ["player_id", "discord_server_id"], name: "idx_on_player_id_discord_server_id_224e7b9dff", unique: true
+  end
+
   create_table "discord_servers", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "birthday_role_id"
     t.datetime "created_at", null: false
     t.bigint "discord_id", null: false
     t.boolean "exp_enabled", default: false, null: false
@@ -134,6 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_02_082834) do
   create_table "players", charset: "utf8mb3", force: :cascade do |t|
     t.string "avatar_url"
     t.integer "ban_status", default: 0, null: false
+    t.date "birthday"
     t.datetime "confirmation_sent_at", precision: nil
     t.string "confirmation_token"
     t.datetime "confirmed_at", precision: nil
@@ -188,6 +200,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_02_082834) do
   add_foreign_key "ban_histories", "players", on_update: :cascade, on_delete: :cascade
   add_foreign_key "discord_exps", "discord_servers"
   add_foreign_key "discord_exps", "players", on_delete: :cascade
+  add_foreign_key "discord_server_memberships", "discord_servers"
+  add_foreign_key "discord_server_memberships", "players"
   add_foreign_key "match_teams", "matches"
   add_foreign_key "match_teams", "players", column: "captain_id"
   add_foreign_key "matches", "match_teams", column: "winner_id"

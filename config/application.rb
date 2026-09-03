@@ -42,7 +42,7 @@ module OsuTournamentStats
     config.rails_semantic_logger.appenders do |appenders|
       appenders.add(io: $stdout, formatter: :color)
 
-      if ENV.fetch("OTS_OPENSEARCH_ENABLED", false)
+      if ENV.fetch("OTS_OPENSEARCH_ENABLED", "0") == "1"
         appenders.add(
           appender: :opensearch,
           url: ENV.fetch("OTS_OPENSEARCH_URL"),
