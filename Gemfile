@@ -96,6 +96,6 @@ end
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 
-gem "prometheus-client", "~> 4.2"
+gem "prometheus-client", "~> 5.0"
 
 gem "react-rails", "~> 3.3"
