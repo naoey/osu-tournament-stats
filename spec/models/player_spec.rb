@@ -16,7 +16,7 @@ RSpec.describe Player do
 
   def get_state_guid_from_link(link)
     params = Rack::Utils.parse_query(URI.parse(link).query)
-    _, guid = Base64.decode64(params['s']).split('|')
+    _, guid = [params['s']].pack("H*").split('|')
 
     return params['s'], guid
   end

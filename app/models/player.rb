@@ -1,5 +1,3 @@
-require "base64"
-
 require_relative "../errors/osu_auth_errors"
 
 class Player < ApplicationRecord
@@ -165,7 +163,7 @@ class Player < ApplicationRecord
       expires_in: 5.minutes
     )
 
-    state = Base64.encode64("#{discord_user["id"]}|#{guid}")
+    state = "#{discord_user["id"]}|#{guid}".unpack1("H*")
     Rails.application.routes.url_helpers.polymorphic_url(:users_register_discord, f: "bot", s: state)
   end
 
@@ -181,7 +179,7 @@ class Player < ApplicationRecord
   # process than a regular login using either service and will fail if the osu! account is found to already be linked
   # to another Discord account, and notify the server from which the verification request was started.
   def self.from_bot_link(omniauth, state)
-    discord_id, guid = Base64.decode64(state).split("|")
+    discord_id, guid = [state.pack("H*")].split("|")
     cache_key = "discord_bot/osu_verification_links/#{discord_id}"
     saved_state = Rails.cache.read(cache_key)
 

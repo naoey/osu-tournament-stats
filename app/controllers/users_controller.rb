@@ -1,5 +1,3 @@
-require "base64"
-
 class UsersController < ApplicationController
   before_action :authenticate_player!, except: %i[show_link_osu_discord]
 
@@ -27,12 +25,12 @@ class UsersController < ApplicationController
     return ActionController::BadRequest if params[:f] != "bot" || params[:s].empty?
 
     begin
-      discord_id, = Base64.decode64(params[:s]).split("|")
+      discord_id, = [params[:s]].pack('H*').split("|")
       state = Rails.cache.read("discord_bot/osu_verification_links/#{discord_id}")
 
       return render plain: "Timeout" if state.nil?
 
-      @query = Base64.encode64(request.query_string)
+      @query = request.query_string.unpack1("H*")
       @username = state["user"]["username"]
     rescue StandardError
       raise ActionController::BadRequest
