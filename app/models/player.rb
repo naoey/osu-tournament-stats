@@ -179,7 +179,7 @@ class Player < ApplicationRecord
   # process than a regular login using either service and will fail if the osu! account is found to already be linked
   # to another Discord account, and notify the server from which the verification request was started.
   def self.from_bot_link(omniauth, state)
-    discord_id, guid = [state.pack("H*")].split("|")
+    discord_id, guid = [state].pack("H*").split("|")
     cache_key = "discord_bot/osu_verification_links/#{discord_id}"
     saved_state = Rails.cache.read(cache_key)
 
