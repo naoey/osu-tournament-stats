@@ -1,5 +1,3 @@
-require "base64"
-
 require_relative "../../lib/omniauth_strategies/omniauth_osu"
 
 # frozen_string_literal: true
@@ -327,7 +325,7 @@ Devise.setup do |config|
                       return SecureRandom.hex(24)
                     end
 
-                    query = Rack::Utils.parse_query(Base64.decode64(request.params["s"]))
+                    query = Rack::Utils.parse_query([request.params["s"]].pack("H*"))
 
                     if query["f"].empty? || query["f"] != "bot" || query["s"].empty?
                       return SecureRandom.hex(24)

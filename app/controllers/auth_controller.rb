@@ -1,5 +1,3 @@
-require "base64"
-
 require_relative "../errors/osu_auth_errors"
 
 class AuthController < Devise::OmniauthCallbacksController
@@ -12,7 +10,7 @@ class AuthController < Devise::OmniauthCallbacksController
 
     begin
       auth = request.env["omniauth.auth"]
-      params = Rack::Utils.parse_query(Base64.decode64(request.params["state"]))
+      params = Rack::Utils.parse_query([request.params["state"]].pack("H*"))
       raw_user = auth["extra"]["raw_info"]
       player = nil
 
