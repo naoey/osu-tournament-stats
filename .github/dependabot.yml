@@ -6,4 +6,3 @@ updates:
     interval: daily
     time: "07:00"
     timezone: Asia/Calcutta
-  open-pull-requests-limit: 5
