@@ -53,6 +53,8 @@ jobs:
 
       - name: Run JS tests
         run: |
+          pnpm run fmt
+          pnpm run lint
           NODE_ENV=test pnpm run test
 
       - name: Run asset compile
