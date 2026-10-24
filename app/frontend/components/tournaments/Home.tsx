@@ -1,14 +1,15 @@
 import { Col, message, Row } from "antd";
 import * as React from "react";
+
 import Api from "../../api/Api";
 import TournamentRequests from "../../api/requests/TournamentRequests";
 import { RecentActivity } from "../../entities/RecentActivity";
 import { Tournament } from "../../entities/Tournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common/DebouncedSearchField";
+import PageRoot from "../common/PageRoot";
 import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
-import PageRoot from "../common/PageRoot";
 
 interface ITournamentHomeProps {
   list: Tournament[];
@@ -73,7 +74,7 @@ export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeS
     );
   }
 
-  private onSearch = (query: string) => this.reloadTournaments(query)
+  private onSearch = (query: string) => this.reloadTournaments(query);
 
   private reloadTournaments = async (query: string | null = null) => {
     this.setState({ isLoading: true });
@@ -89,5 +90,5 @@ export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeS
     } finally {
       this.setState({ isLoading: false });
     }
-  }
+  };
 }

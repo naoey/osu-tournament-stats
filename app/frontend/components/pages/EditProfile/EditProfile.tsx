@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Identity, IdentityProvider, Player } from "../../../models/Player";
+import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
 import { Avatar, Button, Divider, Flex, message, Select } from "antd";
 import moment from "moment";
-import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
-import AppearanceSection from "./AppearanceSection";
+import React, { useEffect, useState } from "react";
+
+import CsrfHelper from "../../../helpers/CsrfHelper";
 import usePlayer from "../../../hooks/usePlayer";
+import { Identity, IdentityProvider, Player } from "../../../models/Player";
 import LoadingTracker, { useLoadingTracker } from "../../common/LoadingTracker";
 import PageRoot from "../../common/PageRoot";
-import CsrfHelper from "../../../helpers/CsrfHelper";
+import AppearanceSection from "./AppearanceSection";
 
 export default PageRoot(function EditProfile() {
   const { player, toLoginPage, deleteIdentity: apiDeleteIdentity } = usePlayer();
@@ -26,7 +27,7 @@ export default PageRoot(function EditProfile() {
     try {
       const identities = await apiDeleteIdentity(id);
       loadingTracker.addLoadingKey(loadingKey);
-      setEditingPlayer(p => ({ ...p, identities }));
+      setEditingPlayer((p) => ({ ...p, identities }));
       message.success("Removed Discord connection");
     } catch (e) {
       console.error(e);
@@ -36,34 +37,39 @@ export default PageRoot(function EditProfile() {
     }
   };
 
-  const renderLinkedAccounts = () => editingPlayer.identities.map(id => (
-    <Flex align="center" gap="middle" key={id.provider}>
-      <p>
-        <b>{id.auth_provider.display_name}</b>: {id.uname} [{id.uid}]
-        <br />
-        <small><i>Connected on {moment(id.created_at).toLocaleString()}</i></small>
-      </p>
+  const renderLinkedAccounts = () =>
+    editingPlayer.identities.map((id) => (
+      <Flex align="center" gap="middle" key={id.provider}>
+        <p>
+          <b>{id.auth_provider.display_name}</b>: {id.uname} [{id.uid}]
+          <br />
+          <small>
+            <i>Connected on {moment(id.created_at).toLocaleString()}</i>
+          </small>
+        </p>
 
-      <Button
-        onClick={() => deleteIdentity(id)}
-        type="primary" danger icon={<DeleteOutlined />}
-        disabled={id.provider === IdentityProvider.Osu || loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
-        loading={loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
-      />
-    </Flex>
-  ));
+        <Button
+          onClick={() => deleteIdentity(id)}
+          type="primary"
+          danger
+          icon={<DeleteOutlined />}
+          disabled={id.provider === IdentityProvider.Osu || loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
+          loading={loadingTracker.isKeyLoading(`deleteIdentity_${id.provider}`)}
+        />
+      </Flex>
+    ));
 
   const renderAdditionalAccountOptions = () => {
     const options = [];
 
-    if (!editingPlayer.identities.some(i => i.provider === IdentityProvider.Discord)) {
+    if (!editingPlayer.identities.some((i) => i.provider === IdentityProvider.Discord)) {
       options.push(
         <form method="post" action="/auth/discord">
           <input type="hidden" name="authenticity_token" value={CsrfHelper.getCsrfToken()} />
           <Button
             icon={<DiscordOutlined />}
             type="primary"
-            style={{ backgroundColor: '#5865F2' }}
+            style={{ backgroundColor: "#5865F2" }}
             htmlType="submit"
             shape="circle"
             value="submit"
@@ -73,12 +79,14 @@ export default PageRoot(function EditProfile() {
       );
     }
 
-    if (!editingPlayer.identities.some(i => i.provider === IdentityProvider.Osu)) {
+    if (!editingPlayer.identities.some((i) => i.provider === IdentityProvider.Osu)) {
       options.push(
         <>
-          <p>To link your osu! account, join the <a href="/discord">osu!india Discord server</a> first.</p>
+          <p>
+            To link your osu! account, join the <a href="/discord">osu!india Discord server</a> first.
+          </p>
         </>,
-      )
+      );
       // options.push(
       //   <form method="post" action="/auth/osu">
       //     <input type="hidden" name="authenticity_token" value={$('meta[name="csrf-token"]').attr('content')} />
@@ -99,7 +107,8 @@ export default PageRoot(function EditProfile() {
 
     return (
       <Flex align="center" gap="small">
-        <strong>Add other accounts:</strong>{options}
+        <strong>Add other accounts:</strong>
+        {options}
       </Flex>
     );
   };
@@ -131,4 +140,4 @@ export default PageRoot(function EditProfile() {
       {renderAdditionalAccountOptions()}
     </>
   );
-})
+});

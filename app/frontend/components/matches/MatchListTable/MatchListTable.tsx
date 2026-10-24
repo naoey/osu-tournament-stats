@@ -2,13 +2,13 @@ import { Avatar, List, Table } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import moment from "moment";
 import * as React from "react";
+
 import Api from "../../../api/Api";
 import MatchRequests from "../../../api/requests/MatchRequests";
 import { Match } from "../../../entities/Match";
 import { MatchTeam } from "../../../entities/MatchTeam";
 import { Player } from "../../../entities/Player";
 import { GeneralEvents } from "../../../events/GeneralEvents";
-
 import "./styles.scss";
 
 export type MatchListTableProps = {
@@ -16,7 +16,7 @@ export type MatchListTableProps = {
   hiddenColumns?: string[];
   isFocused?: boolean;
   initialData?: Match[];
-}
+};
 
 function sortTimestamp(a: Match, b: Match) {
   if (moment(a.match_timestamp) > moment(b.match_timestamp)) return 1;
@@ -24,12 +24,7 @@ function sortTimestamp(a: Match, b: Match) {
   return 0;
 }
 
-export function MatchListTable({
-  tournamentId,
-  hiddenColumns = [],
-  initialData = [],
-  isFocused = true,
-}: MatchListTableProps) {
+export function MatchListTable({ tournamentId, hiddenColumns = [], initialData = [], isFocused = true }: MatchListTableProps) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState(initialData);
 
@@ -89,7 +84,11 @@ export function MatchListTable({
     <List.Item>
       <List.Item.Meta
         avatar={<Avatar src={`https://a.ppy.sh/${player.osu_id}`} />}
-        title={<a href={`https://osu.ppy.sh/users/${player.osu_id}`} target="_blank">{player.name}</a>}
+        title={
+          <a href={`https://osu.ppy.sh/users/${player.osu_id}`} target="_blank">
+            {player.name}
+          </a>
+        }
       />
     </List.Item>
   );
@@ -100,36 +99,37 @@ export function MatchListTable({
     {
       dataIndex: "round_name",
       key: "1",
-      render: (text, record) => (
-        <a href={`/matches/${record.id}`}>
-          {text}
-        </a>
-      ),
+      render: (text, record) => <a href={`/matches/${record.id}`}>{text}</a>,
       title: tournamentId ? "Round" : "Name",
-    }, {
+    },
+    {
       className: "team-cell",
       dataIndex: "blue_team",
       key: "2",
-      render: (text, record) => renderTeam(
-        record.blue_team,
-        record.winning_team.id === record.blue_team.id,
-        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
-      ),
+      render: (text, record) =>
+        renderTeam(
+          record.blue_team,
+          record.winning_team.id === record.blue_team.id,
+          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+        ),
       title: "Blue Team",
-    }, {
+    },
+    {
       className: "team-cell",
       dataIndex: "red_team",
       key: "3",
-      render: (text, record) => renderTeam(
-        record.red_team,
-        record.winning_team.id === record.red_team.id,
-        record.red_team.players.length > 1 || record.blue_team.players.length > 1,
-      ),
+      render: (text, record) =>
+        renderTeam(
+          record.red_team,
+          record.winning_team.id === record.red_team.id,
+          record.red_team.players.length > 1 || record.blue_team.players.length > 1,
+        ),
       title: "Red Team",
-    }, {
+    },
+    {
       dataIndex: "match_timestamp",
       key: "4",
-      render: text => moment(text).format("LLL"),
+      render: (text) => moment(text).format("LLL"),
       sortDirections: ["ascend", "descend"],
       sorter: sortTimestamp,
       title: "Date",
@@ -141,7 +141,7 @@ export function MatchListTable({
       <Table
         dataSource={data}
         loading={isLoading}
-        columns={columns.filter(c => !hiddenColumns.includes(c.dataIndex as string))}
+        columns={columns.filter((c) => !hiddenColumns.includes(c.dataIndex as string))}
         rowKey={keyExtractor}
         pagination={{
           pageSize: 10,

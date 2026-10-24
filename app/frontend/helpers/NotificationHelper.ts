@@ -8,12 +8,7 @@ export default {
    * @param payload Data to be included in the event.
    */
   dispatch(name: string, payload: any) {
-    document.dispatchEvent(
-      new CustomEvent(
-        name,
-        { detail: payload }
-      )
-    );
+    document.dispatchEvent(new CustomEvent(name, { detail: payload }));
   },
 
   subscribe<T>(name: string, handler: (payload: T) => void) {
@@ -29,5 +24,5 @@ export default {
     listeners.delete(handler);
 
     document.removeEventListener(name, cb);
-  }
+  },
 };

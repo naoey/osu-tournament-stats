@@ -1,12 +1,13 @@
 import * as React from "react";
+
 import { Match } from "../../entities/Match";
-import { MatchListTable } from "./MatchListTable";
-import AddMatchButton from "../tournaments/AddMatchButton";
 import PageRoot from "../common/PageRoot";
+import AddMatchButton from "../tournaments/AddMatchButton";
+import { MatchListTable } from "./MatchListTable";
 
 type HomeProps = {
   data: Match[];
-}
+};
 
 export const Home = PageRoot(function Home(props: HomeProps) {
   return (
@@ -16,4 +17,4 @@ export const Home = PageRoot(function Home(props: HomeProps) {
       <MatchListTable initialData={props.data} />
     </div>
   );
-})
+});

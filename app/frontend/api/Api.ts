@@ -1,8 +1,8 @@
+import { UserEvents } from "../events/UserEvents";
+import CsrfHelper from "../helpers/CsrfHelper";
 import { ContentType, HttpStatus } from "./Constants";
 import { RequestDescriptor } from "./RequestDescriptor";
 import RequestError from "./RequestError";
-import { UserEvents } from "../events/UserEvents";
-import CsrfHelper from "../helpers/CsrfHelper";
 
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: RequestDescriptor): Promise<P> {
@@ -27,8 +27,8 @@ export default class Api {
     const opts: RequestInit = {
       ...(options || {}),
       headers: {
-        ...options.headers ?? {},
-        'X-CSRF-Token': CsrfHelper.getCsrfToken(),
+        ...(options.headers ?? {}),
+        "X-CSRF-Token": CsrfHelper.getCsrfToken(),
       },
       credentials: "same-origin",
       mode: "same-origin",

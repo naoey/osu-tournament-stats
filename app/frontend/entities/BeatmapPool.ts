@@ -10,16 +10,12 @@ export enum PoolBeatmapCategory {
   FreeMod = "frem",
 }
 
-/**
- * Represents a beatmap that is part of a pool.
- */
+/** Represents a beatmap that is part of a pool. */
 export type PoolBeatmap = Beatmap & {
   category: PoolBeatmapCategory;
 };
 
-/**
- * Represents a pool of beatmaps that can be used in a match.
- */
+/** Represents a pool of beatmaps that can be used in a match. */
 export type BeatmapPool = {
   name: string;
   created_by: Player;

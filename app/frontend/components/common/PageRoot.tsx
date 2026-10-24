@@ -1,19 +1,20 @@
-import usePlayer from "../../hooks/usePlayer";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { UserEvents } from "../../events/UserEvents";
-import { PreferredColourScheme, UiConfig } from "../../models/Player";
 import { App, ConfigProvider, theme as antdTheme } from "antd";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import { UserEvents } from "../../events/UserEvents";
 import NotificationHelper from "../../helpers/NotificationHelper";
+import usePlayer from "../../hooks/usePlayer";
+import { PreferredColourScheme, UiConfig } from "../../models/Player";
 import LoadingTracker from "./LoadingTracker";
 
 /**
- * Sets up the wrapped component in the context required for a page root component required for the page to
- * respond to user specific settings and global functionality.
+ * Sets up the wrapped component in the context required for a page root component required for the page to respond to user specific
+ * settings and global functionality.
  *
  * @param Component The component to wrap.
  */
 export default function PageRoot(Component: React.ComponentType) {
-  return function(props: React.ComponentProps<typeof Component>) {
+  return function (props: React.ComponentProps<typeof Component>) {
     const { player } = usePlayer();
     const colourSchemeMediaQueryRef = useRef(window.matchMedia("(prefers-color-scheme: dark)"));
     const [activeTheme, setActiveTheme] = useState<PreferredColourScheme>(
@@ -31,12 +32,12 @@ export default function PageRoot(Component: React.ComponentType) {
 
       NotificationHelper.subscribe(UserEvents.SettingsUpdated, onSettingsUpdated);
 
-      colourSchemeMediaQueryRef.current.addEventListener('change', onMediaQueryChanged);
+      colourSchemeMediaQueryRef.current.addEventListener("change", onMediaQueryChanged);
 
       return () => {
         NotificationHelper.unsubscribe(UserEvents.SettingsUpdated, onSettingsUpdated);
 
-        colourSchemeMediaQueryRef.current.removeEventListener('change', onMediaQueryChanged);
+        colourSchemeMediaQueryRef.current.removeEventListener("change", onMediaQueryChanged);
       };
     }, []);
 
@@ -50,9 +51,7 @@ export default function PageRoot(Component: React.ComponentType) {
 
         default:
         case PreferredColourScheme.System:
-          return colourSchemeMediaQueryRef.current.matches
-            ? antdTheme.darkAlgorithm
-            : antdTheme.defaultAlgorithm;
+          return colourSchemeMediaQueryRef.current.matches ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm;
       }
     }, [activeTheme]);
 
@@ -63,9 +62,7 @@ export default function PageRoot(Component: React.ComponentType) {
     }, [antdThemeAlgorithm]);
 
     return (
-      <ConfigProvider
-        theme={{ algorithm: antdThemeAlgorithm, cssVar: true }}
-      >
+      <ConfigProvider theme={{ algorithm: antdThemeAlgorithm, cssVar: true }}>
         <App>
           <LoadingTracker>
             <Component {...props} />

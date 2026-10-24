@@ -1,7 +1,8 @@
 ## **osu-tournament-stats**
+
 ![Build Status](https://github.com/naoey/osu-tournament-stats/actions/workflows/main.yml/badge.svg) ![Code Quality](https://github.com/naoey/osu-tournament-stats/actions/workflows/github-code-scanning/codeql/badge.svg)
 
-----
+---
 
 Nowadays just the main repository for [osu!india](https://discord.gg/G8uYKhzujz)'s Discord bot (known as KelaBot). Initially started off as a tool to show statistics for various community osu! matches that were organised within the group, hence the repo name. I just couldn't be bothered to rename the repo and break connections.
 
@@ -12,6 +13,7 @@ Reach out to me on Discord if there's anything you want to know about running th
 ### Running locally
 
 Running the project locally should be pretty straightforward. Clone the repo and create a `.env` file based on [`.env.example`](./.env.example). Then, one of two options:
+
 1. Using Docker (recommended): `docker-compose up`
 2. Running Rails directly: `./bin/rails s`
 

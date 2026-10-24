@@ -24,11 +24,11 @@ export type Identity = {
   uid: number;
   uname: string;
   created_at: string;
-}
+};
 
 export type UiConfig = {
-  preferred_colour_scheme?: PreferredColourScheme,
-}
+  preferred_colour_scheme?: PreferredColourScheme;
+};
 
 export type Player = {
   id: number;
@@ -39,4 +39,4 @@ export type Player = {
   created_at: string;
   discord_exp?: DiscordExp[];
   ui_config: UiConfig;
-}
+};

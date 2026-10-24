@@ -2,15 +2,16 @@ import { Radio, Tabs } from "antd";
 import { RadioChangeEvent } from "antd/lib/radio";
 import moment from "moment";
 import * as React from "react";
+
 import { Match } from "../../entities/Match";
 import { PlayerStatistic } from "../../entities/PlayerStatistic";
 import { Tournament } from "../../entities/Tournament";
 import { User } from "../../entities/User";
-import AddMatchButton from "./AddMatchButton";
+import PageRoot from "../common/PageRoot";
 import { MatchListTable } from "../matches/MatchListTable";
 import PlayerStatsListTable from "../matches/PlayerStatsListTable";
+import AddMatchButton from "./AddMatchButton";
 import TournamentContext from "./TournamentContext";
-import PageRoot from "../common/PageRoot";
 
 export interface ITournamentDetailsProps {
   tournament: Tournament;
@@ -51,10 +52,7 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
             </div>
           </div>
 
-          <Tabs
-            activeKey={activeTab}
-            renderTabBar={this.renderTabBar}
-          >
+          <Tabs activeKey={activeTab} renderTabBar={this.renderTabBar}>
             <Tabs.TabPane key="matches" tab="Matches">
               <MatchListTable isFocused={activeTab === "matches"} tournamentId={tournament.id} />
             </Tabs.TabPane>
@@ -68,9 +66,17 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
   }
 
   private getHostLink(): React.ReactNode {
-    const { tournament: { host_player: { name, id } } } = this.props;
+    const {
+      tournament: {
+        host_player: { name, id },
+      },
+    } = this.props;
 
-    return <a href={`https://osu.ppy.sh/users/${id}`} target="_blank">{name}</a>;
+    return (
+      <a href={`https://osu.ppy.sh/users/${id}`} target="_blank">
+        {name}
+      </a>
+    );
   }
 
   private onChangeTab = (e: RadioChangeEvent) => this.setState({ activeTab: e.target.value });
@@ -82,11 +88,11 @@ export default class TournamentDetails extends React.Component<ITournamentDetail
         <Radio.Button value="players">Player statistics</Radio.Button>
       </Radio.Group>
     </div>
-  )
+  );
 
   private checkUserIsTournamentHost = (user: User): boolean => {
     const { tournament } = this.props;
 
     return tournament.host_player.id === user.id;
-  }
+  };
 }

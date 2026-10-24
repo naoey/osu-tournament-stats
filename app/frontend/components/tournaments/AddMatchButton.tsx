@@ -1,11 +1,12 @@
-import * as React from "react";
 import { Button, DatePicker, Form, Input, message, Modal } from "antd";
-import TournamentRequests from "../../api/requests/TournamentRequests";
+import * as React from "react";
+
 import Api from "../../api/Api";
+import MatchRequests from "../../api/requests/MatchRequests";
+import TournamentRequests from "../../api/requests/TournamentRequests";
+import { Match } from "../../entities/Match";
 import { Tournament } from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
-import MatchRequests from "../../api/requests/MatchRequests";
-import { Match } from "../../entities/Match";
 
 interface AddButtonProps {
   tournamentId?: number;
@@ -18,8 +19,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
   const [form] = Form.useForm();
 
   React.useEffect(() => {
-    if (!isFormVisible)
-      form.resetFields();
+    if (!isFormVisible) form.resetFields();
   }, [isFormVisible]);
 
   const showModal = () => setFormVisible(true);
@@ -35,8 +35,8 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         roundName: values.name,
         blueCaptain: values.blueCaptain,
         redCaptain: values.redCaptain,
-        discardList: values.discardList?.split('|').map((d: string) => parseInt(d, 10)) ?? [],
-        referees: values.referees?.split('|') ?? [],
+        discardList: values.discardList?.split("|").map((d: string) => parseInt(d, 10)) ?? [],
+        referees: values.referees?.split("|") ?? [],
       });
       const response = await Api.performRequest<Match>(request);
 
@@ -47,7 +47,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
       message.error(e.message);
       setWorking(false);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -55,13 +55,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         <i className="material-icons">add</i>
         <span>Add match</span>
       </Button>
-      <Modal
-        open={isFormVisible}
-        title="Add match"
-        onCancel={hideModal}
-        onOk={form.submit}
-        confirmLoading={isWorking}
-      >
+      <Modal open={isFormVisible} title="Add match" onCancel={hideModal} onOk={form.submit} confirmLoading={isWorking}>
         <Form form={form} onFinish={createTournament} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
             <Input type="text" placeholder="osu!india Winter Tournament" />
@@ -71,7 +65,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
             label="osu! MP ID"
             required={true}
             rules={[{ required: true, type: "number" }]}
-            getValueFromEvent={e => parseInt(e.target.value, 10)}
+            getValueFromEvent={(e) => parseInt(e.target.value, 10)}
           >
             <Input type="text" placeholder="12345" />
           </Form.Item>
@@ -88,11 +82,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
           >
             <Input type="text" placeholder="0|1|15" />
           </Form.Item>
-          <Form.Item
-            name="referees"
-            label="Referees"
-            help="Pipe (|) separated list of players whose scores are to be ignored"
-          >
+          <Form.Item name="referees" label="Referees" help="Pipe (|) separated list of players whose scores are to be ignored">
             <Input type="text" placeholder="nitr0f|Potla" />
           </Form.Item>
         </Form>

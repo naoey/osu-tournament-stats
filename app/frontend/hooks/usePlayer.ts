@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Identity, IdentityProvider, Player, UiConfig } from "../models/Player";
+
 import Api from "../api/Api";
 import * as UserRequests from "../api/requests/UserRequests";
+import { Identity, IdentityProvider, Player, UiConfig } from "../models/Player";
 
 export default function usePlayer() {
   const [player, setPlayer] = useState(window.currentUser ?? null);
@@ -38,11 +39,11 @@ export default function usePlayer() {
     reload,
 
     get osuId(): number | undefined {
-      return player?.identities.find(i => i.provider === IdentityProvider.Osu)?.uid;
+      return player?.identities.find((i) => i.provider === IdentityProvider.Osu)?.uid;
     },
 
     get discordId(): number | undefined {
-      return player?.identities.find(i => i.provider === IdentityProvider.Discord)?.uid;
+      return player?.identities.find((i) => i.provider === IdentityProvider.Discord)?.uid;
     },
   };
 }
