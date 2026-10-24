@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '4.0.2'
+ruby '4.0.9'
 
 # Required to work with openssl@3.6.0: https://www.rubyonmac.dev/certificate-verify-failed-unable-to-get-certificate-crl-openssl-ssl-sslerror
 gem "openssl", "~> 4.0.2"
