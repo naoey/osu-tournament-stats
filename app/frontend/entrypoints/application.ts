@@ -3,7 +3,7 @@
 //
 //    <%= vite_client_tag %>
 //    <%= vite_javascript_tag 'application' %>
-console.log('Vite ⚡️ Rails')
+console.log("Vite ⚡️ Rails");
 
 // If using a TypeScript entrypoint file:
 //     <%= vite_typescript_tag 'application' %>
@@ -22,9 +22,8 @@ console.log('Vite ⚡️ Rails')
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 
-import { start as startTurbo } from '@hotwired/turbo'
-import $ from 'jquery';
-import ReactRailsUJS from 'react_ujs';
+import $ from "jquery";
+import ReactRailsUJS from "react_ujs";
 
 import "../stylesheets/application.scss";
 
@@ -36,9 +35,7 @@ const importContext = import.meta.glob("../components/**/*.{js,ts,tsx,jsx}", { e
 const componentsContext = {};
 
 Object.entries(importContext).forEach(([filename, component]) => {
-  let cleanName = filename
-    .replace("../components/", "")
-    .replace(/\.\w+$/, ""); // Strips the file extension
+  let cleanName = filename.replace("../components/", "").replace(/\.\w+$/, ""); // Strips the file extension
   componentsContext[cleanName] = Object.values(component)[0];
 });
 

@@ -1,13 +1,13 @@
+import { UserEvents } from "../events/UserEvents";
+import CsrfHelper from "../helpers/CsrfHelper";
 import { ContentType, HttpStatus } from "./Constants";
 import { RequestDescriptor } from "./RequestDescriptor";
 import RequestError from "./RequestError";
-import { UserEvents } from "../events/UserEvents";
-import CsrfHelper from "../helpers/CsrfHelper";
 
 export default class Api {
   public static async performRequest<P>({ url, payload, options }: RequestDescriptor): Promise<P> {
     const headers = {
-      ...((options && options.headers) || {}),
+      ...(options && options.headers),
       Accept: ContentType.Json,
       "Content-Type": ContentType.Json,
     };
@@ -25,10 +25,10 @@ export default class Api {
     // TODO: set up the request here first with auth headers and whatnot
 
     const opts: RequestInit = {
-      ...(options || {}),
+      ...options,
       headers: {
-        ...options.headers ?? {},
-        'X-CSRF-Token': CsrfHelper.getCsrfToken(),
+        ...options.headers,
+        "X-CSRF-Token": CsrfHelper.getCsrfToken(),
       },
       credentials: "same-origin",
       mode: "same-origin",

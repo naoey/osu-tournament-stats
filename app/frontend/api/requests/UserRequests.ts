@@ -1,6 +1,6 @@
-import { Identity, IdentityProvider, UiConfig } from "../../models/Player";
-import { RequestDescriptor } from "../RequestDescriptor";
+import { IdentityProvider, UiConfig } from "../../models/Player";
 import { HttpMethod } from "../Constants";
+import { RequestDescriptor } from "../RequestDescriptor";
 
 export const get = (id) => ({ url: `/users/${id}` });
 

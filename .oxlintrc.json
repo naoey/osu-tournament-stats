@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "nursery": "off",
+    "pedantic": "off",
+    "perf": "error",
+    "restriction": "off",
+    "style": "off",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "fix": {
+          "imports": "safe-fix",
+          "variables": "off"
+        }
+      }
+    ]
+  },
+  "env": {
+    "builtin": true
+  },
+  "options": {
+    "typeAware": false,
+    "typeCheck": false
+  }
+}

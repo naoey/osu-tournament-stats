@@ -1,36 +1,37 @@
+import { humanize, toTitleCase, transform } from "@alduino/humanizer/string";
 import { Button, message, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
 import * as React from "react";
+
 import Api from "../../api/Api";
+import BeatmapRequests from "../../api/requests/BeatmapRequests";
 import StatisticsRequests from "../../api/requests/StatisticsRequests";
 import { PlayerStatistic } from "../../entities/PlayerStatistic";
-import BeatmapRequests from "../../api/requests/BeatmapRequests";
 import { LoadingView } from "../common/LoadingView";
-import { transform, toTitleCase, humanize } from "@alduino/humanizer/string";
 
 export type PlayerStatsListTableProps = {
   tournamentId?: number;
   matchId?: number;
   isFocused?: boolean;
   hiddenColumns?: string[];
-}
+};
 
 type ColumnDefinition = {
   key: string;
   title?: string;
   render?: (text: string, record: PlayerStatistic) => React.ReactNode;
   titleTooltip?: string;
-}
+};
 
 enum DetailModal {
-  MapsWon = 'Maps won',
-  MapsPlayed = 'Maps played',
-  FullCombos = 'Full combos',
-  BestAccuracy = 'Best accuracy',
-  PerfectMaps = 'Perfect maps',
-  MapsFailed = 'Maps failed',
-};
+  MapsWon = "Maps won",
+  MapsPlayed = "Maps played",
+  FullCombos = "Full combos",
+  BestAccuracy = "Best accuracy",
+  PerfectMaps = "Perfect maps",
+  MapsFailed = "Maps failed",
+}
 
 interface DetailModalState {
   type: DetailModal;
@@ -93,40 +94,36 @@ export default function PlayerStatsListTable({
 
   const keyExtractor = (record: PlayerStatistic): string => record.player.id.toString();
 
-  const createSortedColumn = (
-    { key, title, render, titleTooltip }: ColumnDefinition,
-    index: number,
-  ): ColumnProps<PlayerStatistic> => {
+  const createSortedColumn = ({ key, title, render, titleTooltip }: ColumnDefinition, index: number): ColumnProps<PlayerStatistic> => {
     const column: ColumnProps<PlayerStatistic> = {
       dataIndex: key.split("."),
       defaultSortOrder: "ascend",
       key,
       sortDirections: ["ascend", "descend"],
-      title: titleTooltip ?
-        () => (
-          <Tooltip title={titleTooltip}>
-            <span>
-              {title || humanize(transform(key, toTitleCase))}
-            </span>
-          </Tooltip>
-        )
+      title: titleTooltip
+        ? () => (
+            <Tooltip title={titleTooltip}>
+              <span>{title || humanize(transform(key, toTitleCase))}</span>
+            </Tooltip>
+          )
         : title || humanize(transform(key, toTitleCase)),
     };
 
-    if (key === 'best_accuracy')
-      column.sorter = (a, b) => sorter(a, b, item => item.best_accuracy.accuracy);
-    else if (['maps_won', 'maps_played', 'maps_failed', 'full_combos'].includes(key))
+    if (key === "best_accuracy") column.sorter = (a, b) => sorter(a, b, (item) => item.best_accuracy.accuracy);
+    else if (["maps_won", "maps_played", "maps_failed", "full_combos"].includes(key))
       column.sorter = (a, b) => sorter(a, b, (item) => item[key].length);
-    else
-      column.sorter = (a, b) => sorter(a, b, (item) => item[key]);
+    else column.sorter = (a, b) => sorter(a, b, (item) => item[key]);
 
     if (render !== null) column.render = render;
 
     if (index === 0) {
       column.fixed = "left";
       column.filters = _.sortBy(
-        _.uniqBy(data.map(p => ({ text: p.player.name, value: p.player.name.toLowerCase() })), i => i.text),
-        p => p.value,
+        _.uniqBy(
+          data.map((p) => ({ text: p.player.name, value: p.player.name.toLowerCase() })),
+          (i) => i.text,
+        ),
+        (p) => p.value,
       );
       column.onFilter = (value, record) => record.player.name.toLowerCase().indexOf(value.toString()) > -1;
       column.width = 175;
@@ -168,7 +165,7 @@ export default function PlayerStatsListTable({
     }
 
     if (!request) {
-      message.info('No details for record!');
+      message.info("No details for record!");
       return;
     }
 
@@ -186,17 +183,15 @@ export default function PlayerStatsListTable({
 
       setDetailModal({ ...details, isLoading: false, data: response });
     } catch (e: any) {
-      message.error(e.message || 'An error occured!');
+      message.error(e.message || "An error occured!");
       setDetailModal(null);
     }
   };
 
   const renderDetailModal = () => {
-    if (detailModal === null)
-      return null;
+    if (detailModal === null) return null;
 
-    if (detailModal.isLoading)
-      return <LoadingView />;
+    if (detailModal.isLoading) return <LoadingView />;
 
     switch (detailModal.type) {
       case DetailModal.FullCombos:
@@ -205,23 +200,18 @@ export default function PlayerStatsListTable({
       case DetailModal.MapsPlayed:
       case DetailModal.MapsFailed:
       case DetailModal.BestAccuracy:
-        return (
-          <ul>
-            {
-              detailModal.data?.map((d: any) => <li key={d.id}>{d.name}</li>) ?? null
-            }
-          </ul>
-        );
+        return <ul>{detailModal.data?.map((d: any) => <li key={d.id}>{d.name}</li>) ?? null}</ul>;
 
       default:
         return null;
     }
   };
 
-  const augmentedData = data.map(d => ({
+  // oxlint-disable-next-line oxc/no-map-spread
+  const augmentedData = data.map((d) => ({
     ...d,
-    maps_won_percent: Math.round(d.maps_won.length / d.maps_played.length * 100 * 100) / 100,
-    matches_won_percent: Math.round(d.matches_won / d.matches_played * 100 * 100) / 100,
+    maps_won_percent: Math.round((d.maps_won.length / d.maps_played.length) * 100 * 100) / 100,
+    matches_won_percent: Math.round((d.matches_won / d.matches_played) * 100 * 100) / 100,
   }));
 
   const columns: ColumnDefinition[] = [
@@ -229,46 +219,55 @@ export default function PlayerStatsListTable({
       key: "player.name",
       render: (text, record) => (
         <a target="_blank" href={`https://osu.ppy.sh/users/${record.online_id}`}>
-          {text} <i className="fas fa-external-link-alt"/>
+          {text} <i className="fas fa-external-link-alt" />
         </a>
       ),
-    }, {
+    },
+    {
       key: "matches_played",
-    }, {
+    },
+    {
       key: "matches_won",
-    }, {
+    },
+    {
       key: "matches_won_percent",
-      render: text => <span>{text}%</span>,
+      render: (text) => <span>{text}%</span>,
       title: "Match win %",
-    }, {
+    },
+    {
       key: "maps_played",
       render: (text, record) => (
         <Button className="link" onClick={() => showDetailModal(DetailModal.MapsPlayed, record)}>
           {record.maps_played.length}
         </Button>
       ),
-    }, {
+    },
+    {
       key: "maps_won",
       render: (text, record) => (
         <Button className="link" onClick={() => showDetailModal(DetailModal.MapsWon, record)}>
           {record.maps_won.length}
         </Button>
       ),
-    }, {
+    },
+    {
       key: "maps_won_percent",
-      render: text => <span>{text}%</span>,
+      render: (text) => <span>{text}%</span>,
       title: "Maps win %",
-    }, {
+    },
+    {
       key: "best_accuracy",
       render: (text, record) => (
         <Button className="link" onClick={() => showDetailModal(DetailModal.BestAccuracy, record)}>
           {record.best_accuracy.accuracy}%
         </Button>
       ),
-    }, {
+    },
+    {
       key: "average_accuracy",
       render: (text, record) => <span>{record.average_accuracy}%</span>,
-    }, {
+    },
+    {
       key: "perfect_count",
       title: "Perfect maps",
       render: (text, record) => (
@@ -276,22 +275,28 @@ export default function PlayerStatsListTable({
           {record.perfect_maps.length}
         </Button>
       ),
-    }, {
+    },
+    {
       key: "total_misses",
-    }, {
+    },
+    {
       key: "average_misses",
-    }, {
+    },
+    {
       key: "total_score",
-    }, {
+    },
+    {
       key: "average_score",
-    }, {
+    },
+    {
       key: "maps_failed",
       render: (text, record) => (
         <Button className="link" onClick={() => showDetailModal(DetailModal.MapsFailed, record)}>
           {record.maps_failed.length}
         </Button>
       ),
-    }, {
+    },
+    {
       key: "full_combos",
       titleTooltip: "Approximated FC. Doesn't count maps that have been deleted from osu servers.",
       render: (text, record) => (
@@ -307,7 +312,7 @@ export default function PlayerStatsListTable({
       <Table
         loading={isLoading}
         dataSource={augmentedData}
-        columns={columns.filter(c => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
+        columns={columns.filter((c) => !hiddenColumns.includes(c.key)).map(createSortedColumn)}
         rowKey={keyExtractor}
         sortDirections={["ascend", "descend"]}
         pagination={{

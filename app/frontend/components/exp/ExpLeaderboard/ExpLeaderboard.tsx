@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Table, TablePaginationConfig, message, List, Avatar, Spin } from "antd";
-import DiscordRequests from "../../../api/requests/DiscordRequests";
-import Api from "../../../api/Api";
+import { Avatar, List, message, Spin, Table } from "antd";
 import moment from "moment";
-import { Player } from "../../../models/Player";
+import React, { useEffect, useState } from "react";
+
+import Api from "../../../api/Api";
+import DiscordRequests from "../../../api/requests/DiscordRequests";
 import { DiscordExp } from "../../../models/Discord";
 import PageRoot from "../../common/PageRoot";
-
 import "./styles.scss";
 
 export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
@@ -24,8 +23,8 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
       const response = await Api.performRequest<DiscordExp[]>(request);
 
       setPage(p);
-      setData(d => [...d, ...response.map(e => new DiscordExp(e))]);
-    } catch (e) {
+      setData((d) => [...d, ...response.map((e) => new DiscordExp(e))]);
+    } catch {
       message.error("An error occurred!");
     }
 
@@ -49,29 +48,19 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
   }, [page]);
 
   const getRoleName = (exp: DiscordExp): string => {
-    if (exp.exp >= 1899250)
-      return "Spam God";
-    if (exp.exp >= 835275)
-      return "Pls Stop";
-    if (exp.exp >= 268375)
-      return "Hyper Active";
-    if (exp.exp >= 42000)
-      return "Very Active"
-    if (exp.exp >= 4675)
-      return "Active";
+    if (exp.exp >= 1899250) return "Spam God";
+    if (exp.exp >= 835275) return "Pls Stop";
+    if (exp.exp >= 268375) return "Hyper Active";
+    if (exp.exp >= 42000) return "Very Active";
+    if (exp.exp >= 4675) return "Active";
 
     return "";
   };
 
   return (
     <div className="leaderboard-wrapper">
-      <Table dataSource={data} pagination={false} rowKey={r => r.id} sticky>
-        <Table.Column
-          width={60}
-          render={(t, r, i) => i + 1}
-          title="Rank"
-          key="rank"
-        />
+      <Table dataSource={data} pagination={false} rowKey={(r) => r.id} sticky>
+        <Table.Column width={60} render={(t, r, i) => i + 1} title="Rank" key="rank" />
         <Table.Column
           title="Username"
           dataIndex={["player", "name"]}
@@ -81,29 +70,29 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
             <List.Item>
               <List.Item.Meta
                 className="item"
-                avatar={<Avatar src={`https://a.ppy.sh/${record.player.osuId}`}/>}
+                avatar={<Avatar src={`https://a.ppy.sh/${record.player.osuId}`} />}
                 title={
-                  record.player.osuId
-                    ? (
-                      <a href={`https://osu.ppy.sh/users/${record.player.osuId}`} target="_blank">
-                        {record.player.name || record.player.discordId}
-                      </a>
-                    )
-                    : record.player.name || record.player.discordId
+                  record.player.osuId ? (
+                    <a href={`https://osu.ppy.sh/users/${record.player.osuId}`} target="_blank">
+                      {record.player.name || record.player.discordId}
+                    </a>
+                  ) : (
+                    record.player.name || record.player.discordId
+                  )
                 }
                 description={getRoleName(record)}
               />
             </List.Item>
           )}
         />
-        <Table.Column title="Level" dataIndex="level" key="level"/>
-        <Table.Column title="XP" dataIndex="exp" key="exp" render={text => text.toLocaleString()}/>
-        <Table.Column title="Messages" dataIndex="message_count" key="message_count" render={text => text.toLocaleString()}/>
+        <Table.Column title="Level" dataIndex="level" key="level" />
+        <Table.Column title="XP" dataIndex="exp" key="exp" render={(text) => text.toLocaleString()} />
+        <Table.Column title="Messages" dataIndex="message_count" key="message_count" render={(text) => text.toLocaleString()} />
         <Table.Column
           title="Last Updated"
           dataIndex="updated_at"
           key="updated"
-          render={text => {
+          render={(text) => {
             const t = moment(text);
 
             if (t.unix() <= 0) {
@@ -116,9 +105,7 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
         />
       </Table>
 
-      <div className="spin-wrap">
-        {isLoading ? <Spin size="large"/> : null}
-      </div>
+      <div className="spin-wrap">{isLoading ? <Spin size="large" /> : null}</div>
     </div>
   );
-})
+});

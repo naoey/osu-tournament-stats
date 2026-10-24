@@ -1,7 +1,8 @@
-import * as React from "react";
 import { Modal, Form, DatePicker, Button, Input, message } from "antd";
-import TournamentRequests from "../../api/requests/TournamentRequests";
+import * as React from "react";
+
 import Api from "../../api/Api";
+import TournamentRequests from "../../api/requests/TournamentRequests";
 import { Tournament } from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 
@@ -12,8 +13,7 @@ function AddTournamentButton() {
   const [form] = Form.useForm();
 
   React.useEffect(() => {
-    if (!isFormVisible)
-      form.resetFields();
+    if (!isFormVisible) form.resetFields();
   }, [isFormVisible]);
 
   const showModal = () => setFormVisible(true);
@@ -37,20 +37,14 @@ function AddTournamentButton() {
       message.error(e.message);
       setWorking(false);
     }
-  }
+  };
 
   return (
     <React.Fragment>
       <Button onClick={showModal} type="primary" className="ot-btn">
         <i className="material-icons">add</i>
       </Button>
-      <Modal
-        open={isFormVisible}
-        title="Add match"
-        onCancel={hideModal}
-        onOk={form.submit}
-        confirmLoading={isWorking}
-      >
+      <Modal open={isFormVisible} title="Add match" onCancel={hideModal} onOk={form.submit} confirmLoading={isWorking}>
         <Form form={form} onFinish={createTournament}>
           <Form.Item name="name" label="Name" required={true}>
             <Input type="text" />

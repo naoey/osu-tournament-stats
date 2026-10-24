@@ -1,17 +1,17 @@
-import usePlayer from "../../../hooks/usePlayer";
+import { message, Select } from "antd";
 import React from "react";
-import { Select, message } from "antd";
+
+import { UserEvents } from "../../../events/UserEvents";
+import EnumHelper from "../../../helpers/EnumHelper";
+import NotificationHelper from "../../../helpers/NotificationHelper";
+import usePlayer from "../../../hooks/usePlayer";
 import { PreferredColourScheme } from "../../../models/Player";
 import { useLoadingTracker } from "../../common/LoadingTracker";
-import EnumHelper from "../../../helpers/EnumHelper";
-import { UserEvents } from "../../../events/UserEvents";
-import NotificationHelper from "../../../helpers/NotificationHelper";
 
-const loading_key = 'preferredColourScheme';
+const loading_key = "preferredColourScheme";
 
 export default function AppearanceSection() {
   const { player, updateUiConfig } = usePlayer();
-  const [toast] = message.useMessage();
   const loadingTracker = useLoadingTracker();
 
   if (!player) return null;
@@ -46,5 +46,5 @@ export default function AppearanceSection() {
         />
       </div>
     </>
-  )
+  );
 }
