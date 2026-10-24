@@ -45,7 +45,7 @@ export class Home extends React.Component<ITournamentHomeProps, ITournamentHomeS
   }
 
   public render() {
-    const { list, isLoading, searchQuery } = this.state;
+    const { list, isLoading } = this.state;
 
     const isAuthenticated: boolean = (window as any).isAuthenticated;
 

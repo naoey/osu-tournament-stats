@@ -1,4 +1,4 @@
-import { Table, message, List, Avatar, Spin } from "antd";
+import { Avatar, List, message, Spin, Table } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 
@@ -24,7 +24,7 @@ export const ExpLeaderboard = PageRoot(function ExpLeaderboard() {
 
       setPage(p);
       setData((d) => [...d, ...response.map((e) => new DiscordExp(e))]);
-    } catch (e) {
+    } catch {
       message.error("An error occurred!");
     }
 

@@ -1,4 +1,4 @@
-import { Select, message } from "antd";
+import { message, Select } from "antd";
 import React from "react";
 
 import { UserEvents } from "../../../events/UserEvents";
@@ -12,7 +12,6 @@ const loading_key = "preferredColourScheme";
 
 export default function AppearanceSection() {
   const { player, updateUiConfig } = usePlayer();
-  const [toast] = message.useMessage();
   const loadingTracker = useLoadingTracker();
 
   if (!player) return null;

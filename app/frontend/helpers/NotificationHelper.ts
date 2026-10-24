@@ -12,7 +12,7 @@ export default {
   },
 
   subscribe<T>(name: string, handler: (payload: T) => void) {
-    const cb = (e: Event) => handler.call(null, (e as CustomEvent).detail as T);
+    const cb = (e: Event) => handler((e as CustomEvent).detail as T);
 
     listeners.set(handler, cb);
 

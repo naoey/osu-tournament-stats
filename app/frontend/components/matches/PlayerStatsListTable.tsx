@@ -1,4 +1,4 @@
-import { transform, toTitleCase, humanize } from "@alduino/humanizer/string";
+import { humanize, toTitleCase, transform } from "@alduino/humanizer/string";
 import { Button, message, Modal, Table, Tooltip } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import * as _ from "lodash";
@@ -207,6 +207,7 @@ export default function PlayerStatsListTable({
     }
   };
 
+  // oxlint-disable-next-line oxc/no-map-spread
   const augmentedData = data.map((d) => ({
     ...d,
     maps_won_percent: Math.round((d.maps_won.length / d.maps_played.length) * 100 * 100) / 100,
