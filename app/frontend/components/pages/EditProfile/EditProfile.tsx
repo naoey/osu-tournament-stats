@@ -1,12 +1,12 @@
 import { DeleteOutlined, DiscordOutlined } from "@ant-design/icons";
-import { Avatar, Button, Divider, Flex, message, Select } from "antd";
+import { Avatar, Button, Divider, Flex, message } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 
 import CsrfHelper from "../../../helpers/CsrfHelper";
 import usePlayer from "../../../hooks/usePlayer";
 import { Identity, IdentityProvider, Player } from "../../../models/Player";
-import LoadingTracker, { useLoadingTracker } from "../../common/LoadingTracker";
+import { useLoadingTracker } from "../../common/LoadingTracker";
 import PageRoot from "../../common/PageRoot";
 import AppearanceSection from "./AppearanceSection";
 

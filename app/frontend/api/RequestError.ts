@@ -3,7 +3,7 @@ export default class RequestError extends Error {
   public readonly message: string;
   public readonly code?: string;
 
-  constructor(message: string, status: number = 0, code: string | undefined = undefined) {
+  constructor(message: string, status: number = 0, code: string | undefined) {
     super();
 
     this.message = message;

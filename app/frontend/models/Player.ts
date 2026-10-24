@@ -1,4 +1,4 @@
-import { DiscordExp, DiscordServer } from "./Discord";
+import { DiscordExp } from "./Discord";
 
 export enum IdentityProvider {
   Osu = "osu",

@@ -1,11 +1,10 @@
-import { Table, TablePaginationConfig, message, List, Avatar, Spin } from "antd";
+import { Table, message, List, Avatar, Spin } from "antd";
 import moment from "moment";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
 import Api from "../../../api/Api";
 import DiscordRequests from "../../../api/requests/DiscordRequests";
 import { DiscordExp } from "../../../models/Discord";
-import { Player } from "../../../models/Player";
 import PageRoot from "../../common/PageRoot";
 import "./styles.scss";
 

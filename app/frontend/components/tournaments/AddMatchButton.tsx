@@ -1,11 +1,9 @@
-import { Button, DatePicker, Form, Input, message, Modal } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 import * as React from "react";
 
 import Api from "../../api/Api";
 import MatchRequests from "../../api/requests/MatchRequests";
-import TournamentRequests from "../../api/requests/TournamentRequests";
 import { Match } from "../../entities/Match";
-import { Tournament } from "../../entities/Tournament";
 import { authenticated } from "../../helpers/AuthenticationHOC";
 
 interface AddButtonProps {
@@ -35,7 +33,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
         roundName: values.name,
         blueCaptain: values.blueCaptain,
         redCaptain: values.redCaptain,
-        discardList: values.discardList?.split("|").map((d: string) => parseInt(d, 10)) ?? [],
+        discardList: values.discardList?.split("|").map((d: string) => Number.parseInt(d, 10)) ?? [],
         referees: values.referees?.split("|") ?? [],
       });
       const response = await Api.performRequest<Match>(request);
@@ -65,7 +63,7 @@ function AddMatchButton({ tournamentId }: AddButtonProps) {
             label="osu! MP ID"
             required={true}
             rules={[{ required: true, type: "number" }]}
-            getValueFromEvent={(e) => parseInt(e.target.value, 10)}
+            getValueFromEvent={(e) => Number.parseInt(e.target.value, 10)}
           >
             <Input type="text" placeholder="12345" />
           </Form.Item>

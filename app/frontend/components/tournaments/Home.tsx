@@ -8,7 +8,6 @@ import { Tournament } from "../../entities/Tournament";
 import { GeneralEvents } from "../../events/GeneralEvents";
 import { DebouncedSearchField } from "../common/DebouncedSearchField";
 import PageRoot from "../common/PageRoot";
-import AddButton from "./AddTournamentButton";
 import TournamentListTable from "./TournamentListTable";
 
 interface ITournamentHomeProps {

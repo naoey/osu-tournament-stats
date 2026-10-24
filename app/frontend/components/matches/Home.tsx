@@ -2,7 +2,6 @@ import * as React from "react";
 
 import { Match } from "../../entities/Match";
 import PageRoot from "../common/PageRoot";
-import AddMatchButton from "../tournaments/AddMatchButton";
 import { MatchListTable } from "./MatchListTable";
 
 type HomeProps = {

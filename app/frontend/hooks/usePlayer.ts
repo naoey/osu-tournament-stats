@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Api from "../api/Api";
 import * as UserRequests from "../api/requests/UserRequests";
-import { Identity, IdentityProvider, Player, UiConfig } from "../models/Player";
+import { Identity, IdentityProvider, UiConfig } from "../models/Player";
 
 export default function usePlayer() {
   const [player, setPlayer] = useState(window.currentUser ?? null);

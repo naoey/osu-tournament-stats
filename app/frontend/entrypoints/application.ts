@@ -22,7 +22,6 @@ console.log("Vite ⚡️ Rails");
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 
-import { start as startTurbo } from "@hotwired/turbo";
 import $ from "jquery";
 import ReactRailsUJS from "react_ujs";
 

@@ -16,7 +16,7 @@ export function MatchDetails({ match, tableProps }: MatchDetailsProps) {
         <div>
           <h2>{match.round_name}</h2>
           {match.tournament ? null : (
-            // @ts-ignore
+            // @ts-expect-error
             <h4>{match.tournament.name}</h4>
           )}
           <span>
