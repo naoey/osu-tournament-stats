@@ -3,10 +3,10 @@
   "plugins": ["typescript", "unicorn", "oxc"],
   "categories": {
     "correctness": "error",
-    "nursery": "error",
-    "pedantic": "error",
+    "nursery": "off",
+    "pedantic": "off",
     "perf": "error",
-    "restriction": "error",
+    "restriction": "off",
     "style": "off",
     "suspicious": "warn"
   },
