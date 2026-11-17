@@ -11,7 +11,7 @@ gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 8.1.4'
 # Use Puma as the app server
-gem 'puma', '~> 8.0.2'
+gem 'puma', '~> 8.0.3'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 gem 'jsbundling-rails'
